@@ -1,0 +1,22 @@
+.actionList {
+  position: relative;
+  background: var(--backgroundColor);
+  border-radius: 4px;
+  list-style: none;
+  padding: 0.5rem 0.2rem;
+  width: 120px;
+  box-shadow: var(--shadow);
+  z-index: 2000;
+}
+.actionList .actionLink {
+  padding: 6px 10px;
+  cursor: pointer;
+  color: var(--lightTextColor);
+}
+.actionList .view{
+  text-decoration: none;
+  color: var(--lightTextColor);
+}
+.actionList .actionLink:hover {
+  background-color: #f0f0f0;
+}

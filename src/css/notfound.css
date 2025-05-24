@@ -1,0 +1,31 @@
+.notfound-container {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--textColor);
+  font-family: var(--fontFamily);
+}
+
+.notfound-icon {
+  color: var(--red);
+  margin-bottom: 20px;
+}
+
+.notfound-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.notfound-link {
+  color: var(--highlightColor);
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid var(--highlightColor);
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.notfound-link:hover {
+  background-color: var(--highlightColor);
+  color: white;
+}

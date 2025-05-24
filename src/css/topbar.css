@@ -1,0 +1,38 @@
+#topBar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+#topBar .icon{
+    font-size: var(--headerFontSize);
+    color: var(--borderColor);
+    cursor: pointer;
+}
+#topBar .Notification,
+#topBar .Message,
+#topBar .Hamburger{
+    font-size: var(--headerFontSize);
+}
+#topBar .rightSide{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    min-width: 120px;
+    /* background-color: aqua; */
+}
+#topBar .rightSide .profile{
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: var(--containerColor);
+    margin-left: 20px;
+}
+#topBar .rightSide .profile img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}

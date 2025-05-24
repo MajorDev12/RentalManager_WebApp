@@ -1,0 +1,5 @@
+.Toastify__toast {
+  font-family: var(--fontFamily);
+  font-size: var(--normalFontSize);
+  margin-top: 20px;
+}

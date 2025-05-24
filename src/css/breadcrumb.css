@@ -1,0 +1,26 @@
+#breadCrumb{
+    max-height: 60px;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--fontFamily);
+    margin-bottom: 10px;
+}
+#breadCrumb .greetings{
+    font-size: var(--headerFontSize);
+    color: var(--textColor);
+}
+#breadCrumb .navigator{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    padding-top: 5px;
+}
+#breadCrumb .navigator p{
+    font-size: var(--smallFontSize);
+    font-weight: 600;
+    color: var(--highlightColor);
+}
+#breadCrumb .navigator .active{
+    color: var(--lightTextColor);
+}

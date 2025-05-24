@@ -1,0 +1,19 @@
+.actionCell {
+  position: relative;
+  display: inline-block;
+}
+
+.actionContainer {
+  position: absolute;
+  top: 100%;
+  left: auto;
+  right: 0;
+  min-width: 120px;
+  padding: 0.5rem;
+  z-index: 1000;
+  border-radius: 4px;
+}
+.actionContainer.open-up {
+  top: auto;
+  bottom: 100%;
+}
