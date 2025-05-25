@@ -1,5 +1,9 @@
 import React from 'react'
 import DoughnutChart from '../components/DoughnutChart';
+import HomeIcon1 from "../assets/HomeIcon1.svg";
+import HomeIcon2 from "../assets/HomeIcon2.svg";
+import HomeIcon3 from "../assets/HomeIcon3.svg";
+import HomeIcon4 from "../assets/HomeIcon4.svg";
 import "../css/center.css";
 
 
@@ -35,12 +39,12 @@ const CenterPage = () => {
       <div className="firstRow">
         <div className="cont totalDetail">
           <div className="left">
-            <div className="chartContainer" style={{width: "100px", height: "100px"}}>
+            <div className="chartContainer">
               <DoughnutChart data={data} options={options} id="chart" />
             </div>
             <div className="text">
               <h3>Total Properties</h3>
-              <p>20</p>
+              <p className='total'>20</p>
             </div>
           </div>
           <div className="right">
@@ -51,28 +55,36 @@ const CenterPage = () => {
           </div>
         </div>
         <div className="cont">
-          <div className="img"></div>
+          <div className="img">
+            <img src={HomeIcon1} alt="" srcset="" />
+          </div>
           <div className="content">
             <h3>27 / 30</h3>
             <p>Payment Last Month</p>
           </div>
         </div>
         <div className="cont">
-          <div className="img"></div>
+          <div className="img">
+            <img src={HomeIcon2} alt="" srcset="" />
+          </div>
           <div className="content">
             <h3>Sh. 120, 000</h3>
             <p>Income Last Month</p>
           </div>
         </div>
         <div className="cont">
-          <div className="img"></div>
+          <div className="img">
+            <img src={HomeIcon3} alt="" srcset="" />
+          </div>
           <div className="content">
             <h3>Sh. 6, 200</h3>
             <p>Total UnPaid</p>
           </div>
         </div>
         <div className="cont">
-          <div className="img"></div>
+          <div className="img">
+            <img src={HomeIcon4} alt="" srcset="" />
+          </div>
           <div className="content">
             <h3>Sh. 4,500,000</h3>
             <p>Total Income</p>
