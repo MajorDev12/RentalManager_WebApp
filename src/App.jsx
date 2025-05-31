@@ -11,6 +11,7 @@ import MainPage from '../src/sections/MainPage'
 import Property from '../src/sections/property'
 import ViewProperty from '../src/sections/ViewProperty'
 import Unit from '../src/sections/Unit'
+import UnitType from '../src/sections/UnitType'
 import UnitCharge from "./sections/UnitCharge";
 import NotFound from './sections/NotFound';
 
@@ -30,6 +31,7 @@ function App() {
             <Route path="/Properties" element={<Property />} />
             <Route path="/Properties/:id" element={<ViewProperty />} />
             <Route path="/Units" element={<Unit />} />
+            <Route path="/UnitType" element={<UnitType />} />
             <Route path="/UtilityBill" element={<UnitCharge />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

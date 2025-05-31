@@ -15,7 +15,7 @@
    min-height: 100px;
    display: flex;
    flex-direction: row;
-   justify-content: space-evenly;
+   justify-content: start;
    align-items: center;
    box-shadow: var(--shadow);
    font-family: var(--fontFamily);

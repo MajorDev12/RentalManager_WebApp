@@ -60,7 +60,7 @@ const CenterPage = () => {
           </div>
           <div className="content">
             <h3>27 / 30</h3>
-            <p>Payment Last Month</p>
+            <p>Payment This Month</p>
           </div>
         </div>
         <div className="cont">
@@ -69,7 +69,7 @@ const CenterPage = () => {
           </div>
           <div className="content">
             <h3>Sh. 120, 000</h3>
-            <p>Income Last Month</p>
+            <p>Income This Month</p>
           </div>
         </div>
         <div className="cont">

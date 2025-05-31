@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import BreadCrumb from '../components/BreadCrumb';
 import PrimaryButton from '../components/PrimaryButton';
 import Table from '../components/Table';
-import { getColumns } from "../columns/UnitColumns";
+import { getColumns } from "../columns/UnitType";
 import Modal from '../components/Modal';
 import DeleteModal from '../components/DeleteModal';  
 import Input from '../components/Input';
 import Select from '../components/Select';
+import Textarea from '../components/Textarea';
 import { validateTextInput } from '../helpers/validateTextInput'; 
 import { getData } from '../helpers/getData';
 import { addData } from '../helpers/addData';
@@ -14,7 +15,7 @@ import { updateData } from '../helpers/updateData';
 import { handleDelete } from '../helpers/deleteData';
 
 
-const Unit = () => {
+const UnitType = () => {
     const [activeRow, setActiveRow] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [charges, setCharges] = useState([]);
@@ -28,14 +29,11 @@ const Unit = () => {
     const [formError, setFormError] = useState('');
     const [select, setSelect] = useState('');
     const [properties, setProperties] = useState([]);
-    const [unitTypes, setUnitTypes] = useState([]);
-    const [unitStatus, setUnitStatus] = useState([]);
     const [formData, setFormData] = useState({
       propertyId: '',
       name: '',
-      unitTypeId: '',
-      unitType: '',
-      status: ''
+      amount: '',
+      notes: ''
     });
 
 
@@ -63,7 +61,7 @@ const Unit = () => {
 
     useEffect(() => {
         getData({
-            endpoint: 'Unit',
+            endpoint: 'UnitType',
             setData: setCharges,
             setLoading,
             setError
@@ -75,19 +73,12 @@ const Unit = () => {
           setLoading,
           setError
         });
-
-        getData({
-          endpoint: 'UnitType',
-          setData: setUnitTypes,
-          setLoading,
-          setError
-        });
       }, []);
 
 
 
 const columns = getColumns({
-  endpoint: "Unit",
+  endpoint: "UnitType",
   activeRow,
   setActiveRow,
   setSelectedId,
@@ -117,15 +108,15 @@ const columns = getColumns({
 
 
  const validateForm = () => {
-    const { name, status, unitTypeId, propertyId} = formData;
-    if (!name || !status || !unitTypeId || !propertyId) {
+    const { name, notes, amount, propertyId} = formData;
+    if (!name || !amount || !propertyId) {
       return "Please fill in all required fields.";
     }
     if(!validateTextInput(name, true)){
-      return "Unit Name cannot be empty";
+      return "UnitType name cannot be empty";
     }
-    if(unitTypeId == isNaN){
-      return "Please enter a Amount";
+    if(amount == isNaN){
+      return "Please enter a valid Amount";
     }
     return '';
   };
@@ -138,7 +129,7 @@ const handleFormSubmit = (e) => {
     e,
     validateForm,
     formData,
-    endpoint: 'Unit',
+    endpoint: 'UnitType',
     setFormError,
     setLoadingBtn,
     setFormData,
@@ -156,7 +147,7 @@ const handleFormSubmit = (e) => {
       validateForm,
       formData,
       originalData,
-      endpoint: 'Unit',
+      endpoint: 'UnitType',
       setFormError,
       setLoadingBtn,
       setFormData,
@@ -172,7 +163,7 @@ const handleFormSubmit = (e) => {
     <BreadCrumb  greetings="" />
     <div id="Section">
       <div className="header">
-          <h3>List of all Houses</h3>
+          <h3>List of all Unit Types</h3>
           <PrimaryButton
             name="Add New"
             onClick={() => setShowModal(true) }
@@ -191,7 +182,7 @@ const handleFormSubmit = (e) => {
           onSubmit={(e) => handleDelete({
             e,
             id: selectedId,
-            endpoint: 'Unit',
+            endpoint: 'UnitType',
             setLoadingBtn,
             setDeleteModalOpen,
             setData: setCharges,
@@ -210,7 +201,7 @@ const handleFormSubmit = (e) => {
           onClose={handleCloseModal}
           onSubmit={isEditMode ? handleUpdateSubmit : handleFormSubmit}
           errorMessage={formError}
-          title={isEditMode ? "Update Unit" : "Add Unit"}
+          title={isEditMode ? "Update UnitType" : "Add UnitType"}
           loadingBtn={loadingBtn}
           isEditMode={isEditMode}
         >
@@ -224,30 +215,32 @@ const handleFormSubmit = (e) => {
           <Input
             type="text"
             name="name"
-            placeholder="Enter House Name"
+            placeholder="Enter Unit Type Name"
             value={formData.name || ''}
-            labelName="House Name"
+            labelName="UnitType Name"
             onChange={handleInputChange}
-          />
-          <Select
-            name="unitTypeId"
-            labelName="Unit Type"
-            value={formData.unitTypeId || ''}
-            onChange={handleSelect}
-            options={unitTypes.map(p => ({ value: p.id, label: p.name }))}
           />
           <Input
-            type="text"
-            name="status"
-            placeholder="Enter House Name"
-            value={formData.status || ''}
-            labelName="status"
+            type="number"
+            name="amount"
+            placeholder="Enter Unit Type Price"
+            value={formData.amount || ''}
+            labelName="UnitType Price"
             onChange={handleInputChange}
           />
+          <Textarea
+            type="text"
+            name="notes"
+            placeholder="Enter description"
+            value={formData.notes || ''}
+            labelName="Notes"
+            onChange={handleInputChange}
+          />
+
           </Modal>
     </div>
   </>
   )
 }
 
-export default Unit
+export default UnitType
