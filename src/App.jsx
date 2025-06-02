@@ -13,6 +13,7 @@ import ViewProperty from '../src/sections/ViewProperty'
 import Unit from '../src/sections/Unit'
 import UnitType from '../src/sections/UnitType'
 import UnitCharge from "./sections/UnitCharge";
+import Tenant from "./sections/Tenant";
 import NotFound from './sections/NotFound';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
             <Route path="/Units" element={<Unit />} />
             <Route path="/UnitType" element={<UnitType />} />
             <Route path="/UtilityBill" element={<UnitCharge />} />
+            <Route path="/Tenants" element={<Tenant />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <ToastContainer position="top-right" autoClose={3000} />

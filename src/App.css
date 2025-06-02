@@ -20,3 +20,7 @@ body #app #rightSide{
   padding: 0 20px;
   overflow: scroll;
 }
+
+.themeToggle{
+  background-color: aqua;
+}

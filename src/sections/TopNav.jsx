@@ -1,5 +1,6 @@
 import React from 'react';
 import { toggleSidebar } from '../helpers/toggleSidebar';
+import { ThemeToggle } from '../components/ThemeToggle';
 import "../css/topbar.css";
 import ProfileImg from "../assets/profile.png";
 import { IoNotificationsSharp } from "react-icons/io5";
@@ -11,6 +12,7 @@ const TopNav = ({ width, setWidth }) => {
   return (
     <div id="topBar">
       <GiHamburgerMenu className="icon Hamburger" onClick={() => toggleSidebar(setWidth)} />
+        <ThemeToggle />
       <div className="rightSide">
         <IoNotificationsSharp className="icon Notification" />
         <BiSolidMessageRounded className="icon Message" />

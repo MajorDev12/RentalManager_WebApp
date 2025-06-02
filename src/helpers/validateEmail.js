@@ -6,5 +6,5 @@ export const validateEmail = (email) => {
     return false;
   }
 
-  return true; // no error
+  return true;
 };

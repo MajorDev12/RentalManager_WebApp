@@ -11,27 +11,50 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-:root{
+:root {
   --bigFontSize: 24px;
   --headerFontSize: 20px;
   --normalFontSize: 16px;
   --smallFontSize: 14px;
   --fontFamily: "Mulish", sans-serif;
+
   --highlightColor: #77DD77;
   --darkHighlightColor: #61da61;
+
+  /* Light mode colors */
   --backgroundColor: #FCFEF5;
+  --containerColor: #FFFFFF;
+  --textColor: #343A40;
+  --lightTextColor: #6C757D;
+  --HeaderColor: #212529;
+
   --shadow: 0 2px 2px #0000007c;
   --blue: #77BBDD;
   --yellow: #FFDD88;
   --red: #FF8899;
+
   --borderColor: #767680;
   --borderLine: #76768050;
-  --HeaderColor: #212529;
-  --textColor: #343A40;
-  --lightTextColor: #6C757D;
-  --containerColor: #FFFFFF;
+
   --sideNavTextColor: #FCFEF5;
 }
+
+/* Dark mode overrides */
+.dark {
+  --backgroundColor: #121212;
+  --containerColor: #1e1e1e;
+  --textColor: #f0f0f0;
+  --lightTextColor: #a0a0a0;
+  --HeaderColor: #ffffff;
+  --shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+  --borderColor: #444;
+  --borderLine: #44444450;
+}
+
+body, .container, .sidebar {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 
 
 ::-webkit-scrollbar {
