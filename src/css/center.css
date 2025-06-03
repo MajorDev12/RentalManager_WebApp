@@ -17,6 +17,7 @@
    flex-direction: row;
    justify-content: start;
    align-items: center;
+   background-color: var(--containerColor);
    box-shadow: var(--shadow);
    font-family: var(--fontFamily);
    border-radius: 8px;
@@ -41,7 +42,7 @@
   /* background-color: aquamarine; */
 }
 .firstRow .cont .content p{
-  color: var(--textColor);
+  color: var(--lightTextColor);
   font-weight: 500;
   font-size: var(--smallFontSize);
 }
@@ -79,8 +80,9 @@
   flex-direction: row;
   justify-content: space-around;
   font-family: var(--fontFamily);
-  background: url("../assets/homePage_Icon.svg") no-repeat;
+  background: url("../assets/homePage_Icon.svg") no-repeat var(--containerColor);
   background-size: contain;
+  background-color: var(--containerColor);
 }
 .homeCont .firstRow .totalDetail .left{
     min-width: 300px;
@@ -98,7 +100,7 @@
 .homeCont .firstRow .totalDetail .left .text h3{
     font-size: var(--normalFontSize);
     font-weight: 600;
-    color: var(--textColor);
+    color: var(--lightTextColor);
 }
 .homeCont .firstRow .totalDetail .left .text .total{
     font-size: 4rem;
@@ -130,6 +132,7 @@
   border-radius: 8px;
 }
 .homeCont .firstRow .totalDetail .right p span{
+  color: var(--lightTextColor);
   font-weight: 600;
   font-size: var(--smallFontSize);
 }

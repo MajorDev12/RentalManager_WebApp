@@ -5,9 +5,20 @@
     align-items: center;
     height: 60px;
 }
+.menu{
+    background-color: aqua;
+}
+.menu .MuiMenuItem-root {
+  font-family: var(--fontFamily);
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--textColor);
+}
+
+
 #topBar .icon{
     font-size: var(--headerFontSize);
-    color: var(--borderColor);
+    color: var(--iconColor);
     cursor: pointer;
 }
 #topBar .Notification,
@@ -15,12 +26,26 @@
 #topBar .Hamburger{
     font-size: var(--headerFontSize);
 }
+#topBar .center .badge .MuiBadge-badge{
+    color: var(--textColor);
+    background-color: var(--highlightColor);
+    font-size: 10px;
+}
+#topBar .center{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    /* background-color: aquamarine; */
+    min-width: 60px;
+
+}
 #topBar .rightSide{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    min-width: 120px;
+    min-width: 100px;
     /* background-color: aqua; */
 }
 #topBar .rightSide .profile{
@@ -29,7 +54,7 @@
     object-fit: contain;
     border-radius: 50%;
     background-color: var(--containerColor);
-    margin-left: 20px;
+    margin-left: 10px;
 }
 #topBar .rightSide .profile img{
     width: 100%;

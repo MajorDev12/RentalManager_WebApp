@@ -27,6 +27,7 @@ html {
   --textColor: #343A40;
   --lightTextColor: #6C757D;
   --HeaderColor: #212529;
+  --iconColor: #767680;
 
   --shadow: 0 2px 2px #0000007c;
   --blue: #77BBDD;
@@ -41,15 +42,19 @@ html {
 
 /* Dark mode overrides */
 .dark {
-  --backgroundColor: #121212;
-  --containerColor: #1e1e1e;
-  --textColor: #f0f0f0;
-  --lightTextColor: #a0a0a0;
+  --highlightColor: #3fa34e; /* A rich, deep green (less neon) */
+  --backgroundColor: #181a1b;
+  --containerColor: #222526;
+  --textColor: #f5f6f7;
+  --lightTextColor: #b0b3b8;
   --HeaderColor: #ffffff;
-  --shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
-  --borderColor: #444;
-  --borderLine: #44444450;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --borderColor: #3a3f42;
+  --borderLine: #3a3f4280;
+  --iconColor: #b0b3b8;
 }
+
+
 
 body, .container, .sidebar {
   transition: background-color 0.3s ease, color 0.3s ease;
