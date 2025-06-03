@@ -122,6 +122,9 @@ const columns = getColumns({
 
 
 
+
+
+
   const handleSelect = (e) => {
   const { name, value } = e.target;
 

@@ -15,7 +15,8 @@ const ActionCell = ({
   setFormData,
   setOriginalData,
   setShowModal,
-  items
+  items,
+  actions
 }) => {
   const isOpen = activeRow === rowIndex;
   const containerRef = useRef(null);
@@ -70,11 +71,9 @@ const ActionCell = ({
       />
       {isOpen && (
         <div className={`actionContainer ${openUpward ? 'open-up' : ''}`}>
-          <TableActionModal 
-            onDelete={onDelete}
-            onEdit={onEdit}
-            viewId={`/${endpoint}/${rowId}`}
-          />
+          <TableActionModal>
+            {actions}
+          </TableActionModal>
         </div>
       )}
     </div>

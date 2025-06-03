@@ -1,6 +1,7 @@
 // src/columns/propertyColumns.js
 import PropertyImage from "../assets/PropertyImg.png";
 import ActionCell from "../components/ActionCell";
+import { Link } from 'react-router-dom';
 
 export const getPropertyColumns = ({
   endpoint,
@@ -36,21 +37,51 @@ export const getPropertyColumns = ({
   {
     header: 'Action',
     accessorKey: 'id',
-    cell: info => (
-      <ActionCell
-        endpoint={endpoint}
-        rowIndex={info.row.index}
-        activeRow={activeRow}
-        setActiveRow={setActiveRow}
-        rowId={info.getValue()}
-        setSelectedId={setSelectedId}
-        setIsEditMode={setIsEditMode}
-        setDeleteModalOpen={setDeleteModalOpen}
-        setFormData={setFormData}
-        setOriginalData={setOriginalData}
-        setShowModal={setShowModal}
-        items={properties}
-      />
-    ),
+    cell: info => {
+      const rowId = info.getValue();
+      
+      const actions = (
+        <>
+          <li onClick={() => {
+            setIsEditMode(true);
+            const item = properties.find(i => i.id === rowId);
+            setFormData(item);
+            setOriginalData(item);
+            setShowModal(true);
+            setActiveRow(null);
+          }} className="actionLink">Edit</li>
+
+          <li className="actionLink">
+            <Link to={`/${endpoint}/${rowId}`} className="view">View</Link>
+          </li>
+
+          <li className="actionLink">Print</li>
+
+          <li onClick={() => {
+            setSelectedId(rowId);
+            setDeleteModalOpen(true);
+            setActiveRow(null);
+          }} className="actionLink">Delete</li>
+        </>
+      );
+
+      return (
+        <ActionCell
+          endpoint={endpoint}
+          rowIndex={info.row.index}
+          activeRow={activeRow}
+          setActiveRow={setActiveRow}
+          rowId={rowId}
+          setSelectedId={setSelectedId}
+          setIsEditMode={setIsEditMode}
+          setDeleteModalOpen={setDeleteModalOpen}
+          setFormData={setFormData}
+          setOriginalData={setOriginalData}
+          setShowModal={setShowModal}
+          items={properties}
+          actions={actions}
+        />
+      );
+    },
   },
 ];
