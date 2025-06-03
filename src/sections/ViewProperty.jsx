@@ -9,19 +9,52 @@ import { getData } from '../helpers/getData';
 const ViewProperty = () => {
     const { id } = useParams();
     const [property, setProperty] = useState(null);
+    const [units, setUnits] = useState(null);
+    const [unitTypes, setUnitTypes] = useState(null);
+    const [utilityBills, setUtilityBills] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
 
     useEffect(() => {
-    getData({
-        endpoint: `Properties/${id}`,
-        setData: setProperty,
-        setLoading,
-        setError
-    });
+        getData({
+            endpoint: `Properties/${id}`,
+            setData: setProperty,
+            setLoading,
+            setError
+        });
+
+        getData({
+            endpoint: `Unit/By-Property/${id}`,
+            setData: setUnits,
+            setLoading,
+            setError
+        });
+
+        getData({
+            endpoint: `UnitType/By-Property/${id}`,
+            setData: setUnitTypes,
+            setLoading,
+            setError
+        });
+
+        getData({
+            endpoint: `UtilityBill/By-Property/${id}`,
+            setData: setUtilityBills,
+            setLoading,
+            setError
+        });
+
     }, [id]);
 
+    const totalUnits = units ? units.length : 0;
+    const vacantUnits = units ? units.filter(unit => unit.status === "Vacant").length : 0;
+    const UnitTypesDisplay = unitTypes?.length
+    ? unitTypes.map(type => type.name).join(", ")
+    : "No Unit Types Available";
+    const billsDisplay = utilityBills?.length
+    ? utilityBills.map(bill => bill.name).join(", ")
+    : "No Utility Bills Available";
 
 
 
@@ -84,19 +117,21 @@ const ViewProperty = () => {
                 <div className="details">
                     <div className="detail">
                         <label htmlFor="">Total Units :</label>
-                        <p>20 Units</p>
+                        <p>{totalUnits}</p>
                     </div>
                     <div className="detail">
                         <label htmlFor="">Status :</label>
-                        <p className='red'>2 Vacants</p>
+                        <p className={vacantUnits > 0 ? 'red' : ''}>
+                            {vacantUnits} Vacant{vacantUnits !== 1 ? 's' : ''}
+                        </p>
                     </div>
                     <div className="detail">
                         <label htmlFor="">Unit Types :</label>
-                        <p>Single, BedSitter, 1 BedRoom</p>
+                        <p>{UnitTypesDisplay}</p>
                     </div>
                      <div className="detail">
                         <label htmlFor="">Utility Bills :</label>
-                        <p>Rent, Water, Electricity, Garbage Collection</p>
+                        <p>{billsDisplay}</p>
                     </div>
                 </div>
             </div>
