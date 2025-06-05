@@ -67,6 +67,7 @@ export const getColumns = ({
           actions={actions}
         />
       );
+      
     },
   },
 ];

@@ -60,7 +60,7 @@ const Tenant = () => {
         getData({
             endpoint: 'Tenant',
             setData: setCharges,
-            setLoading: setLoadingTenants,
+            setLoading,
             setError
         });
 
@@ -234,7 +234,7 @@ const handleFormSubmit = (e) => {
         </div>
 
       <div className="TableContainer">
-          <Table data={charges} columns={columns} loading={loadingTenants}  error={error}/>
+          <Table data={charges} columns={columns} loading={loading}  error={error}/>
         </div>
 
 
