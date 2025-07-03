@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './css/toast.css'; 
 import './App.css'
 import './index.css'
+import Login from '../src/sections/Login'
 import SideNav from '../src/sections/Sidebar'
 import TopNav from '../src/sections/TopNav'
 import MainPage from '../src/sections/MainPage'
@@ -16,33 +17,42 @@ import UnitCharge from "./sections/UnitCharge";
 import Tenant from "./sections/Tenant";
 import NotFound from './sections/NotFound';
 
-function App() {
+function Layout() {
   const [width, setWidth] = useState(260);
+  const location = useLocation();
+
+  const hideLayout = location.pathname === "/Login";
 
   return (
-   <Router>
-      <div id="app">
-        <SideNav width={width} setWidth={setWidth}/>
-        <div id="rightSide">
-          <TopNav width={width} setWidth={setWidth} />
+    <div id="app">
+      {!hideLayout && <SideNav width={width} setWidth={setWidth} />}
+      <div id="rightSide">
+        {!hideLayout && <TopNav width={width} setWidth={setWidth} />}
 
-          
-          <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/Properties" element={<Property />} />
-            <Route path="/Properties/:id" element={<ViewProperty />} />
-            <Route path="/Units" element={<Unit />} />
-            <Route path="/UnitType" element={<UnitType />} />
-            <Route path="/UtilityBill" element={<UnitCharge />} />
-            <Route path="/Tenants" element={<Tenant />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ToastContainer position="top-right" autoClose={3000} />
-        </div>
-      
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/Properties" element={<Property />} />
+          <Route path="/Properties/:id" element={<ViewProperty />} />
+          <Route path="/Units" element={<Unit />} />
+          <Route path="/UnitType" element={<UnitType />} />
+          <Route path="/UtilityBill" element={<UnitCharge />} />
+          <Route path="/Tenants" element={<Tenant />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+
+        <ToastContainer position="top-right" autoClose={4000} />
       </div>
-   </Router>
-  )
+    </div>
+  );
 }
 
-export default App
+function App() {
+  return (
+    <Router>
+      <Layout />
+    </Router>
+  );
+}
+
+export default App;

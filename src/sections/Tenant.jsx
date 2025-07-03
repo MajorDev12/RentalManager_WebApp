@@ -22,11 +22,6 @@ const Tenant = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [loadingBtn, setLoadingBtn] = useState(false);
-    const [loadingUnits, setLoadingUnits] = useState(false);
-    const [loadingTenants, setLoadingTenants] = useState(false);
-    const [loadingProperties, setLoadingProperties] = useState(false);
-    const [loadingGender, setLoadingGender] = useState(false);
-    const [loadingStatus, setLoadingStatus] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -35,8 +30,6 @@ const Tenant = () => {
     const [select, setSelect] = useState('');
     const [properties, setProperties] = useState([]);
     const [genders, setGender] = useState([]);
-    const [units, setUnits] = useState([]);
-    const [tenantStatus, setTenantStatus] = useState([]);
     const [formData, setFormData] = useState({
       user: {
         propertyId: '',
@@ -48,10 +41,7 @@ const Tenant = () => {
         nationalId: '',
         profilePhotoUrl: '',
         genderId: '',
-        userStatusId: '',
-      },
-      unitId: '',
-      tenantStatusId: '',
+      }
     });
 
 
@@ -67,122 +57,117 @@ const Tenant = () => {
         getData({
           endpoint: 'Properties',
           setData: setProperties,
-          setLoading: setLoadingProperties,
+          setLoading,
           setError
         });
 
         getData({
           endpoint: 'SystemCodeItem/BY-NAME/GENDER',
           setData: setGender,
-          setLoading: setLoadingGender,
+          setLoading,
           setError
         });
-
-        getData({
-          endpoint: 'SystemCodeItem/BY-NAME/TENANTSTATUS',
-          setData: setTenantStatus,
-          setLoading: setLoadingStatus,
-          setError
-        });
-
     }, []);
 
 
-    useEffect(() => {
-      if (formData.user?.propertyId) {
-        setUnits([]); // Clear current units while loading new ones
-        getData({
-          endpoint: `Unit/By-Property/${formData.user.propertyId}`,
-          setData: setUnits,
-          setLoading: setLoadingUnits,
-          setError,
-        });
-      } else {
-        setUnits([]);
-      }
-    }, [formData.user?.propertyId]);
 
-
-
-
-
-
-const columns = getColumns({
-  endpoint: "Tenant",
-  activeRow,
-  setActiveRow,
-  setSelectedId,
-  setIsEditMode,
-  setDeleteModalOpen,
-  setFormData,
-  setOriginalData,
-  setShowModal,
-  charges,
-});
-
-
-
+  const columns = getColumns({
+    endpoint: "Tenant",
+    activeRow,
+    setActiveRow,
+    setSelectedId,  
+    setIsEditMode,
+    setDeleteModalOpen,
+    setFormData,
+    setOriginalData,
+    setShowModal,
+    charges,
+  });
 
 
 
   const handleSelect = (e) => {
   const { name, value } = e.target;
+  setSelect(value);
 
   // Fields that belong inside the `user` object
-  const userFields = ['propertyId', 'genderId', 'firstName', 'lastName', 'emailAddress', 'mobileNumber', 'alternativeNumber', 'nationalId', 'profilePhotoUrl', 'userStatusId'];
+  const userFields = ['propertyId', 'genderId', 'firstName', 'lastName', 'emailAddress', 'mobileNumber', 'alternativeNumber', 'nationalId'];
 
-  if (userFields.includes(name)) {
-    setFormData(prev => ({
-      ...prev,
-      user: {
-        ...prev.user,
+    if (userFields.includes(name)) {
+      setFormData(prev => ({
+        ...prev,
+        user: {
+          ...prev.user,
+          [name]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
         [name]: value
-      }
-    }));
-  } else {
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+      }));
+    }
+  };
+
+
+  const handleInputChange = (name, value) => {
+    // Fields that belong inside the `user` object
+  const userFields = ['propertyId', 'genderId', 'firstName', 'lastName', 'emailAddress', 'mobileNumber', 'alternativeNumber', 'nationalId'];
+
+    if (userFields.includes(name)) {
+      setFormData(prev => ({
+        ...prev,
+        user: {
+          ...prev.user,
+          [name]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+
+  const handleCloseModal = () => {
+    setFormError('');
+    setIsEditMode(false);
+    setFormData({});
+    setShowModal(false);
+  };
+
+
+
+
+
+const validateForm = () => {
+  var { propertyId, firstName, lastName, emailAddress, mobileNumber, alternativeNumber, nationalId, genderId } = formData.user;
+
+  if (!propertyId || !firstName || !lastName || !mobileNumber) {
+    return "Please fill in all required fields.";
   }
+
+  if (!validateTextInput(firstName, true) || !validateTextInput(lastName, true)) {
+    return "Names cannot be empty.";
+  }
+
+  if (!validateEmail(emailAddress)) {
+    return "Please enter a valid Email Address.";
+  }
+
+  if (nationalId === undefined || nationalId === '') {
+    nationalId = null;
+  }
+
+  if (isNaN(nationalId)) {
+    return "National ID must be a number.";
+  }
+
+  return '';
 };
 
- 
-
-
-    const handleCloseModal = () => {
-      setFormError('');
-      setIsEditMode(false);
-      setFormData({});
-      setShowModal(false);
-    };
-
-
-
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-
-
-
-
- const validateForm = () => {
-    const { propertyId, firstName, lastName, emailAddress, mobileNumber, alternativeNumber, nationalId, genderId, unitId, status} = formData;
-    if (!propertyId || !firstName || !lastName || !mobileNumber) {
-      return "Please fill in all required fields.";
-    }
-    if(!validateTextInput(firstName, true) || !validateTextInput(lastName, true)){
-      return "Names cannot be empty";
-    }
-    if(!validateEmail(emailAddress)){
-      return "Please enter a valid Email Address";
-    }
-    return '';
-  };
 
 
 
@@ -277,7 +262,7 @@ const handleFormSubmit = (e) => {
           />
           <Input
             type="text"
-            name="firstname"
+            name="firstName"
             placeholder="Enter First Name"
             value={formData.user?.firstName || ''}
             labelName="First Name"
@@ -285,7 +270,7 @@ const handleFormSubmit = (e) => {
           />
           <Input
             type="text"
-            name="lastname"
+            name="lastName"
             placeholder="Enter Last Name"
             value={formData.user?.lastName || ''}
             labelName="Last Name"
@@ -317,11 +302,11 @@ const handleFormSubmit = (e) => {
             onChange={handleInputChange}
           />
           <Input
-            type="tel"
+            type="number"
             name="nationalId"
             placeholder="Enter national Id"
-            value={formData.user?.nationalId || ''}
-            labelName="national Id"
+            value={formData.user?.nationalId || null}
+            labelName="National Id"
             onChange={handleInputChange}
           />
           
@@ -331,28 +316,6 @@ const handleFormSubmit = (e) => {
             value={formData.user?.genderId || ''}
             onChange={handleSelect}
             options={genders.map(p => ({ value: p.id, label: p.item }))}
-          />
-
-
-          <Select
-            name="unitId"
-            labelName="Unit"
-            value={formData.unitId || ''}
-            onChange={handleSelect}
-            options={
-              formData.user?.propertyId
-                ? units.map((u) => ({ value: u.id, label: u.name }))
-                : [{ value: '', label: 'Choose property first', disabled: true }]
-            }
-          />
-
-
-          <Select
-            name="tenantStatusId"
-            labelName="Status"
-            value={formData.tenantStatusId || ''}
-            onChange={handleSelect}
-            options={tenantStatus.map(p => ({ value: p.id, label: p.item }))}
           />
 
           </Modal>

@@ -19,7 +19,7 @@ export const addData = async ({
   const validationError = validateForm();
   if (validationError) {
     setFormError(validationError);
-    setTimeout(() => setFormError(''), 3000);
+    setTimeout(() => setFormError(''), 4000);
     return;
   }
 

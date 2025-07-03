@@ -7,6 +7,7 @@
     font-size: var(--normalFontSize);
     color: var(--textColor);
     font-weight: 600;
+    padding-left: 10px;
 }
 .Input{
     font-family: var(--fontFamily);

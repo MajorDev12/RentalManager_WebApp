@@ -1,0 +1,61 @@
+#login{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--backgroundColor);
+}
+#login .left{
+    height: 100vh;
+    width: 50%;
+    overflow-x: hidden;
+    background-color: azure;
+}
+#login .left img{
+    width: 100%;
+    height: 100%;
+}
+#login .right{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#login .right .header{
+    margin-bottom: 10%;
+    font-size: 30px;
+    color: var(--highlightColor);
+}
+#login .right form{
+    min-width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+#login .right form .inputContainer{
+    margin-bottom: 15px;
+    
+}
+#login .right form .Input{
+    width: 250px;
+}
+#login .right form .errorMessage{
+    margin-bottom: 15px;
+    color: var(--red);
+}
+#login .right form #primaryBtn{
+    margin: 5px;
+}
+
+/* When sidebar is open */
+@media (max-width: 1024px) {
+  #login .left{
+    width: 0%;
+  }
+  #login .right{
+    width: 100%;
+  }
+}

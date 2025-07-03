@@ -7,6 +7,7 @@ import { FiMessageSquare } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { GiHamburgerMenu } from "react-icons/gi";
 import Badge from '@mui/material/Badge';
+import { Link } from "react-router-dom"
 
 import Dropdown from '@mui/joy/Dropdown';
 import Menu from '@mui/joy/Menu';
@@ -58,9 +59,9 @@ const TopNav = ({ width, setWidth }) => {
             border: 'none',
             minWidth: '280px',
           }} className='menu'>
-            <MenuItem>New tenant added</MenuItem>
-            <MenuItem>Payment received</MenuItem>
-            <MenuItem>Unit marked vacant</MenuItem>
+            <MenuItem className='menuItem'>New tenant added</MenuItem>
+            <MenuItem className='menuItem'>Payment received</MenuItem>
+            <MenuItem className='menuItem'>Unit marked vacant</MenuItem>
           </Menu>
         </Dropdown>
 
@@ -94,9 +95,9 @@ const TopNav = ({ width, setWidth }) => {
             border: 'none',
             minWidth: '280px',
           }} className='menu'>
-            <MenuItem>Message from John</MenuItem>
-            <MenuItem>Tenant inquiry</MenuItem>
-            <MenuItem>Support follow-up</MenuItem>
+            <MenuItem className='menuItem'>Message from John</MenuItem>
+            <MenuItem className='menuItem'>Tenant inquiry</MenuItem>
+            <MenuItem className='menuItem'>Support follow-up</MenuItem>
           </Menu>
         </Dropdown>
       </div>
@@ -128,9 +129,9 @@ const TopNav = ({ width, setWidth }) => {
             border: 'none',
             minWidth: '180px',
           }} className='menu'>
-            <MenuItem>My Profile</MenuItem>
-            <MenuItem>Settings</MenuItem>
-            <MenuItem>Logout</MenuItem>
+            <MenuItem className='menuItem'>My Profile</MenuItem>
+            <MenuItem className='menuItem'>Settings</MenuItem>
+            <Link to="/Login" className='login'><MenuItem className='menuItem'>Login</MenuItem></Link>
           </Menu>
         </Dropdown>
       </div>
