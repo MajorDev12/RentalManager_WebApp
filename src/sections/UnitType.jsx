@@ -61,7 +61,7 @@ const UnitType = () => {
 
     useEffect(() => {
         getData({
-            endpoint: 'UnitType',
+            endpoint: `UnitType`,
             setData: setCharges,
             setLoading,
             setError
@@ -77,18 +77,18 @@ const UnitType = () => {
 
 
 
-const columns = getColumns({
-  endpoint: "UnitType",
-  activeRow,
-  setActiveRow,
-  setSelectedId,
-  setIsEditMode,
-  setDeleteModalOpen,
-  setFormData,
-  setOriginalData,
-  setShowModal,
-  charges,
-});
+  const columns = getColumns({
+    endpoint: "UnitType",
+    activeRow,
+    setActiveRow,
+    setSelectedId,
+    setIsEditMode,
+    setDeleteModalOpen,
+    setFormData,
+    setOriginalData,
+    setShowModal,
+    charges,
+  });
 
 
 

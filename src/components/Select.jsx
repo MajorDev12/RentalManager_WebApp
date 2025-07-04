@@ -1,7 +1,7 @@
 import React from 'react';
 import "../css/select.css"
 
-const Select = ({ name, labelName, value, onChange, options = [] }) => {
+const Select = ({ text = "--Select--", name, labelName, value, onChange, options = [] }) => {
   return (
     <div className="selectContainer">
       <label htmlFor={name}>{labelName}</label>
@@ -12,7 +12,7 @@ const Select = ({ name, labelName, value, onChange, options = [] }) => {
         onChange={onChange}
         className='select'
       >
-        <option value="">-- Select --</option>
+        <option value="">{text}</option>
         {options.map((opt, index) => (
           <option key={index} value={opt.value}>
             {opt.label}

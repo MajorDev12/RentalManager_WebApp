@@ -28,6 +28,7 @@ const Unit = () => {
     const [formError, setFormError] = useState('');
     const [select, setSelect] = useState('');
     const [properties, setProperties] = useState([]);
+    const [propertySet, isPropertySet] = useState(false);
     const [unitTypes, setUnitTypes] = useState([]);
     const [unitStatus, setUnitStatus] = useState([]);
     const [formData, setFormData] = useState({
@@ -76,28 +77,35 @@ const Unit = () => {
           setError
         });
 
+
+        if (!formData.propertyId) {
+          setUnitTypes([]);
+          return;
+        }
+
+
         getData({
-          endpoint: 'UnitType',
+          endpoint: `UnitType/By-Property/${formData.propertyId}`,
           setData: setUnitTypes,
           setLoading,
           setError
         });
-      }, []);
+      }, [formData.propertyId]);
 
 
 
-const columns = getColumns({
-  endpoint: "Unit",
-  activeRow,
-  setActiveRow,
-  setSelectedId,
-  setIsEditMode,
-  setDeleteModalOpen,
-  setFormData,
-  setOriginalData,
-  setShowModal,
-  charges,
-});
+  const columns = getColumns({
+    endpoint: "Unit",
+    activeRow,
+    setActiveRow,
+    setSelectedId,
+    setIsEditMode,
+    setDeleteModalOpen,
+    setFormData,
+    setOriginalData,
+    setShowModal,
+    charges,
+  });
 
 
 
@@ -234,8 +242,18 @@ const handleFormSubmit = (e) => {
             labelName="Unit Type"
             value={formData.unitTypeId || ''}
             onChange={handleSelect}
-            options={unitTypes.map(p => ({ value: p.id, label: p.name }))}
+            disabled={!formData.propertyId}
+            options={
+              formData.propertyId
+              ? unitTypes && unitTypes.length > 0
+                ? unitTypes.map(p => ({ value: p.id, label: p.name }))
+                : [{ value: '', label: 'No Available UnitTypes', disabled: true }]
+              : []
+            }
+            text={formData.propertyId ? "Select Unit Types" : "Choose Property First"}
+            placeholder=""
           />
+
           <Input
             type="text"
             name="status"
