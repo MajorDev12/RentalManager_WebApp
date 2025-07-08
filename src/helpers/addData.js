@@ -12,6 +12,7 @@ export const addData = async ({
   setFormData,
   setShowModal,
   setData,
+  getdata,
   setLoading,
 }) => {
   e.preventDefault();
@@ -40,11 +41,13 @@ export const addData = async ({
     }
 
     // Refresh data after successful add
-    getData({
+    if(getdata === true){
+      getData({
         endpoint: endpoint,
         setData,
         setLoading
       });
+    }
 
   } catch (error) {
     console.error(error);

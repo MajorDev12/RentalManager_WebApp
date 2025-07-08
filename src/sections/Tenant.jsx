@@ -38,7 +38,7 @@ const Tenant = () => {
         emailAddress: '',
         mobileNumber: '',
         alternativeNumber: '',
-        nationalId: '',
+        nationalId: 0,
         profilePhotoUrl: '',
         genderId: '',
       }
@@ -157,7 +157,7 @@ const validateForm = () => {
     return "Please enter a valid Email Address.";
   }
 
-  if (nationalId === undefined || nationalId === '') {
+  if (nationalId === undefined || nationalId === 0) {
     nationalId = null;
   }
 

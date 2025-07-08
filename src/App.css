@@ -35,3 +35,7 @@ body #app #rightSide{
   font-size: 14px;
   color: gold;
 }
+.errorMessage{
+  color: var(--red);
+  margin: 10px;
+}
