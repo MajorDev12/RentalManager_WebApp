@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, act } from 'react';
 import BreadCrumb from '../components/BreadCrumb';
 import PrimaryButton from '../components/PrimaryButton';
 import Table from '../components/Table';
@@ -18,21 +18,27 @@ import { handleDelete } from '../helpers/deleteData';
 const Tenant = () => {
     const [activeRow, setActiveRow] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [charges, setCharges] = useState([]);
+    const [tenants, setTenants] = useState([]);
+    const [tenantStatus, setTenantStatus] = useState([]);
+    const [activeTenant, setActiveTenant] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [assignUnitModal, setAssignUnitModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [originalData, setOriginalData] = useState(null);
     const [formError, setFormError] = useState('');
+    const [showPaymentInputs, setShowPaymentInputs] = useState(false);
+    const [paymentMethods, setPaymentMethods] = useState([]);
     const [select, setSelect] = useState('');
     const [properties, setProperties] = useState([]);
     const [genders, setGender] = useState([]);
+    const [units, setUnit] = useState([]);
     const [formData, setFormData] = useState({
       user: {
-        propertyId: '',
+        propertyId: 0,
         firstName: '',
         lastName: '',
         emailAddress: '',
@@ -40,36 +46,82 @@ const Tenant = () => {
         alternativeNumber: '',
         nationalId: 0,
         profilePhotoUrl: '',
-        genderId: '',
-      }
+        genderId: 0,
+      },
+      unitId: 0
+    });
+
+    const [assignUnitFormData, setAssignUnitFormData] = useState({
+      tenantId: 0,
+      unitId: 0,
+      status: 0,
+      paymentMethodId: 0,
+      depositAmount: 0,
+      amountPaid: 0,
+      paymentDate: ''
     });
 
 
+    // add unitId to formData
+    useEffect(() => {
+      if (activeTenant) {
+        setAssignUnitFormData(prev => ({
+          ...prev,
+          tenantId: activeTenant.id,
+          unitId: activeTenant.unitId
+        }));
+      }
+    }, [activeTenant]);
+    
+
 
     useEffect(() => {
-        getData({
-            endpoint: 'Tenant',
-            setData: setCharges,
-            setLoading,
-            setError
-        });
-
-        getData({
-          endpoint: 'Properties',
-          setData: setProperties,
+      getData({
+          endpoint: 'Tenant',
+          setData: setTenants,
           setLoading,
           setError
-        });
+      });
 
-        getData({
-          endpoint: 'SystemCodeItem/BY-NAME/GENDER',
-          setData: setGender,
-          setLoading,
-          setError
-        });
+      getData({
+        endpoint: 'Properties',
+        setData: setProperties,
+        setLoading,
+        setError
+      });
+
+      getData({
+        endpoint: 'SystemCodeItem/BY-NAME/GENDER',
+        setData: setGender,
+        setLoading,
+        setError
+      });
+
+
+      getData({
+        endpoint: 'SystemCodeItem/By-Name/TENANTSTATUS',
+        setData: setTenantStatus,
+        setLoading,
+        setError
+      });
+
+      getData({
+        endpoint: 'SystemCodeItem/By-Name/PAYMENTMETHOD',
+        setData: setPaymentMethods,
+        setLoading,
+        setError
+      });
+
+
+      getData({
+        endpoint: 'Unit',
+        setData: setUnit,
+        setLoading,
+        setError
+      });
+
     }, []);
-
-
+    
 
   const columns = getColumns({
     endpoint: "Tenant",
@@ -78,22 +130,36 @@ const Tenant = () => {
     setSelectedId,  
     setIsEditMode,
     setDeleteModalOpen,
+    setAssignUnitModal,
     setFormData,
+    setActiveTenant: setActiveTenant,
     setOriginalData,
     setShowModal,
-    charges,
+    tenants
   });
 
 
 
   const handleSelect = (e) => {
-  const { name, value } = e.target;
-  setSelect(value);
+    const { name, value } = e.target;
+    setSelect(value);
 
-  // Fields that belong inside the `user` object
-  const userFields = ['propertyId', 'genderId', 'firstName', 'lastName', 'emailAddress', 'mobileNumber', 'alternativeNumber', 'nationalId'];
+    // Fields that belong inside the `user` object
+    const userFields = ['propertyId', 'genderId', 'firstName', 'lastName', 'emailAddress', 'mobileNumber', 'alternativeNumber', 'nationalId'];
+    const assignUnitFields = ['tenantId', 'unitId', 'status', 'paymentMethodId', 'depositAmount', 'amountPaid', 'paymentDate'];
 
-    if (userFields.includes(name)) {
+    if (assignUnitFields.includes(name)) {
+      setAssignUnitFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+
+      if (name === "status") {
+        const selectedStatus = tenantStatus.find(s => s.id.toString() === value)?.item?.toLowerCase();
+        setShowPaymentInputs(selectedStatus === "active");
+      }
+      
+    } else if (userFields.includes(name)) {
       setFormData(prev => ({
         ...prev,
         user: {
@@ -113,6 +179,8 @@ const Tenant = () => {
   const handleInputChange = (name, value) => {
     // Fields that belong inside the `user` object
   const userFields = ['propertyId', 'genderId', 'firstName', 'lastName', 'emailAddress', 'mobileNumber', 'alternativeNumber', 'nationalId'];
+  const assignUnitFields = ['tenantId', 'unitId', 'status', 'paymentMethodId', 'depositAmount', 'amountPaid', 'paymentDate'];
+
 
     if (userFields.includes(name)) {
       setFormData(prev => ({
@@ -122,6 +190,11 @@ const Tenant = () => {
           [name]: value
         }
       }));
+    } else if (assignUnitFields.includes(name)) {
+      setAssignUnitFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
     } else {
       setFormData(prev => ({
         ...prev,
@@ -129,6 +202,7 @@ const Tenant = () => {
       }));
     }
   };
+
 
 
   const handleCloseModal = () => {
@@ -140,52 +214,79 @@ const Tenant = () => {
 
 
 
+  const validateForm = () => {
+    var { propertyId, firstName, lastName, emailAddress, mobileNumber, alternativeNumber, nationalId, genderId } = formData.user;
 
+    if (!propertyId || !firstName || !lastName || !mobileNumber) {
+      return "Please fill in all required fields.";
+    }
 
-const validateForm = () => {
-  var { propertyId, firstName, lastName, emailAddress, mobileNumber, alternativeNumber, nationalId, genderId } = formData.user;
+    if (!validateTextInput(firstName, true) || !validateTextInput(lastName, true)) {
+      return "Names cannot be empty.";
+    }
 
-  if (!propertyId || !firstName || !lastName || !mobileNumber) {
-    return "Please fill in all required fields.";
-  }
+    if (!validateEmail(emailAddress)) {
+      return "Please enter a valid Email Address.";
+    }
 
-  if (!validateTextInput(firstName, true) || !validateTextInput(lastName, true)) {
-    return "Names cannot be empty.";
-  }
+    if (nationalId === undefined || nationalId === 0) {
+      nationalId = null;
+    }
 
-  if (!validateEmail(emailAddress)) {
-    return "Please enter a valid Email Address.";
-  }
+    if (isNaN(nationalId)) {
+      return "National ID must be a number.";
+    }
 
-  if (nationalId === undefined || nationalId === 0) {
-    nationalId = null;
-  }
-
-  if (isNaN(nationalId)) {
-    return "National ID must be a number.";
-  }
-
-  return '';
-};
-
-
-
-
-
-const handleFormSubmit = (e) => {
-     addData({
-    e,
-    validateForm,
-    formData,
-    endpoint: 'Tenant',
-    setFormError,
-    setLoadingBtn,
-    setFormData,
-    setShowModal,
-    setData: setCharges,
-    setLoading,
-  });
+    return '';
   };
+
+
+  const validateAssignForm = () => {
+    var { tenantId,  unitId, status, paymentMethodId, depositAmount, amountPaid, paymentDate } = assignUnitFormData;
+
+    if (!tenantId || !unitId || !status) {
+      return "Please fill in all required fields.";
+    }
+
+    return false;
+
+  }
+
+
+  
+  const handleAssignUnitFormSubmit = (e) => {
+    addData({
+      e,
+      validateForm: validateAssignForm,   // ✅ match expected name
+      formData: assignUnitFormData,  
+      endpoint: 'Tenant/AssignUnit',
+      setFormError,
+      setLoadingBtn,
+      setFormData,
+      setShowModal,
+      setData: setTenants,
+      refreshDataUrl: 'Tenant',
+      getdata: true,
+      setLoading,
+    });
+  };
+
+
+  const handleFormSubmit = (e) => {
+      addData({
+      e,
+      validateForm: validateForm,
+      formData: formData,
+      endpoint: 'Tenant',
+      setFormError,
+      setLoadingBtn,
+      setFormData,
+      setShowModal,
+      setData: setTenants,
+      getdata: true,
+      setLoading,
+    });
+    };
 
 
 
@@ -201,7 +302,7 @@ const handleFormSubmit = (e) => {
       setFormData,
       setShowModal,
       setIsEditMode,
-      setData: setCharges,
+      setData: setTenants,
       setLoading,
     });
   };
@@ -219,7 +320,7 @@ const handleFormSubmit = (e) => {
         </div>
 
       <div className="TableContainer">
-          <Table data={charges} columns={columns} loading={loading}  error={error}/>
+          <Table data={tenants} columns={columns} loading={loading}  error={error}/>
         </div>
 
 
@@ -233,7 +334,7 @@ const handleFormSubmit = (e) => {
             endpoint: 'Tenant',
             setLoadingBtn,
             setDeleteModalOpen,
-            setData: setCharges,
+            setData: setTenants,
             setLoading,
           })}
 
@@ -241,6 +342,112 @@ const handleFormSubmit = (e) => {
         />
 
 
+        <Modal
+          isOpen={assignUnitModal}
+          onClose={() => setAssignUnitModal(false)}
+          onSubmit={handleAssignUnitFormSubmit}
+          errorMessage={formError}
+          title={"Assign Unit"}
+          loadingBtn={loadingBtn}
+        >
+          <div className="column">
+            <div className="row">
+              <Input
+                type="hidden" 
+                name="tenantId" 
+                value={assignUnitFormData.tenantId || activeTenant?.id || 0} 
+              />
+
+
+              <Select
+                name="unitId"
+                labelName="Choose Unit"
+                value={assignUnitFormData.unitId || activeTenant?.unitId || ''} 
+                onChange={handleSelect}
+                disabled={!!activeTenant?.unitId} // ✅ disabled if tenant already has a unit
+                options={
+                  activeTenant?.unitId
+                    ? [{ value: activeTenant.unitId, label: units.find(u => u.id === activeTenant.unitId)?.name || "Assigned Unit" }]
+                    : error
+                      ? [{ value: '', label: 'Something went wrong!!!', disabled: true }]
+                      : loading
+                        ? [{ value: '', label: 'Loading Units...', disabled: true }]
+                        : (units || [])
+                            .filter(
+                              u =>
+                                u.propertyId === parseInt(activeTenant?.user?.propertyId) &&
+                                u.status?.toLowerCase() !== "active"
+                            )
+                            .map(p => ({ value: p.id, label: p.name }))
+                }
+              />
+
+
+              <Select
+                name="status"
+                labelName="Tenant Status"
+                value={assignUnitFormData.status || activeTenant?.tenantStatus || ''}
+                onChange={handleSelect}
+                options={tenantStatus
+                  .map(p => ({ value: p.id, label: p.item, disabled: p.item === activeTenant?.tenantStatus}))
+                }
+              />
+
+                {showPaymentInputs && (
+                  <Select
+                      name="paymentMethodId"
+                      labelName="Payment Method"
+                      value={assignUnitFormData.paymentMethodId || 0}
+                      onChange={handleSelect}
+                      options={
+                      error
+                          ? [{ value: 0, label: "Error Fetching Payment Methods", disabled: true }]
+                          : loading
+                          ? [{ value: 0, label: "Loading Payment Methods...", disabled: true }]
+                          : paymentMethods.map(p => ({ value: p.id, label: p.item }))
+                      }
+                    />
+                )}
+
+            </div>
+
+
+              {showPaymentInputs && (
+                <div className="row">
+                    
+                    <Input
+                        type="number"
+                        name="depositAmount"
+                        placeholder="Enter Deposit Amount"
+                        labelName="Deposit Amount"
+                        value={assignUnitFormData.depositAmount || ''}
+                        onChange={handleInputChange}
+                    />
+
+                    <Input
+                        type="number"
+                        name="amountPaid"
+                        placeholder="Enter Amount Paid"
+                        value={assignUnitFormData.amountPaid || ''}
+                        labelName="Rent"
+                        onChange={handleInputChange}
+                    />
+                        
+            
+                    <Input
+                        type="date"
+                        name="paymentDate"
+                        labelName="Payment Date"
+                        value={assignUnitFormData.paymentDate || new Date().toISOString().split("T")[0]}
+                        onChange={handleInputChange}
+                    />
+                </div>
+            )}
+
+          </div>
+
+
+        </Modal>
 
 
 
@@ -256,7 +463,7 @@ const handleFormSubmit = (e) => {
           <Select
             name="propertyId"
             labelName="Property Name"
-            value={formData.user?.propertyId || ''}
+            value={formData.user?.propertyId || 0}
             onChange={handleSelect}
             options={properties.map(p => ({ value: p.id, label: p.name }))}
           />
@@ -305,7 +512,7 @@ const handleFormSubmit = (e) => {
             type="number"
             name="nationalId"
             placeholder="Enter national Id"
-            value={formData.user?.nationalId || null}
+            value={formData.user?.nationalId || ''}
             labelName="National Id"
             onChange={handleInputChange}
           />

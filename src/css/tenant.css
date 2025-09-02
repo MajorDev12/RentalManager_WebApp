@@ -1,0 +1,27 @@
+.status-tag {
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-transform: capitalize;
+}
+
+.status-green {
+  background-color: #e6f5ec;
+  color: var(--green);
+}
+
+.status-yellow {
+  background-color: #fff8e1;
+  color: #f9a825;
+}
+
+.status-red {
+  background-color: #fdecea;
+  color: var(--red);
+}
+
+.status-gray {
+  background-color: #f0f0f0;
+  color: #555;
+}

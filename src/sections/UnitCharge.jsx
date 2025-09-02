@@ -133,6 +133,7 @@ const handleFormSubmit = (e) => {
     setFormData,
     setShowModal,
     setData: setCharges,
+    getdata: true,
     setLoading,
   });
   };

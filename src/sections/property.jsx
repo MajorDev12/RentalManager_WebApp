@@ -124,6 +124,7 @@ const columns = getPropertyColumns({
     setFormData,
     setShowModal,
     setData: setProperties,
+    getdata: true,
     setLoading,
   });
   };

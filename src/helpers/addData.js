@@ -11,6 +11,7 @@ export const addData = async ({
   setLoadingBtn,
   setFormData,
   setShowModal,
+  refreshDataUrl,
   setData,
   getdata,
   setLoading,
@@ -43,9 +44,9 @@ export const addData = async ({
     // Refresh data after successful add
     if(getdata === true){
       getData({
-        endpoint: endpoint,
+        endpoint: refreshDataUrl || endpoint,
         setData,
-        setLoading
+        setLoading,
       });
     }
 

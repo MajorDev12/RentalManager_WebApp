@@ -1,5 +1,6 @@
 import ActionCell from "../components/ActionCell";
 import { Link } from 'react-router-dom';
+import '../css/tenant.css';
 
 export const getColumns = ({
   endpoint,
@@ -8,30 +9,55 @@ export const getColumns = ({
   setSelectedId,
   setIsEditMode,
   setDeleteModalOpen,
+  setAssignUnitModal,
   setFormData,
   setOriginalData,
   setShowModal,
-  charges,
+  data,
+  setActiveTenant,
 }) => [
   { header: 'Full Names', accessorKey: 'fullName' },
   { header: 'Email Address', accessorKey: 'emailAddress' },
   { header: 'Mobile Number', accessorKey: 'mobileNumber' },
   { header: 'Property Name', accessorKey: 'user.propertyName' },
   { header: 'unit', accessorKey: 'unit' },
-  { header: 'Status', accessorKey: 'tenantStatus' },
+  { 
+    header: 'Status',
+    accessorKey: 'tenantStatus',
+    cell: info => {
+    const status = info.getValue();
+    let colorClass = '';
+
+    switch (status?.toLowerCase()) {
+      case 'active':
+        colorClass = 'status-green';
+        break;
+      case 'pending':
+        colorClass = 'status-yellow';
+        break;
+      case 'evicted':
+        colorClass = 'status-red';
+        break;
+      default:
+        colorClass = 'status-red';
+    }
+
+    return <span className={`status-tag ${colorClass}`}>{status}</span>;
+   },
+  },
   {
     header: 'Action',
     accessorKey: 'id',
     cell: info => {
+      const rowData = info.row.original; 
       const rowId = info.getValue();
 
       const actions = (
         <>
           <li onClick={() => {
             setIsEditMode(true);
-            const item = charges.find(i => i.id === rowId);
-            setFormData(item);
-            setOriginalData(item);
+            setFormData(rowData);
+            setOriginalData(rowData);
             setShowModal(true);
             setActiveRow(null);
           }} className="actionLink">Edit</li>
@@ -40,7 +66,12 @@ export const getColumns = ({
             <Link to={`/${endpoint}/${rowId}`} className="view">View</Link>
           </li>
 
-          <li className="actionLink">Assign House</li>
+          <li onClick={() => {
+            setAssignUnitModal(true);
+            setActiveRow(null);
+            setActiveTenant(rowData);
+            setSelectedId(rowId);
+          }} className="actionLink">Assign House</li>
 
           <li onClick={() => {
             setSelectedId(rowId);
@@ -63,7 +94,7 @@ export const getColumns = ({
           setFormData={setFormData}
           setOriginalData={setOriginalData}
           setShowModal={setShowModal}
-          items={charges}
+          items={data}
           actions={actions}
         />
       );
