@@ -32,7 +32,6 @@ const UnitType = () => {
     const [formData, setFormData] = useState({
       propertyId: '',
       name: '',
-      amount: '',
       notes: ''
     });
 
@@ -108,8 +107,8 @@ const UnitType = () => {
 
 
  const validateForm = () => {
-    const { name, notes, amount, propertyId} = formData;
-    if (!name || !amount || !propertyId) {
+    const { name, notes, propertyId} = formData;
+    if (!name || !propertyId) {
       return "Please fill in all required fields.";
     }
     if(!validateTextInput(name, true)){
@@ -219,14 +218,6 @@ const handleFormSubmit = (e) => {
             placeholder="Enter Unit Type Name"
             value={formData.name || ''}
             labelName="UnitType Name"
-            onChange={handleInputChange}
-          />
-          <Input
-            type="number"
-            name="amount"
-            placeholder="Enter Unit Type Price"
-            value={formData.amount || ''}
-            labelName="UnitType Price"
             onChange={handleInputChange}
           />
           <Textarea

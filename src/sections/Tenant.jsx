@@ -58,7 +58,7 @@ const Tenant = () => {
       paymentMethodId: 0,
       depositAmount: 0,
       amountPaid: 0,
-      paymentDate: ''
+      paymentDate: new Date(),
     });
 
 
@@ -248,6 +248,15 @@ const Tenant = () => {
       return "Please fill in all required fields.";
     }
 
+    if(tenantStatus.find(s => s.id === status)?.item?.toLowerCase() === "active") {
+      if (!paymentMethodId || !depositAmount || !amountPaid || !paymentDate) {
+        return "Please fill in all payment fields for active tenants.";
+      }
+      if (isNaN(depositAmount) || isNaN(amountPaid)) {
+        return "Deposit Amount and Amount Paid must be numbers.";
+      }
+    }
+
     return false;
 
   }
@@ -263,7 +272,7 @@ const Tenant = () => {
       setFormError,
       setLoadingBtn,
       setFormData,
-      setShowModal,
+      setShowModal: setAssignUnitModal,
       setData: setTenants,
       refreshDataUrl: 'Tenant',
       getdata: true,
@@ -281,7 +290,7 @@ const Tenant = () => {
       setFormError,
       setLoadingBtn,
       setFormData,
-      setShowModal,
+      setShowModal: setShowModal,
       setData: setTenants,
       getdata: true,
       setLoading,
@@ -350,15 +359,13 @@ const Tenant = () => {
           title={"Assign Unit"}
           loadingBtn={loadingBtn}
         >
+          <Input
+            type="hidden" 
+            name="tenantId" 
+            value={assignUnitFormData.tenantId || activeTenant?.id || 0} 
+          />
           <div className="column">
             <div className="row">
-              <Input
-                type="hidden" 
-                name="tenantId" 
-                value={assignUnitFormData.tenantId || activeTenant?.id || 0} 
-              />
-
-
               <Select
                 name="unitId"
                 labelName="Choose Unit"
@@ -438,7 +445,7 @@ const Tenant = () => {
                         type="date"
                         name="paymentDate"
                         labelName="Payment Date"
-                        value={assignUnitFormData.paymentDate || new Date().toISOString().split("T")[0]}
+                        value={assignUnitFormData.paymentDate || new Date()}
                         onChange={handleInputChange}
                     />
                 </div>

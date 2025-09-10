@@ -36,6 +36,7 @@ const Unit = () => {
       name: '',
       unitTypeId: '',
       unitType: '',
+      amount: 0,
       status: ''
     });
 
@@ -125,15 +126,15 @@ const Unit = () => {
 
 
  const validateForm = () => {
-    const { name, status, unitTypeId, propertyId} = formData;
-    if (!name || !status || !unitTypeId || !propertyId) {
+    const { name, status, unitTypeId, propertyId, amount} = formData;
+    if (!name || !status || !unitTypeId || !amount || !propertyId) {
       return "Please fill in all required fields.";
     }
     if(!validateTextInput(name, true)){
       return "Unit Name cannot be empty";
     }
-    if(unitTypeId == isNaN){
-      return "Please enter a Amount";
+    if(amount == isNaN){
+      return "Please enter a valid Amount";
     }
     return '';
   };
@@ -257,10 +258,19 @@ const handleFormSubmit = (e) => {
 
           <Input
             type="text"
+            name="amount"
+            placeholder="Enter Rent Amount"
+            value={formData.amount || ''}
+            labelName="Rent Amount"
+            onChange={handleInputChange}
+          />
+
+          <Input
+            type="text"
             name="status"
-            placeholder="Enter House Name"
+            placeholder="Enter Status"
             value={formData.status || ''}
-            labelName="status"
+            labelName="Status"
             onChange={handleInputChange}
           />
           </Modal>

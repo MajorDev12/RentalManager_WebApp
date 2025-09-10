@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { MdArrowCircleDown, MdArrowCircleUp } from "react-icons/md";
 import BreadCrumb from '../components/BreadCrumb';
 import PrimaryButton from '../components/PrimaryButton';
 import Table from '../components/Table';
@@ -29,6 +30,7 @@ const Property = () => {
   const [originalData, setOriginalData] = useState(null);
   const [formError, setFormError] = useState('');
   const [select, setSelect] = useState('');
+  const [showMoreInputs, setshowMoreInputs] = useState(false);
 
     const handleSelect = (e) => {
     const { name, value } = e.target;
@@ -148,6 +150,20 @@ const handleUpdateSubmit = (e) => {
 
 
 
+ const toggleShowMoreButton = (e) => {
+  e.preventDefault();
+  if(showMoreInputs){
+    setshowMoreInputs(false);
+    return;
+  }
+  else{
+    setshowMoreInputs(true);
+    return;
+  }
+ }
+
+
+
 
   return (
     <>
@@ -194,108 +210,180 @@ const handleUpdateSubmit = (e) => {
           loadingBtn={loadingBtn}
           isEditMode={isEditMode}
         >
-          <Input
-            type="text"
-            name="name"
-            placeholder="Enter Property Name"
-            value={formData.name || ''}
-            labelName="Property Name"
-            onChange={handleInputChange}
-          />
+          <div className="col">
+            <div className="row">
+              <Input
+                type="text"
+                name="name"
+                placeholder="Enter Property Name"
+                value={formData.name || ''}
+                labelName="Property Name"
+                onChange={handleInputChange}
+              />
 
-          <Input
-            type="email"
-            name="emailAddress"
-            placeholder="Enter Email Address"
-            value={formData.emailAddress || ''}
-            labelName="Email"
-            onChange={handleInputChange}
-          />
+              <Input
+                type="email"
+                name="emailAddress"
+                placeholder="Enter Email Address"
+                value={formData.emailAddress || ''}
+                labelName="Email"
+                onChange={handleInputChange}
+              />
 
-          <Input
-            type="tel"
-            name="mobileNumber"
-            placeholder="Enter Mobile Number"
-            value={formData.mobileNumber || ''}
-            labelName="Mobile"
-            onChange={handleInputChange}
-          />
+              <Input
+                type="tel"
+                name="mobileNumber"
+                placeholder="Enter Mobile Number"
+                value={formData.mobileNumber || ''}
+                labelName="Mobile"
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <Input
-            type="text"
-            name="physicalAddress"
-            placeholder="Enter physical Address"
-            value={formData.physicalAddress || ''}
-            labelName="physical Address"
-            onChange={handleInputChange}
-          />
+            <div className="row">
+              <Input
+                type="text"
+                name="physicalAddress"
+                placeholder="Enter physical Address"
+                value={formData.physicalAddress || ''}
+                labelName="physical Address"
+                onChange={handleInputChange}
+              />
 
-          <Input
-            type="text"
-            name="country"
-            placeholder="Enter Country"
-            value={formData.country || ''}
-            labelName="Country"
-            onChange={handleInputChange}
-          />
+              <Input
+                type="text"
+                name="country"
+                placeholder="Enter Country"
+                value={formData.country || ''}
+                labelName="Country"
+                onChange={handleInputChange}
+              />
 
-          <Input
-            type="text"
-            name="county"
-            placeholder="Enter County"
-            value={formData.county || ''}
-            labelName="County"
-            onChange={handleInputChange}
-          />
+              <Input
+                type="text"
+                name="county"
+                placeholder="Enter County"
+                value={formData.county || ''}
+                labelName="County"
+                onChange={handleInputChange}
+              />
 
-          <Input
-            type="text"
-            name="area"
-            placeholder="Enter Area"
-            value={formData.area || ''}
-            labelName="Area"
-            onChange={handleInputChange}
-          />
+            </div>
 
-          <Select
-            name="floor"
-            labelName="Floor (s)"
-            value={formData.floor}
-            onChange={handleSelect}
-            options={[
-              { value: '0', label: 'Ground Floor' },
-              { value: '1', label: '1' },
-              { value: '2', label: '2' },
-              { value: '3', label: '3' },
-              { value: '4', label: '4' },
-              { value: '5', label: '5' },
-              { value: '6', label: '6' },
-              { value: '7', label: '7' },
-              { value: '8', label: '8' },
-              { value: '9', label: '9' },
-              { value: '10', label: '10' },
-              { value: '11', label: '11' },
-              { value: '12', label: '12' },
-              { value: '13', label: '13' },
-              { value: '14', label: '14' },
-              { value: '15', label: '15' },
-              { value: '16', label: '16' },
-              { value: '17', label: '17' },
-              { value: '18', label: '18' },
-              { value: '19', label: '19' },
-              { value: '20', label: '20' },
-            ]}
-          />
+            <div className="row">
+              <Input
+                type="text"
+                name="area"
+                placeholder="Enter Area"
+                value={formData.area || ''}
+                labelName="Area"
+                onChange={handleInputChange}
+              />
+
+              <Select
+                name="floor"
+                labelName="Floor (s)"
+                value={formData.floor}
+                onChange={handleSelect}
+                options={[
+                  { value: '0', label: 'Ground Floor' },
+                  { value: '1', label: '1' },
+                  { value: '2', label: '2' },
+                  { value: '3', label: '3' },
+                  { value: '4', label: '4' },
+                  { value: '5', label: '5' },
+                  { value: '6', label: '6' },
+                  { value: '7', label: '7' },
+                  { value: '8', label: '8' },
+                  { value: '9', label: '9' },
+                  { value: '10', label: '10' },
+                  { value: '11', label: '11' },
+                  { value: '12', label: '12' },
+                  { value: '13', label: '13' },
+                  { value: '14', label: '14' },
+                  { value: '15', label: '15' },
+                  { value: '16', label: '16' },
+                  { value: '17', label: '17' },
+                  { value: '18', label: '18' },
+                  { value: '19', label: '19' },
+                  { value: '20', label: '20' },
+                ]}
+              />
 
 
-          <Textarea
-            type="text"
-            name="notes"
-            placeholder="Enter description"
-            value={formData.notes || ''}
-            labelName="Notes"
-            onChange={handleInputChange}
-          />
+              <Textarea
+                type="text"
+                name="notes"
+                placeholder="Enter description"
+                value={formData.notes || ''}
+                labelName="Notes"
+                onChange={handleInputChange}
+              />
+
+            </div>
+            <button className='showMoreBtn' onClick={toggleShowMoreButton}>Show more {showMoreInputs ? <MdArrowCircleUp className='downIcon' /> : <MdArrowCircleDown className='topIcon' />}</button>
+          
+          
+
+
+          {showMoreInputs && (
+            <>
+
+              <div className="row">
+                <p className='headerTitle'>Utilitiy Bills <span>(Optional)</span></p>
+              </div>
+              <div className="row">
+                <Input
+                  type="text"
+                  name="utility"
+                  placeholder="Enter Amount"
+                  value={formData.utility || 100}
+                  labelName="Water (per unit)"
+                  onChange={handleInputChange}
+                />
+
+                <Input
+                  type="email"
+                  name="emailAddress"
+                  placeholder="Enter Electricity Bill"
+                  value={formData.emailAddress || 0}
+                  labelName="Electricity Bill"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              {/* <div className="row">
+                <p className='headerTitle'>Payment For Mpesa <span>(Optional)</span></p>
+              </div>
+
+
+              <div className="row">
+                <Input
+                  type="radio"
+                  name="emailAddress"
+                  placeholder=""
+                  value={formData.emailAddress || ''}
+                  labelName="Paybill"
+                  onChange={handleInputChange}
+                />
+
+                <Input
+                  type="radio"
+                  name="emailAddress"
+                  placeholder=""
+                  value={formData.emailAddress || ''}
+                  labelName="Till Number"
+                  onChange={handleInputChange}
+                />
+              </div> */}
+            </>
+
+          )}
+
+
+      </div>
+
+
 
         </Modal>
       </div>
