@@ -95,9 +95,9 @@ const Sidebar = ({width, setWidth}) => {
                 index={5}
                 activeIndex={activeIndex}
                 setActiveIndex={setActiveIndex}>
-                <DropDownList itemName="All Transactions" route={"/units"} />
-                <DropDownList itemName="Unpaid Tenants" route={"/units"} />
-                <DropDownList itemName="Payment Methods" route={"/units"} />
+                <DropDownList itemName="All Transactions" route={"/Transactions"} />
+                <DropDownList itemName="Unpaid Tenants" route={"/Transactions"} />
+                <DropDownList itemName="Payment Methods" route={"/Transactions"} />
               </NavLink>
 
             <NavLink icon={<BiSolidReport className="navLinkIcon" />}
