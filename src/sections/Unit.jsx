@@ -36,8 +36,7 @@ const Unit = () => {
       name: '',
       unitTypeId: '',
       unitType: '',
-      amount: 0,
-      status: ''
+      amount: 0
     });
 
 
@@ -62,7 +61,6 @@ const Unit = () => {
 
 
 
-
     useEffect(() => {
         getData({
             endpoint: 'Unit',
@@ -70,6 +68,8 @@ const Unit = () => {
             setLoading,
             setError
         });
+
+        
 
         getData({
           endpoint: 'Properties',
@@ -126,8 +126,8 @@ const Unit = () => {
 
 
  const validateForm = () => {
-    const { name, status, unitTypeId, propertyId, amount} = formData;
-    if (!name || !status || !unitTypeId || !amount || !propertyId) {
+    const { name, unitTypeId, propertyId, amount} = formData;
+    if (!name || !unitTypeId || !amount || !propertyId) {
       return "Please fill in all required fields.";
     }
     if(!validateTextInput(name, true)){
@@ -262,15 +262,6 @@ const handleFormSubmit = (e) => {
             placeholder="Enter Rent Amount"
             value={formData.amount || ''}
             labelName="Rent Amount"
-            onChange={handleInputChange}
-          />
-
-          <Input
-            type="text"
-            name="status"
-            placeholder="Enter Status"
-            value={formData.status || ''}
-            labelName="Status"
             onChange={handleInputChange}
           />
           </Modal>
