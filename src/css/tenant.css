@@ -7,21 +7,17 @@
 }
 
 .status-green {
-  background-color: #e6f5ec;
-  color: var(--green);
+  color: var(--highlightColor);
 }
 
 .status-yellow {
-  background-color: #fff8e1;
-  color: #f9a825;
+  color: var(--yellow);
 }
 
 .status-red {
-  background-color: #fdecea;
   color: var(--red);
 }
 
 .status-gray {
-  background-color: #f0f0f0;
   color: #555;
 }

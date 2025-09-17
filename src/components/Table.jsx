@@ -31,21 +31,40 @@ const Table = ({ data, columns, loading, error }) => {
       <tbody>
         {error ? (
           <tr>
-            <td className='errorRow' colSpan={columns.length} style={{ textAlign: 'center', color: 'red' }}>
-              <img src={NoDataImage} alt="No data" style={{ maxWidth: '350px', margin: '0 auto' }} />
-              
+            <td
+              className="errorRow"
+              colSpan={columns.length}
+              style={{ textAlign: "center", color: "red" }}
+            >
+              <img
+                src={NoDataImage}
+                alt="No data"
+                style={{ maxWidth: "350px", margin: "0 auto" }}
+              />
+              <p>{error}</p>
             </td>
           </tr>
         ) : loading ? (
           <tr>
-            <td colSpan={columns.length} style={{ textAlign: 'center' }}>
+            <td colSpan={columns.length} style={{ textAlign: "center" }}>
               <Spinner />
             </td>
           </tr>
+        ) : table.getRowModel().rows.length === 0 ? (
+          <tr>
+            <td colSpan={columns.length} style={{ textAlign: "center" }}>
+              <img
+                src={NoDataImage}
+                alt="No data"
+                style={{ maxWidth: "350px", margin: "0 auto" }}
+              />
+              <p>No records Available</p>
+            </td>
+          </tr>
         ) : (
-          table.getRowModel().rows.map(row => (
+          table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
-              {row.getVisibleCells().map(cell => (
+              {row.getVisibleCells().map((cell) => (
                 <td key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
@@ -54,6 +73,7 @@ const Table = ({ data, columns, loading, error }) => {
           ))
         )}
       </tbody>
+
     </table>
   );
 };

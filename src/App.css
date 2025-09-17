@@ -39,3 +39,27 @@ body #app #rightSide{
   color: var(--red);
   margin: 10px;
 }
+#Section{
+    width: 100%;
+    min-height: 80vh;
+    max-height: calc(100vh - 120px); 
+    background-color: var(--containerColor);
+    box-shadow: var(--shadow);
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+    overflow: auto;
+}
+#Section .header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+#Section h3{
+    font-family: var(--fontFamily);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--textColor);
+    padding: 10px;
+}

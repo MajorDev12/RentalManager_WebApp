@@ -393,7 +393,7 @@ const Tenant = () => {
               <Select
                 name="status"
                 labelName="Tenant Status"
-                value={assignUnitFormData.status || activeTenant?.tenantStatus || ''}
+                value={assignUnitFormData.status || activeTenant?.tenantStatus || 0}
                 onChange={handleSelect}
                 options={tenantStatus
                   .map(p => ({ value: p.id, label: p.item, disabled: p.item === activeTenant?.tenantStatus}))

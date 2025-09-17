@@ -42,7 +42,7 @@ export const getColumns = ({
         colorClass = 'status-red';
     }
 
-    return <span className={`status-tag ${colorClass}`}>{status}</span>;
+    return <span className={`status-tag ${colorClass}`} style={{ fontWeight: 700 }}>{status}</span>;
    },
   },
   {

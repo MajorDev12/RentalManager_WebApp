@@ -1,4 +1,6 @@
 import ActionCell from "../components/ActionCell";
+import { TiArrowDown } from "react-icons/ti";
+import { TiArrowUp } from "react-icons/ti";
 import { Link } from 'react-router-dom';
 import '../css/tenant.css';
 
@@ -14,9 +16,35 @@ export const getColumns = ({
   setShowModal,
   data
 }) => [
-  { header: 'Full Names', accessorKey: 'userName' },
-  { header: 'Unit', accessorKey: 'unit' },
-  { header: 'Type', accessorKey: 'transactionType' },
+  { 
+    header: 'Type', 
+    accessorKey: 'transactionType',
+    cell: info => {
+      const status = info.getValue();
+      let Icon = null;
+      let iconColor = '';
+
+      switch (status?.toLowerCase()) {
+        case 'charge':
+          Icon = TiArrowDown;
+          iconColor = 'red';
+          break;
+        case 'payment':
+          Icon = TiArrowUp;
+          iconColor = 'green';
+          break;
+        default:
+          Icon = null;
+      }
+
+      return (
+        <span className="status-tag">
+          {status}{" "}
+          {Icon && <Icon style={{ color: iconColor, fontSize: "18px", float: "right", verticalAlign: "middle" }} />}
+        </span>
+      );
+    }
+  },
   { header: 'Category', accessorKey: 'transactionCategory' },
   { header: 'Amount', accessorKey: 'amount' },
   { header: 'Month For', accessorKey: 'monthFor' },
@@ -39,7 +67,7 @@ export const getColumns = ({
           }} className="actionLink">Edit</li>
 
           <li className="actionLink">
-            <Link to={`/${endpoint}/${rowId}`} className="view">View</Link>
+            <Link to={`/${endpoint}/${rowId}`} className="view">Print</Link>
           </li>
 
           <li onClick={() => {
