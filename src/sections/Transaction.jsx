@@ -34,7 +34,6 @@ const Transaction = () => {
     const [transactionTypes, setTransactionTypes] = useState([]);
     const [transactionCategories, setTransactionCategories] = useState([]);
     const [paymentMethods, setPaymentMethods] = useState([]);
-    const [unitTypes, setUnitTypes] = useState([]);
     const [units, setUnits] = useState([]);
     const [tenants, setTenants] = useState([]);
     const [formData, setFormData] = useState({

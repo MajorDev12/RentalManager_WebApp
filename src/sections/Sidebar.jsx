@@ -96,7 +96,7 @@ const Sidebar = ({width, setWidth}) => {
                 activeIndex={activeIndex}
                 setActiveIndex={setActiveIndex}>
                 <DropDownList itemName="All Transactions" route={"/Transactions"} />
-                <DropDownList itemName="Unpaid Tenants" route={"/Transactions"} />
+                <DropDownList itemName="Unpaid Tenants" route={"/UnpaidTenants"} />
                 <DropDownList itemName="Payment Methods" route={"/Transactions"} />
               </NavLink>
 
