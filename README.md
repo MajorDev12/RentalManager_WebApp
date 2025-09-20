@@ -1,12 +1,8 @@
-# React + Vite
+# 🏠 Rental / Property Management System - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the **frontend application** for the Rental / Property Management System, built with **React** and styled with **CSS**.  
+It provides a modern, responsive, and user-friendly interface for managing rental properties, tenants, maintenance, and payments.  
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The frontend communicates with a **C# Web API backend**, which handles business logic, authentication, and database operations.  
+👉 Backend Repository: [Rental Management System - API](https://github.com/MajorDev12/RentalManager_API)  
+<img width="1360" height="764" alt="dashboard-light" src="https://github.com/user-attachments/assets/74f2dbed-e379-4680-a571-b972bb854ae7" />
