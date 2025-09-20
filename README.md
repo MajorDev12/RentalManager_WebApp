@@ -5,4 +5,7 @@ It provides a modern, responsive, and user-friendly interface for managing renta
 
 The frontend communicates with a **C# Web API backend**, which handles business logic, authentication, and database operations.  
 👉 Backend Repository: [Rental Management System - API](https://github.com/MajorDev12/RentalManager_API)  
+
+--
+
 <img width="1360" height="764" alt="dashboard-light" src="https://github.com/user-attachments/assets/74f2dbed-e379-4680-a571-b972bb854ae7" />
