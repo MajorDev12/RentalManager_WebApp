@@ -97,7 +97,7 @@ const Sidebar = ({width, setWidth}) => {
                 setActiveIndex={setActiveIndex}>
                 <DropDownList itemName="All Transactions" route={"/Transactions"} />
                 <DropDownList itemName="Unpaid Tenants" route={"/UnpaidTenants"} />
-                <DropDownList itemName="Payment Methods" route={"/Transactions"} />
+                <DropDownList itemName="Invoices" route={"/Invoices"} />
               </NavLink>
 
             <NavLink icon={<BiSolidReport className="navLinkIcon" />}
@@ -121,7 +121,6 @@ const Sidebar = ({width, setWidth}) => {
                 setActiveIndex={setActiveIndex}>
               <DropDownList itemName="Email" route={"/units"} />
               <DropDownList itemName="Sms" route={"/units"} />
-              <DropDownList itemName="Invoices" route={"/units"} />
             </NavLink>
 
             <NavLink icon={<IoMdSettings className="navLinkIcon" />}

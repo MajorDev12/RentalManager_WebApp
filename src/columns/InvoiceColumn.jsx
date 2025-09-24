@@ -1,4 +1,6 @@
 import ActionCell from "../components/ActionCell";
+import { TiArrowDown } from "react-icons/ti";
+import { TiArrowUp } from "react-icons/ti";
 import { Link } from 'react-router-dom';
 import '../css/tenant.css';
 
@@ -9,42 +11,44 @@ export const getColumns = ({
   setSelectedId,
   setIsEditMode,
   setDeleteModalOpen,
-  setAssignUnitModal,
   setFormData,
   setOriginalData,
   setShowModal,
-  data,
-  setActiveTenant,
+  data
 }) => [
-  { header: 'Full Names', accessorKey: 'fullName' },
-  { header: 'Email Address', accessorKey: 'emailAddress' },
-  { header: 'Mobile Number', accessorKey: 'mobileNumber' },
-  { header: 'Property Name', accessorKey: 'user.propertyName' },
-  { header: 'unit', accessorKey: 'unit' },
   { 
-    header: 'Status',
-    accessorKey: 'tenantStatus',
+    header: 'Type', 
+    accessorKey: 'transactionType',
     cell: info => {
-    const status = info.getValue();
-    let colorClass = '';
+      const status = info.getValue();
+      let Icon = null;
+      let iconColor = '';
 
-    switch (status?.toLowerCase()) {
-      case 'active':
-        colorClass = 'status-green';
-        break;
-      case 'pending':
-        colorClass = 'status-yellow';
-        break;
-      case 'evicted':
-        colorClass = 'status-red';
-        break;
-      default:
-        colorClass = 'status-red';
+      switch (status?.toLowerCase()) {
+        case 'charge':
+          Icon = TiArrowDown;
+          iconColor = 'red';
+          break;
+        case 'payment':
+          Icon = TiArrowUp;
+          iconColor = 'green';
+          break;
+        default:
+          Icon = null;
+      }
+
+      return (
+        <span className="status-tag">
+          {status}{" "}
+          {Icon && <Icon style={{ color: iconColor, fontSize: "18px", float: "right", verticalAlign: "middle" }} />}
+        </span>
+      );
     }
-
-    return <span className={`status-tag ${colorClass}`} style={{ fontWeight: 700 }}>{status}</span>;
-   },
   },
+  { header: 'Category', accessorKey: 'transactionCategory' },
+  { header: 'Amount', accessorKey: 'amount' },
+  { header: 'Month For', accessorKey: 'monthFor' },
+  { header: 'Year For', accessorKey: 'yearFor' },
   {
     header: 'Action',
     accessorKey: 'id',
@@ -63,21 +67,8 @@ export const getColumns = ({
           }} className="actionLink">Edit</li>
 
           <li className="actionLink">
-            <Link to={`/${endpoint}/${rowId}`} className="view">View</Link>
+            <Link to={`/${endpoint}/${rowId}`} className="view">Print</Link>
           </li>
-
-          <li onClick={() => {
-            setAssignUnitModal(true);
-            setActiveRow(null);
-            setActiveTenant(rowData);
-            setSelectedId(rowId);
-          }} className="actionLink">Assign House</li>
-
-          <li onClick={() => {
-            setSelectedId(rowId);
-            setDeleteModalOpen(true);
-            setActiveRow(null);
-          }} className="actionLink">Add Payment</li>
 
           <li onClick={() => {
             setSelectedId(rowId);

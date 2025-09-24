@@ -114,9 +114,6 @@ const UnitType = () => {
     if(!validateTextInput(name, true)){
       return "UnitType name cannot be empty";
     }
-    if(amount == isNaN){
-      return "Please enter a valid Amount";
-    }
     return '';
   };
 
@@ -170,7 +167,7 @@ const handleFormSubmit = (e) => {
           />
         </div>
 
-      <div className="TableContainer">
+        <div className="TableContainer">
           <Table data={charges} columns={columns} loading={loading}  error={error}/>
         </div>
 

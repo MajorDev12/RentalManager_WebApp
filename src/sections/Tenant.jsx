@@ -350,7 +350,7 @@ const Tenant = () => {
           loadingBtn={loadingBtn}
         />
 
-
+            {/* ASSIGN UNIT MODAL */}
         <Modal
           isOpen={assignUnitModal}
           onClose={() => setAssignUnitModal(false)}
@@ -442,12 +442,17 @@ const Tenant = () => {
                         
             
                     <Input
-                        type="date"
-                        name="paymentDate"
-                        labelName="Payment Date"
-                        value={assignUnitFormData.paymentDate || new Date()}
-                        onChange={handleInputChange}
+                      type="date"
+                      name="paymentDate"
+                      labelName="Payment Date"
+                      value={
+                        assignUnitFormData.paymentDate ||
+                        new Date().toISOString().split("T")[0] // 👈 formats correctly
+                      }
+                      onChange={handleInputChange}
                     />
+
+
                 </div>
             )}
 
@@ -457,7 +462,7 @@ const Tenant = () => {
         </Modal>
 
 
-
+            {/* TENANT MODAL */}
       <Modal
           isOpen={showModal}
           onClose={handleCloseModal}
