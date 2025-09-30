@@ -16,39 +16,17 @@ export const getColumns = ({
   setShowModal,
   data
 }) => [
+  { header: 'Invoice Number', accessorKey: 'invoiceNumber' },
+  { header: 'totalAmount', accessorKey: 'totalAmount' },
   { 
-    header: 'Type', 
-    accessorKey: 'transactionType',
+    header: 'Month For', 
+    accessorKey: 'transactions.transactionDate',
     cell: info => {
-      const status = info.getValue();
-      let Icon = null;
-      let iconColor = '';
-
-      switch (status?.toLowerCase()) {
-        case 'charge':
-          Icon = TiArrowDown;
-          iconColor = 'red';
-          break;
-        case 'payment':
-          Icon = TiArrowUp;
-          iconColor = 'green';
-          break;
-        default:
-          Icon = null;
-      }
-
-      return (
-        <span className="status-tag">
-          {status}{" "}
-          {Icon && <Icon style={{ color: iconColor, fontSize: "18px", float: "right", verticalAlign: "middle" }} />}
-        </span>
-      );
+      const date = info.getValue();
+      <p>{date}</p>
     }
   },
-  { header: 'Category', accessorKey: 'transactionCategory' },
-  { header: 'Amount', accessorKey: 'amount' },
-  { header: 'Month For', accessorKey: 'monthFor' },
-  { header: 'Year For', accessorKey: 'yearFor' },
+  { header: 'Status', accessorKey: 'status' },
   {
     header: 'Action',
     accessorKey: 'id',

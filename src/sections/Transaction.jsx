@@ -27,9 +27,11 @@ const Transaction = () => {
     const [selectedId, setSelectedId] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
+    const [showBulkModal, setShowBulkModal] = useState(false);
     const [originalData, setOriginalData] = useState(null);
     const [formError, setFormError] = useState('');
     const [select, setSelect] = useState('');
+    const [property, setProperty] = useState([]);
     const [properties, setProperties] = useState([]);
     const [transactionTypes, setTransactionTypes] = useState([]);
     const [transactionCategories, setTransactionCategories] = useState([]);
@@ -65,6 +67,12 @@ const Transaction = () => {
     };
  
 
+    const handleBulkCloseModal = () => {
+      setFormError('');
+      setIsEditMode(false);
+      setFormData({});
+      setShowBulkModal(false);
+    }
 
 
     const handleCloseModal = () => {
@@ -84,12 +92,6 @@ const Transaction = () => {
           setError
       });
 
-      getData({
-          endpoint: 'Properties',
-          setData: setProperties,
-          setLoading,
-          setError
-      });
 
       getData({
           endpoint: 'Tenant',
@@ -139,6 +141,41 @@ const Transaction = () => {
 
 
 
+
+    useEffect(() => {
+      if(formData.userId){
+
+        var tenant = tenants.find(u => u.user.id == formData.userId);
+
+        getData({
+            endpoint: `Properties/${tenant.user.propertyId}`,
+            setData: setProperty,
+            setLoading,
+            setError
+        });
+
+        getData({
+          endpoint: `Unit/${tenant.unitId}`,
+          setData: setUnits,
+          setLoading,
+          setError
+        });
+
+
+      }else{
+        getData({
+            endpoint: `Properties`,
+            setData: setProperties,
+            setLoading,
+            setError
+        });
+
+      }
+
+    }, [formData.userId]);
+
+
+
   const columns = getColumns({
     endpoint: "Transaction",
     activeRow,
@@ -165,24 +202,24 @@ const Transaction = () => {
 
 
 
- const validateForm = () => {
-    const { propertyId, unitId, amount, transactionCategoryId, transactionTypeId, paymentMethodId, monthFor, yearFor, notes } = formData;
-    if (!propertyId || !amount || !transactionCategoryId || !transactionTypeId || !monthFor || !yearFor) {
-      return "Please fill in all required fields.";
-    }
-    if(!validateTextInput(notes, true)){
-      return "Notes cannot be empty";
-    }
+  const validateForm = () => {
+      const { propertyId, unitId, amount, transactionCategoryId, transactionTypeId, paymentMethodId, monthFor, yearFor, notes } = formData;
+      if (!propertyId || !amount || !transactionCategoryId || !transactionTypeId || !monthFor || !yearFor) {
+        return "Please fill in all required fields.";
+      }
+      if(!validateTextInput(notes, true)){
+        return "Notes cannot be empty";
+      }
 
-    if(isNaN(amount)){
-      return "Enter a valid amount";
-    }
+      if(isNaN(amount)){
+        return "Enter a valid amount";
+      }
 
-    if(isNaN(propertyId) || isNaN(unitId) || isNaN(transactionCategoryId) || isNaN(transactionTypeId) || isNaN(paymentMethodId) || isNaN(monthFor) || isNaN(yearFor)){
-      return "Please enter valid values";
-    }
-    return '';
-  };
+      if(isNaN(propertyId) || isNaN(unitId) || isNaN(transactionCategoryId) || isNaN(transactionTypeId) || isNaN(paymentMethodId) || isNaN(monthFor) || isNaN(yearFor)){
+        return "Please enter valid values";
+      }
+      return '';
+    };
 
 
 
@@ -230,10 +267,20 @@ const handleFormSubmit = (e) => {
     <section id="Section">
       <div className="header">
           <h3>List of all Transactions</h3>
+          <div className="row">
+            <PrimaryButton
+              name="Add Rent"
+              onClick={() => setShowModal(true) }
+            />
           <PrimaryButton
-            name="Add New"
-            onClick={() => setShowModal(true) }
-          />
+              name="Add Bulk"
+              onClick={() => setShowBulkModal(true) }
+            />
+            <PrimaryButton
+              name="Add Utility"
+              onClick={() => setShowBulkModal(true) }
+            />
+          </div>
         </div>
 
       <div className="TableContainer">
@@ -261,6 +308,26 @@ const handleFormSubmit = (e) => {
 
 
 
+      {/* BULK MODAL */}
+      <Modal
+        isOpen={showBulkModal}
+        onClose={handleBulkCloseModal}
+        onSubmit={isEditMode ? handleUpdateSubmit : handleFormSubmit}
+        errorMessage={formError}
+        title={isEditMode ? "Update Bulk" : "Add Bulk"}
+        loadingBtn={loadingBtn}
+        isEditMode={isEditMode}
+      >
+        <Select
+          name="userId"
+          labelName="Tenant"
+          value={formData.userId || ''}
+          onChange={handleSelect}
+          options={tenants.map(t => ({ value: t.user.id, label: t.fullName }))}
+        />
+      </Modal>
+
+
 
       <Modal
           isOpen={showModal}
@@ -282,20 +349,25 @@ const handleFormSubmit = (e) => {
           <Select
             name="propertyId"
             labelName="Property Name"
-            value={formData.propertyId || ''}
+            value={property.id || formData.propertyId || ''}
+            disabled={formData.userId}
             onChange={handleSelect}
-            options={properties.map(p => ({ value: p.id, label: p.name }))}
+            options={
+              properties && properties.length > 0
+              ? properties.map(p => ({ value: p.id, label: p.name }))
+              : [{ value: '', label: 'No Available Units', disabled: true }]
+            }
           />
-          
           <Select
             name="unitId"
             labelName="Unit"
             value={formData.unitId || ''}
             onChange={handleSelect}
-            disabled={!formData.propertyId}
             options={
-              units && units.length > 0
+              units && units.length > 1
                 ? units.map(p => ({ value: p.id, label: p.name }))
+                : units && units.length == 1
+                ? { value: units.id, label: units.name, disabled: true }
                 : [{ value: '', label: 'No Available Units', disabled: true }]
             }
             text={formData.propertyId ? "Select Unit" : "Choose Property First"}

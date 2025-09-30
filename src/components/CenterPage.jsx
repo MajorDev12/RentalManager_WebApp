@@ -1,14 +1,25 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import DoughnutChart from '../components/DoughnutChart';
+import { getColumns } from '../columns/BalanceHomeColumn';
+import { getData } from '../helpers/getData';
+import Table from '../components/Table';
+import Select from '../components/Select';
+import LineChart from '../components/LineChart';
 import HomeIcon1 from "../assets/HomeIcon1.svg";
 import HomeIcon2 from "../assets/HomeIcon2.svg";
 import HomeIcon3 from "../assets/HomeIcon3.svg";
 import HomeIcon4 from "../assets/HomeIcon4.svg";
+import { faker } from '@faker-js/faker';
 import "../css/center.css";
 
 
 const CenterPage = () => {
-    const data = {
+  const [balances, setBalances] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+      
+  const data = {
     labels: ['Tenants', 'Vacants', 'Landlords'],
     datasets: [
       {
@@ -32,6 +43,33 @@ const CenterPage = () => {
     },
     },
    };
+
+
+  const handleSelect = (e) => {
+  const { name, value } = e.target;
+    setSelect(value);
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+
+
+
+
+
+   useEffect(() => {
+      getData({
+          endpoint: 'Transaction/UnpaidTenants',
+          setData: setBalances,
+          setLoading,
+          setError
+      });
+  
+      }, []);
+
+   const unpaidTenantColumn = getColumns();
 
 
   return (
@@ -91,7 +129,43 @@ const CenterPage = () => {
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="secondRow">
+          <div className="left">
+            <div className="cont">
+              <div className="header">
+                <h1 className="headerText">
+                  UnPaid Tenants
+                </h1>
+                <div className="filter">
+                  <Select
+                  name="unitId"
+                  value={''}
+                  onChange={handleSelect}
+                  text={"Filter By Month"}
+                  >Month</Select>
+                </div>
+
+              </div>
+              <div className="TableContainer">
+                <Table data={balances} columns={unpaidTenantColumn} loading={loading}  error={error}/>
+              </div>
+            </div>
+          </div>
+
+          <div className="right">
+              <div className="cont">
+                <div className="header">
+                  <h1 className="headerText">Monthly Report</h1>
+                </div>
+                <div className="chartContainer">
+                  <LineChart id="chart" />
+                </div>
+              </div>
+          </div>
+
+        </div>
+      </div>
   )
 }
 

@@ -6,7 +6,7 @@ import { getData } from '../helpers/getData';
 
 
 const Invoice = () => {
-    const [balances, setBalances] = useState([]);
+    const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeRow, setActiveRow] = useState(null);
@@ -16,12 +16,11 @@ const Invoice = () => {
     const [formData, setFormData] = useState(null);
     const [originalData, setOriginalData] = useState(null);
     const [showModal, setShowModal] = useState(null);
-    const [transactions, setTransactions] = useState(null);
 
     useEffect(() => {
       getData({
-          endpoint: 'Invoices',
-          setData: setBalances,
+          endpoint: 'Invoice',
+          setData: setInvoices,
           setLoading,
           setError
       });
@@ -30,7 +29,7 @@ const Invoice = () => {
 
 
     const columns = getColumns({
-        endpoint: "Transaction",
+        endpoint: "Invoice",
         activeRow,
         setActiveRow,
         setSelectedId,
@@ -39,7 +38,7 @@ const Invoice = () => {
         setFormData,
         setOriginalData,
         setShowModal,
-        transactions,
+        invoices,
     });
 
 
@@ -52,7 +51,7 @@ const Invoice = () => {
             </div>
 
         <div className="TableContainer">
-            <Table data={balances} columns={columns} loading={loading}  error={error}/>
+            <Table data={invoices} columns={columns} loading={loading}  error={error}/>
             </div>
 
         </section>
