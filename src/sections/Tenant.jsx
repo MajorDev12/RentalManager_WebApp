@@ -13,6 +13,8 @@ import { getData } from '../helpers/getData';
 import { addData } from '../helpers/addData';
 import { updateData } from '../helpers/updateData';
 import { handleDelete } from '../helpers/deleteData';
+import { months } from '../includes/months';
+import { years } from '../includes/years';
 
 
 const Tenant = () => {
@@ -27,6 +29,7 @@ const Tenant = () => {
     const [selectedId, setSelectedId] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [assignUnitModal, setAssignUnitModal] = useState(false);
+    const [addPaymentModal, setAddPaymentModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [originalData, setOriginalData] = useState(null);
     const [formError, setFormError] = useState('');
@@ -34,6 +37,8 @@ const Tenant = () => {
     const [paymentMethods, setPaymentMethods] = useState([]);
     const [select, setSelect] = useState('');
     const [properties, setProperties] = useState([]);
+    const [transactionType, setTransactionType] = useState([]);
+    const [utillityBill, setUtillityBill] = useState([]);
     const [genders, setGender] = useState([]);
     const [units, setUnit] = useState([]);
     const [formData, setFormData] = useState({
@@ -62,6 +67,33 @@ const Tenant = () => {
     });
 
 
+    const [addPaymentData, setAddPaymentData] = useState({
+      tenantId: 0,
+      transactionTypeId: 0,
+      utillityBillId: 0,
+      paymentMethodId: 0,
+      amount: 0,
+      monthFor: 0,
+      yearFor: 0,
+      paymentDate: new Date(),
+    });
+
+
+
+
+    useEffect(() => {
+      getData({
+            endpoint: 'Tenant',
+            setData: setTenants,
+            setLoading,
+            setError
+        });
+
+    }, []);
+
+
+
+
     // add unitId to formData
     useEffect(() => {
       if (activeTenant) {
@@ -72,35 +104,81 @@ const Tenant = () => {
         }));
       }
     }, [activeTenant]);
+
+
+    // Get AppPayment Data
+    useEffect(() => {
+      if (addPaymentModal && selectedId) {
+        getData({
+          endpoint: 'SystemCodeItem/BY-NAME/TRANSACTIONTYPE',
+          setData: setTransactionType,
+          setLoading,
+          setError
+        });
+
+
+        getData({
+          endpoint: 'SystemCodeItem/By-Name/PAYMENTMETHOD',
+          setData: setPaymentMethods,
+          setLoading,
+          setError
+        });
+
+        getData({
+          endpoint: `UtilityBill/By-TenantId/${selectedId}`,
+          setData: setUtillityBill,
+          setLoading,
+          setError
+        });
+
+      }
+    }, [addPaymentModal]);
     
 
 
+    // Get Add Tenant Data
     useEffect(() => {
-      getData({
-          endpoint: 'Tenant',
-          setData: setTenants,
+      if(showModal){
+        getData({
+            endpoint: 'Tenant',
+            setData: setTenants,
+            setLoading,
+            setError
+        });
+  
+        getData({
+          endpoint: 'Properties',
+          setData: setProperties,
           setLoading,
           setError
-      });
+        });
+  
+        getData({
+          endpoint: 'SystemCodeItem/BY-NAME/GENDER',
+          setData: setGender,
+          setLoading,
+          setError
+        });
+  
+      }
 
-      getData({
-        endpoint: 'Properties',
-        setData: setProperties,
-        setLoading,
-        setError
-      });
-
-      getData({
-        endpoint: 'SystemCodeItem/BY-NAME/GENDER',
-        setData: setGender,
-        setLoading,
-        setError
-      });
+    }, [showModal]);
 
 
-      getData({
+    // Get AssignUnit Data
+    useEffect(() => {
+      if(assignUnitModal){
+        getData({
         endpoint: 'SystemCodeItem/By-Name/TENANTSTATUS',
         setData: setTenantStatus,
+        setLoading,
+        setError
+      });
+  
+        
+      getData({
+        endpoint: 'Unit',
+        setData: setUnit,
         setLoading,
         setError
       });
@@ -111,17 +189,11 @@ const Tenant = () => {
         setLoading,
         setError
       });
-
-
-      getData({
-        endpoint: 'Unit',
-        setData: setUnit,
-        setLoading,
-        setError
-      });
-
-    }, []);
+      }
+    }, [assignUnitModal]);
     
+
+
 
   const columns = getColumns({
     endpoint: "Tenant",
@@ -135,6 +207,7 @@ const Tenant = () => {
     setActiveTenant: setActiveTenant,
     setOriginalData,
     setShowModal,
+    setAddPaymentModal,
     tenants
   });
 
@@ -144,9 +217,10 @@ const Tenant = () => {
     const { name, value } = e.target;
     setSelect(value);
 
-    // Fields that belong inside the `user` object
     const userFields = ['propertyId', 'genderId', 'firstName', 'lastName', 'emailAddress', 'mobileNumber', 'alternativeNumber', 'nationalId'];
     const assignUnitFields = ['tenantId', 'unitId', 'status', 'paymentMethodId', 'depositAmount', 'amountPaid', 'paymentDate'];
+    const addPaymentFields = ['tenantId', 'transactionType', 'utillityBillId', 'amount', 'monthFor', 'yearFor', 'paymentMethodId', 'paymentDate'];
+
 
     if (assignUnitFields.includes(name)) {
       setAssignUnitFormData(prev => ({
@@ -166,6 +240,11 @@ const Tenant = () => {
           ...prev.user,
           [name]: value
         }
+      }));
+    }else if(addPaymentFields.includes(name)){
+      setAddPaymentData(prev => ({
+        ...prev,
+        [name]: value
       }));
     } else {
       setFormData(prev => ({
@@ -210,6 +289,14 @@ const Tenant = () => {
     setIsEditMode(false);
     setFormData({});
     setShowModal(false);
+  };
+  
+
+  const handlePaymentModal = () => {
+    setFormError('');
+    setIsEditMode(false);
+    setFormData({});
+    setAddPaymentModal(false);
   };
 
 
@@ -349,6 +436,76 @@ const Tenant = () => {
 
           loadingBtn={loadingBtn}
         />
+
+
+
+            {/* ADD PAYMENT */}
+        <Modal
+          isOpen={addPaymentModal}
+          onClose={() => setAddPaymentModal(false)}
+          onSubmit={handleAssignUnitFormSubmit}
+          errorMessage={formError}
+          title={"Add Payment"}
+          loadingBtn={loadingBtn}
+        >
+          <Select
+            name="utillityBillId"
+            labelName="utillity Bill"
+            value={addPaymentData.utillityBillId || 0}
+            onChange={handleSelect}
+            options={utillityBill.map(p => ({ value: p.id, label: p.name }))}
+          />
+
+          <Select
+            name="transactionTypeId"
+            labelName="Type"
+            value={addPaymentData.transactionTypeId || 0}
+            onChange={handleSelect}
+            options={transactionType.map(p => ({ value: p.id, label: p.item }))}
+          />
+
+          <Input
+            type="number"
+            labelName="Amount"
+            placeholder="Enter amount Paid" 
+            name="amount" 
+            onChange={handleInputChange}
+            value={addPaymentData.amount || ""} 
+          />
+
+          <Select
+            name="monthFor"
+            labelName="Month For"
+            value={addPaymentData.MonthFor || 0}
+            onChange={handleSelect}
+            options={months.map(p => ({ value: p.id, label: p.name }))}
+          />
+
+          <Select
+            name="yearFor"
+            labelName="Year For"
+            value={addPaymentData.yearFor || 0}
+            onChange={handleSelect}
+            options={years.map(p => ({ value: p.id, label: p.name }))}
+          />
+
+          <Select
+            name="paymentMethodId"
+            labelName="payment Method"
+            value={addPaymentData.paymentMethodId || 0}
+            onChange={handleSelect}
+            options={paymentMethods.map(p => ({ value: p.id, label: p.item }))}
+          />
+
+          <Input
+            type="hidden"
+            name="tenantId" 
+            value={selectedId || ""} 
+          />
+        </Modal>
+
+
+
 
             {/* ASSIGN UNIT MODAL */}
         <Modal

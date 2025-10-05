@@ -13,6 +13,7 @@ export const getColumns = ({
   setFormData,
   setOriginalData,
   setShowModal,
+  setAddPaymentModal,
   data,
   setActiveTenant,
 }) => [
@@ -75,8 +76,8 @@ export const getColumns = ({
 
           <li onClick={() => {
             setSelectedId(rowId);
-            setDeleteModalOpen(true);
             setActiveRow(null);
+            setAddPaymentModal(true);
           }} className="actionLink">Add Payment</li>
 
           <li onClick={() => {

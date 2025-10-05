@@ -10,7 +10,7 @@ import NoDataImage from "../assets/NoData.png";
 
 const Table = ({ data, columns, loading, error }) => {
   const table = useReactTable({
-    data,
+    data: data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
