@@ -97,19 +97,15 @@ const Sidebar = ({width, setWidth}) => {
                 setActiveIndex={setActiveIndex}>
                 <DropDownList itemName="All Transactions" route={"/Transactions"} />
                 <DropDownList itemName="Unpaid Tenants" route={"/UnpaidTenants"} />
-                <DropDownList itemName="Invoices" route={"/Invoices"} />
+                <DropDownList itemName="Expense" route={"/Expenses"} />
               </NavLink>
 
-            <NavLink icon={<BiSolidReport className="navLinkIcon" />}
+            <NavLink route={"/Reports"} icon={<BiSolidReport className="navLinkIcon" />}
                 name="Reports"
-                arrow={true}
                 isOpen={width === initialWidth}
                 index={6}
                 activeIndex={activeIndex}
                 setActiveIndex={setActiveIndex}>
-              <DropDownList itemName="Expense" route={"/units"} />
-              <DropDownList itemName="Revenue" route={"/units"} />
-              <DropDownList itemName="Expense Vs Revenue" route={"/units"} />
             </NavLink>
 
              <NavLink icon={<IoIosNotifications className="navLinkIcon" />}
