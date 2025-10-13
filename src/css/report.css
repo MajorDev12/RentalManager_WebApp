@@ -1,0 +1,121 @@
+.reportSection {
+  margin-bottom: 1.5rem;
+}
+
+.reportSection .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reportSection .header .filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reportSection .header .filter p {
+  color: var(--lightTextColor);
+}
+
+/* CARD GRID */
+.reportSection .reportCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* CARD */
+.reportSection .reportCard {
+  background-color: var(--containerColor);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  padding: 1.2rem;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.reportSection .reportCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* CARD HEADER */
+.reportSection .reportCard .cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.reportSection .reportCard .cardTitle .cardSpan {
+  font-size: var(--smallFontSize);
+  color: var(--lightTextColor);
+}
+
+.reportSection .reportCard .cardTitle .title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--textColor);
+  margin-top: 2px;
+}
+
+.reportSection .reportCard .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reportSection .reportCard .icon .lineChart {
+  fill: var(--red);
+  stroke: var(--red);
+}
+
+
+.reportSection .reportCard .icon img {
+  width: 40px;
+  height: 40px;
+  opacity: 0.7;
+}
+
+/* AMOUNT + GROWTH */
+.reportSection .reportCard .cardAmount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reportSection .reportCard .cardAmount .amount {
+  font-size: var(--headerFontSize);
+  color: var(--textColor);
+}
+
+.reportSection .reportCard .cardGrowth {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.reportSection .reportCard .cardGrowth .growthValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--successColor, #28a745);
+}
+
+.reportSection .reportCard .cardGrowth .growthIcon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--successColor, #28a745);
+}
+
+
+                    /*  INCOME REPORT  */
+.reportSection .incomeChartContainer {
+  background-color: var(--containerColor);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  padding: 1.2rem;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}

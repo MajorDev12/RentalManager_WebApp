@@ -19,6 +19,7 @@ import AssignUnit from "./sections/AssignUnit";
 import Transaction from "./sections/Transaction";
 import UnpaidTenant from "./sections/UnpaidTenant";
 import Expense from "./sections/Expense";
+import Report from "./sections/Report";
 import NotFound from './sections/NotFound';
 
 function Layout() {
@@ -45,6 +46,7 @@ function Layout() {
           <Route path="/Transactions" element={<Transaction />} />
           <Route path="/UnpaidTenants" element={<UnpaidTenant />} />
           <Route path="/Expenses" element={<Expense />} />
+          <Route path="/Reports" element={<Report />} />
           <Route path="/Login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
