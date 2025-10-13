@@ -127,6 +127,8 @@
 }
 
 
+
+
 /* When sidebar is open */
 @media (max-width: 768px) {
   #sidebar {
@@ -137,4 +139,35 @@
     left: 0;
     box-shadow: 2px 0 5px rgba(0,0,0,0.3);
   }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 999;
+    }
+
+    .closeIcon {
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #fff;
+        margin-right: 10px;
+    }
+    #sidebar .header{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+    }
+    #sidebar .header .header-left{
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        align-items: center;
+    }
+
 }

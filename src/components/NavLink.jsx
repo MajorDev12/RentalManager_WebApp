@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from 'react-router-dom';
-import { IoIosArrowDown } from "react-icons/io";
-import { IoIosArrowForward } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 
 const NavLink = ({
   icon,
@@ -13,6 +12,7 @@ const NavLink = ({
   index,
   activeIndex,
   setActiveIndex,
+  onItemClick, // ✅ Add this prop here
 }) => {
   const [hovered, setHovered] = useState(false);
 
@@ -28,7 +28,13 @@ const NavLink = ({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <li className="link" onClick={arrow ? toggleDropdown : undefined}>
+      <li
+        className="link"
+        onClick={() => {
+          if (arrow) toggleDropdown();
+          if (!arrow && onItemClick) onItemClick(); // ✅ Close sidebar on normal links
+        }}
+      >
         <Link to={route}>
           {icon}
           {isOpen && <h3 className="name">{name}</h3>}
@@ -45,17 +51,23 @@ const NavLink = ({
         )}
       </li>
 
-      <div className={`dropdownContainer ${showDropdown ? "open" : ""} ${!isOpen ? "hoverMode" : ""}`}>
+      <div
+        className={`dropdownContainer ${
+          showDropdown ? "open" : ""
+        } ${!isOpen ? "hoverMode" : ""}`}
+      >
         <h3 className="headerName">{name}</h3>
-        {React.Children.map(children, child =>
+        {React.Children.map(children, (child) =>
           React.cloneElement(child, {
-            onSelect: () => setActiveIndex(null), 
+            onSelect: () => {
+              setActiveIndex(null);
+              if (onItemClick) onItemClick(); // ✅ Close sidebar when dropdown clicked
+            },
           })
         )}
       </div>
     </div>
   );
 };
-
 
 export default NavLink;
