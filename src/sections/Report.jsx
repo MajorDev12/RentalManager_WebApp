@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import CustomTabs from '../components/CustomTab';
 import LineChart from "../assets/lineChart.svg";
 import ExpenseLineChart from "../assets/ExpenseLineChart.svg";
 import ProfitLineChart from "../assets/ProfitLineChart.svg";
 import BreadCrumb from '../components/BreadCrumb';
-import PrimaryButton from '../components/PrimaryButton';
 import Select from '../components/Select';
 import { getData } from '../helpers/getData';
-import { months } from '../includes/months';
 import { years } from '../includes/years';
 import BarChart from '../components/BarChart';
 import '../css/report.css';
@@ -15,32 +14,65 @@ import '../css/report.css';
 
 
 const Report = () => {
-    const [expenses, setExpenses] = useState([]);
+    const [entityOptions, setEntityOptions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [activeKey, setActiveKey] = useState("property");
     const [filter, setFilter] = useState({
       year: 0,
       month: 0
     });
 
     useEffect(() => {
-      getData({
-          endpoint: 'Expense',
-          setData: setExpenses,
-          setLoading,
-          setError
-      });
+        const fetchData = async () => {
+            setLoading(true);
+            setError(null);
 
-    }, []);
+            try {
+            let endpoint = "";
+
+            switch (activeKey.toLowerCase()) {
+                case "property":
+                endpoint = "Property";
+                break;
+                case "tenant":
+                endpoint = "Tenant";
+                break;
+                case "unit":
+                endpoint = "Unit";
+                break;
+                default:
+                endpoint = "";
+            }
+
+            if (endpoint) {
+                const data = await getData({
+                endpoint,
+                setData: setEntityOptions,
+                setLoading,
+                setError
+                });
+            }
+            } catch (err) {
+            console.error("Error fetching data:", err);
+            setError("Failed to load data.");
+            } finally {
+            setLoading(false);
+            }
+        };
+
+        fetchData();
+        }, [activeKey]);
+
 
 
     const data = {
-        labels: ['Tenants', 'Vacants', 'Landlords'],
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [
         {
             label: 'Properties Distribution',
-            data: [200, 190, 10, 20],
-            backgroundColor: ['#77DD77', '#77BBDD', '#FFDD88', '#FF8899'],
+            data: [200, 190, 10, 20, 30, 45, 60, 70, 91, 125, 150, 170],
+            backgroundColor: ['#77DD77', '#77DD77', '#77DD77', '#77DD77'],
             borderColor: ['#ffffff'],
             borderWidth: 2,
         },
@@ -91,6 +123,7 @@ const Report = () => {
           <div className="filter">
             <p>Filter By:</p>
             <Select
+                className="yearSelect"
                 name="year"
                 value={filter.year || 0}
                 onChange={handleSelect}
@@ -99,7 +132,6 @@ const Report = () => {
                     ? years.map(y => ({ value: y.value, label: y.name }))
                     : [{ value: '', label: 'No Available Years', disabled: true }]
                 }
-                placeholder="Select Year"
             />
           </div>
         </div>
@@ -181,41 +213,40 @@ const Report = () => {
                 <div className="header">
                     <div className="filterSelects">
                         <p>Filter By:</p>
-                        <Select
-                            name="year"
-                            value={filter.year || 0}
-                            onChange={handleSelect}
-                            options={
-                                years && years.length > 0
-                                ? years.map(y => ({ value: y.value, label: y.name }))
-                                : [{ value: '', label: 'No Available Years', disabled: true }]
-                            }
-                            placeholder="Select Year"
-                        />
-                        <Select
-                            name="year"
-                            value={filter.year || 0}
-                            onChange={handleSelect}
-                            options={
-                                years && years.length > 0
-                                ? years.map(y => ({ value: y.value, label: y.name }))
-                                : [{ value: '', label: 'No Available Years', disabled: true }]
-                            }
-                            placeholder="Select Year"
-                        />
+                        <div className="selects">
+                            <Select
+                                name="selectedEntity"
+                                value={filter.selectedEntity || ""}
+                                onChange={handleSelect}
+                                disabled={loading}
+                                options={
+                                    entityOptions && entityOptions.length > 0
+                                    ? entityOptions.map(e => ({
+                                        value: e.id || e.value,
+                                        label: e.name || e.title || e.label
+                                        }))
+                                    : [{ value: "", label: `No Available ${activeKey}s`, disabled: true }]
+                                }
+                                text={loading ? "Loading..." : `--Select ${activeKey}--`}
+                            />
+
+                            <Select
+                                name="year"
+                                value={filter.year || 0}
+                                onChange={handleSelect}
+                                options={
+                                    years && years.length > 0
+                                    ? years.map(y => ({ value: y.value, label: y.name }))
+                                    : [{ value: '', label: 'No Available Years', disabled: true }]
+                                }
+                                text="--Year--"
+                            />
+                        </div>
                     </div>
                     <div className="filterButtons">
-                        <PrimaryButton
-                            name="Tenant"
-                            onClick={() => setActive(true) }
-                        />
-                        <PrimaryButton
-                            name="Unit"
-                            onClick={() => setActive(true) }
-                        />
-                        <PrimaryButton
-                            name="Property"
-                            onClick={() => setActive(true) }
+                        <CustomTabs
+                            activeKey={activeKey}
+                            onSelect={(k) => setActiveKey(k)}
                         />
                     </div>
                 </div>

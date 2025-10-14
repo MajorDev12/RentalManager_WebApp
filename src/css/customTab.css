@@ -1,0 +1,67 @@
+.tabsFilter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.customTabs {
+  position: relative;
+  display: flex;
+  background-color: var(--greyColor);
+  border-radius: 8px;
+  padding: 4px;
+  list-style: none;
+  overflow: hidden;
+}
+
+.customTabs .nav-item {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.customTabs .nav-link {
+  border: none;
+  background: transparent;
+  color: var(--lightTextColor);
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  text-align: center;
+  transition: color 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.customTabs .nav-link:hover {
+  color: var(--textColor);
+}
+
+.customTabs .nav-link.active {
+  color: var(--containerColor);
+}
+
+.customTabs::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(33.33% - 8px); 
+  background-color: var(--highlightColor);
+  border-radius: 6px;
+  z-index: 1;
+  transition: all 0.3s ease-in-out;
+}
+
+.customTabs[data-active="tenant"]::before {
+  transform: translateX(0%);
+}
+
+.customTabs[data-active="unit"]::before {
+  transform: translateX(100%);
+}
+
+.customTabs[data-active="property"]::before {
+  transform: translateX(200%);
+}

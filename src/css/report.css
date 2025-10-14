@@ -30,7 +30,7 @@
 .reportSection .reportCard {
   background-color: var(--containerColor);
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow);
   padding: 1.2rem;
   transition: all 0.2s ease-in-out;
   cursor: pointer;
@@ -111,11 +111,99 @@
 
 
                     /*  INCOME REPORT  */
+.reportSection .incomeReport {
+  box-shadow: var(--shadow);
+  margin-top: 5rem;
+  border-radius: 8px;
+}
+.reportSection .incomeReport .title {
+  font-size: var(--headerFontSize);
+  font-weight: 800;
+  color: var(--textColor);
+  margin-bottom: 1rem;
+}
 .reportSection .incomeChartContainer {
   background-color: var(--containerColor);
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 8px var(--boxShadow);
   padding: 1.2rem;
   transition: all 0.2s ease-in-out;
-  cursor: pointer;
+}
+.reportSection .incomeChartContainer .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap; /* makes it responsive */
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.reportSection .incomeChartContainer .filterSelects {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex: 1;
+}
+.reportSection .incomeChartContainer .filterSelects .selects{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.reportSection .incomeChartContainer .filterSelects .selectContainer {
+  width: 140px;
+}
+
+.reportSection .incomeChartContainer .filterSelects p {
+  margin: 0;
+  font-weight: 500;
+  color: var(--lightTextColor);
+}
+.reportSection .incomeChartContainer .filterButtons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  min-width: 250px;
+}
+.reportSection .incomeReport .customTabs {
+  width: 100%;
+}
+.reportSection .incomeReport .customTabs .nav-link {
+  border: none;
+  color: var(--lightTextColor);
+  background: transparent;
+  transition: all 0.2s ease-in-out;
+  font-weight: 500;
+  font-family: var(--fontFamily);
+}
+
+.reportSection .incomeReport .customTabs .nav-link.active {
+  color: var(--textColor);
+  background-color: var(--highlightColor);
+  font-weight: 600;
+}
+
+.reportSection .incomeReport .customTabs .nav-item {
+  margin-right: 0.5rem;
+}
+.reportSection .incomeChartContainer .chart {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.reportSection .incomeChartContainer canvas {
+  width: 100% !important;
+  height: 50vh !important;
+}
+
+
+@media (max-width: 768px) {
+  .reportSection .incomeChartContainer .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reportSection .incomeChartContainer .filterButtons {
+    justify-content: flex-start;
+  }
 }
