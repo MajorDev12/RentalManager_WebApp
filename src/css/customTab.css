@@ -47,8 +47,8 @@
   top: 4px;
   bottom: 4px;
   left: 4px;
-  width: calc(33.33% - 8px); 
-  background-color: var(--highlightColor);
+  width: calc(100% / 3 - 8px);
+  /* background-color: var(--highlightColor); */
   border-radius: 6px;
   z-index: 1;
   transition: all 0.3s ease-in-out;
@@ -62,6 +62,6 @@
   transform: translateX(100%);
 }
 
-.customTabs[data-active="property"]::before {
+.customTabs[data-active="properties"]::before {
   transform: translateX(200%);
 }

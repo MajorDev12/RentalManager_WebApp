@@ -8,13 +8,13 @@ const CustomTab = ({ activeKey, onSelect }) => {
         id="income-filter-tabs"
         activeKey={activeKey}
         onSelect={onSelect}
-        className="customTabs"
+        className="mb-3 customTabs"
+        data-active={activeKey.toLowerCase()}
         fill
-        data-active={activeKey}
       >
         <Tab eventKey="tenant" title="Tenant" />
         <Tab eventKey="unit" title="Unit" />
-        <Tab eventKey="property" title="Property" />
+        <Tab eventKey="properties" title="Properties" />
       </Tabs>
     </div>
   );

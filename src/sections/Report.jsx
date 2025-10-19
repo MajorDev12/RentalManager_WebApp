@@ -6,6 +6,7 @@ import ProfitLineChart from "../assets/ProfitLineChart.svg";
 import BreadCrumb from '../components/BreadCrumb';
 import Select from '../components/Select';
 import { getData } from '../helpers/getData';
+import { getDate } from '../helpers/getDate';
 import { years } from '../includes/years';
 import BarChart from '../components/BarChart';
 import '../css/report.css';
@@ -15,54 +16,58 @@ import '../css/report.css';
 
 const Report = () => {
     const [entityOptions, setEntityOptions] = useState([]);
+    const [incomeEntityData, setIncomeEntityData] = useState([]);
+    const [reportSummaryData, setReportSummaryData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [activeKey, setActiveKey] = useState("property");
-    const [filter, setFilter] = useState({
-      year: 0,
-      month: 0
+    const [activeKey, setActiveKey] = useState("properties");
+    const [totalSummaryFilter, setTotalSummaryFilter] = useState({totalSummaryYear: ''});
+    const [incomeFilter, setIncomeFilter] = useState({
+      incomeReportYear: getDate("year"),
+      incomeReportMonth: 0,
+      selectedEntity: ''
     });
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             setError(null);
-
             try {
-            let endpoint = "";
+                let endpoint = "";
+               switch (activeKey) {
+                    case "properties":
+                    endpoint = "Properties";
+                    break;
 
-            switch (activeKey.toLowerCase()) {
-                case "property":
-                endpoint = "Property";
-                break;
-                case "tenant":
-                endpoint = "Tenant";
-                break;
-                case "unit":
-                endpoint = "Unit";
-                break;
-                default:
-                endpoint = "";
-            }
+                    case "tenant":
+                    endpoint = "Tenant";
+                    break;
 
-            if (endpoint) {
-                const data = await getData({
-                endpoint,
-                setData: setEntityOptions,
-                setLoading,
-                setError
-                });
-            }
+                    case "unit":
+                    endpoint = "Unit";
+                    break;
+
+                    default:
+                    endpoint = "";
+                }
+                if (endpoint) {
+                    await getData({
+                    endpoint: endpoint,
+                    setData: setEntityOptions,
+                    setLoading,
+                    setError
+                    });
+                }
             } catch (err) {
-            console.error("Error fetching data:", err);
-            setError("Failed to load data.");
+                console.error("Error fetching data:", err);
+                setError("Failed to load data.");
             } finally {
-            setLoading(false);
+                setLoading(false);
             }
         };
 
         fetchData();
-        }, [activeKey]);
+    }, [activeKey]);
 
 
 
@@ -71,10 +76,9 @@ const Report = () => {
         datasets: [
         {
             label: 'Properties Distribution',
-            data: [200, 190, 10, 20, 30, 45, 60, 70, 91, 125, 150, 170],
-            backgroundColor: ['#77DD77', '#77DD77', '#77DD77', '#77DD77'],
-            borderColor: ['#ffffff'],
-            borderWidth: 2,
+            data: incomeEntityData,
+            backgroundColor: ['#77DD77'],
+            borderWidth: 1,
         },
         ],
     };
@@ -92,23 +96,60 @@ const Report = () => {
    };
 
 
-
-
-    const handleInputChange = (field, value) => {
-      setFormData(prev => ({
-        ...prev,
-        [field]: value
-      }));
-    };
-
-
     const handleSelect = (e) => {
-    const { name, value } = e.target;
-      setFilter(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    };
+        const { name, value } = e.target;
+
+        const totalSummaryFilter = ["totalSummaryYear"];
+        const incomeFilter = ["incomeReportYear", "incomeReportMonth", "selectedEntity"];
+
+        if(incomeFilter.includes(name)){
+            setIncomeFilter(prev => ({
+                ...prev,
+                [name]: value
+            }));
+
+            if(name === "selectedEntity"){
+                let fetchEndpoint = "";
+                const yearParam = incomeReportYear.value ? `&year=${incomeReportYear.value}` : '';
+                if(activeKey.toLowerCase() === "properties"){
+                    fetchEndpoint = `Report/IncomeSummary?reportType=Income&propertyId=${value}${yearParam}`;
+                }else if(activeKey.toLowerCase() === "tenant"){
+                    fetchEndpoint = `ReportIncomeSummary/ByTenant/${value}`;
+                }else if(activeKey.toLowerCase() === "unit"){
+                    fetchEndpoint = `ReportIncomeSummary/ByUnit/${value}`;
+                }
+
+                if(fetchEndpoint){
+                    getData({
+                        endpoint: fetchEndpoint,
+                        setData: setIncomeEntityData,
+                        setLoading,
+                        setError
+                    });
+                }
+            }
+
+            if(name === "incomeReportYear"){
+
+            }
+
+        }else if(totalSummaryFilter.includes(name)){
+            setTotalSummaryFilter(prev => ({
+                ...prev,
+                [name]: value
+            }));
+            if(name === "totalSummaryYear"){
+                getData({
+                    endpoint: `Property/${value}`,
+                    setData: setReportSummaryData,
+                    setLoading,
+                    setError
+                });
+            }
+        };
+    }
+
+
 
 
 
@@ -124,8 +165,8 @@ const Report = () => {
             <p>Filter By:</p>
             <Select
                 className="yearSelect"
-                name="year"
-                value={filter.year || 0}
+                name="totalSummaryYear"
+                value={totalSummaryFilter.totalSummaryYear || 0}
                 onChange={handleSelect}
                 options={
                     years && years.length > 0
@@ -133,6 +174,7 @@ const Report = () => {
                     : [{ value: '', label: 'No Available Years', disabled: true }]
                 }
             />
+            
           </div>
         </div>
 
@@ -216,23 +258,23 @@ const Report = () => {
                         <div className="selects">
                             <Select
                                 name="selectedEntity"
-                                value={filter.selectedEntity || ""}
+                                value={incomeFilter.selectedEntity || ""}
                                 onChange={handleSelect}
                                 disabled={loading}
                                 options={
                                     entityOptions && entityOptions.length > 0
                                     ? entityOptions.map(e => ({
-                                        value: e.id || e.value,
-                                        label: e.name || e.title || e.label
+                                        value: e.id,
+                                        label: e.name || e.fullName
                                         }))
-                                    : [{ value: "", label: `No Available ${activeKey}s`, disabled: true }]
+                                    : [{ value: "", label: `No Available ${activeKey}`, disabled: true }]
                                 }
                                 text={loading ? "Loading..." : `--Select ${activeKey}--`}
                             />
 
                             <Select
-                                name="year"
-                                value={filter.year || 0}
+                                name="incomeReportYear"
+                                value={incomeFilter.incomeReportYear || 0}
                                 onChange={handleSelect}
                                 options={
                                     years && years.length > 0
