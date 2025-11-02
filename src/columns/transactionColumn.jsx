@@ -16,11 +16,12 @@ export const getColumns = ({
   setShowModal,
   data
 }) => [
+  { header: 'Tenant Names', accessorKey: 'userName' },
   { 
     header: 'Type', 
     accessorKey: 'transactionType',
     cell: info => {
-      const status = info.getValue();
+      var status = info.getValue();
       let Icon = null;
       let iconColor = '';
 
@@ -28,6 +29,7 @@ export const getColumns = ({
         case 'charge':
           Icon = TiArrowDown;
           iconColor = 'red';
+          status = "Invoice";
           break;
         case 'payment':
           Icon = TiArrowUp;

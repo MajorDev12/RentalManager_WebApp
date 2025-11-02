@@ -75,6 +75,7 @@ const Sidebar = ({ width, setWidth }) => {
           >
             <DropDownList itemName="All Properties" route={"/Properties"} />
             <DropDownList itemName="Utility Bills" route={"/UtilityBill"} />
+            <DropDownList itemName="Add Unit Type" route={"/UnitType"} />
           </NavLink>
 
           <NavLink
@@ -89,7 +90,6 @@ const Sidebar = ({ width, setWidth }) => {
           >
             <DropDownList itemName="All Houses" route={"/units"} />
             <DropDownList itemName="Vacants" route={"/units"} />
-            <DropDownList itemName="Add Unit Type" route={"/UnitType"} />
           </NavLink>
 
           <NavLink

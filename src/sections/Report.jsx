@@ -83,17 +83,17 @@ const Report = () => {
         ],
     };
 
-  const options = {
-    cutout: '70%',
-    plugins: {
-        legend: {
-        display: false,
+    const options = {
+        cutout: '70%',
+        plugins: {
+            legend: {
+            display: false,
+            },
+            tooltip: {
+            enabled: false,
+            },
         },
-        tooltip: {
-        enabled: false,
-        },
-        },
-   };
+    };
 
 
     const handleSelect = (e) => {

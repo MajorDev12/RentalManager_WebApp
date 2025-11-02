@@ -29,6 +29,7 @@ html {
   --HeaderColor: #212529;
   --iconColor: #767680;
   --greyColor: #eeeeed;
+  --cancelBtnColor: #FCFEF5;
 
   --shadow: 0 2px 2px #0000003b;
   --blue: #77BBDD;
@@ -54,6 +55,7 @@ html {
   --borderLine: #3a3f4280;
   --iconColor: #b0b3b8;
   --greyColor: #3a3f4280;
+  --cancelBtnColor: #FF8899;
 }
 
 

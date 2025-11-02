@@ -551,6 +551,7 @@ const Tenant = () => {
                 name="status"
                 labelName="Tenant Status"
                 value={assignUnitFormData.status || activeTenant?.tenantStatus || 0}
+                disabled={activeTenant?.tenantStatus.toLowerCase() == "active"}
                 onChange={handleSelect}
                 options={tenantStatus
                   .map(p => ({ value: p.id, label: p.item, disabled: p.item === activeTenant?.tenantStatus}))

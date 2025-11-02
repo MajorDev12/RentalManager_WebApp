@@ -78,13 +78,19 @@ export const getColumns = ({
             setSelectedId(rowId);
             setActiveRow(null);
             setAddPaymentModal(true);
+          }} className="actionLink">Add Invoice</li>
+
+          <li onClick={() => {
+            setSelectedId(rowId);
+            setActiveRow(null);
+            setAddPaymentModal(true);
           }} className="actionLink">Add Payment</li>
 
           <li onClick={() => {
             setSelectedId(rowId);
             setDeleteModalOpen(true);
             setActiveRow(null);
-          }} className="actionLink">Delete</li>
+          }} className="actionLink">Status</li>
         </>
       );
 

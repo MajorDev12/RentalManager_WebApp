@@ -33,6 +33,7 @@
 }
 .modalContent .header .cancelIcon{
     cursor: pointer;
+    color: var(--textColor);
 }
 .modalContent .modalForm {
   max-height: 80vh;
@@ -60,7 +61,7 @@
 .cancelBtn {
    width: 120px;
     height: 40px;
-    background-color: var(--sideNavTextColor);
+    background-color: var(--cancelBtnColor);
     border: 1px solid var(--borderColor);
     border-radius: 10px;
     cursor: pointer;
