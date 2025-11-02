@@ -13,6 +13,7 @@ export const getColumns = ({
   setShowModal,
   data
 }) => [
+  { header: 'propertyname', accessorKey: 'propertyName' },
   { header: 'Name', accessorKey: 'name' },
   { header: 'Amount', accessorKey: 'amount' },
   { header: 'Notes', accessorKey: 'notes' },

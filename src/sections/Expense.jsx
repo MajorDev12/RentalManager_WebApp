@@ -5,6 +5,7 @@ import Table from '../components/Table';
 import { getColumns } from "../columns/ExpenseColumn";
 import Modal from '../components/Modal';
 import DeleteModal from '../components/DeleteModal';  
+import Select from '../components/Select';
 import Input from '../components/Input';
 import Textarea from '../components/Textarea';
 import { getData } from '../helpers/getData';
@@ -15,11 +16,13 @@ import { handleDelete } from '../helpers/deleteData';
 
 const Expense = () => {
     const [expenses, setExpenses] = useState([]);
+    const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [activeRow, setActiveRow] = useState(null);
     const [selectedId, setSelectedId] = useState(null);
+    const [select, setSelect] = useState('');
     const [isEditMode, setIsEditMode] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(null);
     const [originalData, setOriginalData] = useState(null);
@@ -28,13 +31,21 @@ const Expense = () => {
     const [formData, setFormData] = useState({
       name: '',
       amount: 0,
-      notes: ''
+      notes: '',
+      propertyId: 0
     });
 
     useEffect(() => {
       getData({
           endpoint: 'Expense',
           setData: setExpenses,
+          setLoading,
+          setError
+      });
+
+      getData({
+          endpoint: 'Properties',
+          setData: setProperties,
           setLoading,
           setError
       });
@@ -72,6 +83,16 @@ const Expense = () => {
       }));
     };
 
+
+
+    const handleSelect = (e) => {
+      const { name, value } = e.target;
+      setSelect(value);
+        setFormData(prev => ({
+          ...prev,
+          [name]: value
+        }));
+    };
 
 
 
@@ -170,6 +191,13 @@ const Expense = () => {
             loadingBtn={loadingBtn}
             isEditMode={isEditMode}
           >
+            <Select
+              name="propertyId"
+              labelName="Property Name"
+              value={formData.propertyId || ''}
+              onChange={handleSelect}
+              options={properties.map(p => ({ value: p.id, label: p.name }))}
+            />
             <Input
               type="text"
               name="name"
