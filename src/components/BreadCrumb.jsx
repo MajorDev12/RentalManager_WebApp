@@ -27,10 +27,12 @@ const BreadCrumb = ({ greetings = "Good Morning, Admin" }) => {
     <div id="breadCrumb">
       <h1 className="greetings">{greetings}</h1>
       <div className="navigator">
-        <p onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Dashboard</p>
-        {pathnames.map((name, index) => (
+        <p onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Home</p>
+        {
+        pathnames.length >= 1
+        ? pathnames.map((name, index) => (
           <React.Fragment key={index}>
-            <IoIosArrowForward />
+            <IoIosArrowForward className='icon' />
             <p
               onClick={() => handleClick(index)}
               className={index === pathnames.length - 1 ? 'active' : ''}
@@ -39,7 +41,12 @@ const BreadCrumb = ({ greetings = "Good Morning, Admin" }) => {
               {segmentNameMap[name.toLowerCase()] || decodeURIComponent(name)}
             </p>
           </React.Fragment>
-        ))}
+        ))
+        : 
+        <>
+          <IoIosArrowForward className='icon' /> 
+        </>
+      }
       </div>
     </div>
   );

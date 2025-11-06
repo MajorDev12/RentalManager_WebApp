@@ -21,6 +21,7 @@ import { years } from '../includes/years';
 const Transaction = () => {
     const [activeRow, setActiveRow] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showPaymentBulkModal, setshowPaymentBulkModal] = useState(false);
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -39,18 +40,25 @@ const Transaction = () => {
     const [paymentMethods, setPaymentMethods] = useState([]);
     const [units, setUnits] = useState([]);
     const [tenants, setTenants] = useState([]);
-    const [formData, setFormData] = useState({
+    const [invoiceFormData, setInvoiceFormData] = useState({
       propertyId: 0,
       userId: 0,
-      unitId: 0,
-      amount: 0,
-      transactionTypeId: 0,
-      transactionCategoryId: 0,
+      utilityBillId: 0,
       monthFor: 0,
       yearFor: 0,
-      paymentMethodId: 0,
       notes: ''
     });
+
+
+    const [actionOptions, setActionOptions] = useState({
+      bulkRentInvoice: '',
+      bulkPayment: '',
+      bulkReccuringUtilities: '',
+      monthFor: '',
+      yearFor: '',
+      notes: ''
+    });
+
 
 
    const handleSelect = (e) => {
@@ -61,21 +69,25 @@ const Transaction = () => {
         [name]: value
       }));
     };
- 
 
-    const handleBulkCloseModal = () => {
-      setFormError('');
-      setIsEditMode(false);
-      setFormData({});
-      setShowBulkModal(false);
-    }
+
+    const handleSelectOptions = (e) => {
+      const { name, value } = e.target;
+        setSelect(value);
+        setInvoiceFormData(prev => ({
+          ...prev,
+          [name]: value
+        }));
+        setShowBulkModal(true);
+    };
+ 
 
 
     const handleCloseModal = () => {
       setFormError('');
       setIsEditMode(false);
-      setFormData({});
-      setShowModal(false);
+      setInvoiceFormData({});
+      setShowBulkModal(false);
     };
 
 
@@ -87,88 +99,43 @@ const Transaction = () => {
           setLoading,
           setError
       });
+    }, []);
 
+
+    useEffect(() => {
+      if (!invoiceFormData.propertyId || invoiceFormData.propertyId <= 0) {
+          setTenants([]);
+          return;
+      }
 
       getData({
-          endpoint: 'Tenant',
+          endpoint: `Tenants/ByProperty/${invoiceFormData.propertyId}`,
           setData: setTenants,
           setLoading,
           setError
       });
 
-      getData({
-          endpoint: 'SystemCodeItem/BY-NAME/TRANSACTIONTYPE',
-          setData: setTransactionTypes,
-          setLoading,
-          setError
-      });
-
-      getData({
-          endpoint: 'SystemCodeItem/BY-NAME/TRANSACTIONCATEGORY',
-          setData: setTransactionCategories,
-          setLoading,
-          setError
-      });
-
-      getData({
-          endpoint: 'SystemCodeItem/BY-NAME/PAYMENTMETHOD',
-          setData: setPaymentMethods,
-          setLoading,
-          setError
-      });
-
-    }, []);
-
-
-    useEffect(() => {
-      if (!formData.propertyId || formData.propertyId <= 0) {
-          setUnits([]);
-          return;
-      }
-
-      getData({
-          endpoint: `Unit/By-Property/${formData.propertyId}`,
-          setData: setUnits,
-          setLoading,
-          setError
-      });
-
-    }, [formData.propertyId]);
-
+    }, [invoiceFormData.propertyId]);
 
 
 
     useEffect(() => {
-      if(formData.userId){
-
-        var tenant = tenants.find(u => u.user.id == formData.userId);
-
+      if (actionOptions.bulkRentInvoice) {
         getData({
-            endpoint: `Properties/${tenant.user.propertyId}`,
-            setData: setProperty,
-            setLoading,
-            setError
-        });
-
-        getData({
-          endpoint: `Unit/${tenant.unitId}`,
-          setData: setUnits,
+          endpoint: `Properties`,
+          setData: setProperties,
           setLoading,
           setError
         });
-
-
-      }else{
-        getData({
-            endpoint: `Properties`,
-            setData: setProperties,
-            setLoading,
-            setError
-        });
-
+        return;
       }
 
-    }, [formData.userId]);
+      setProperties([]);
+
+    }, [actionOptions]);
+
+    
+
 
 
 
@@ -179,7 +146,7 @@ const Transaction = () => {
     setSelectedId,
     setIsEditMode,
     setDeleteModalOpen,
-    setFormData,
+    setInvoiceFormData,
     setOriginalData,
     setShowModal,
     transactions,
@@ -199,19 +166,15 @@ const Transaction = () => {
 
 
   const validateForm = () => {
-      const { propertyId, unitId, amount, transactionCategoryId, transactionTypeId, paymentMethodId, monthFor, yearFor, notes } = formData;
-      if (!propertyId || !amount || !transactionCategoryId || !transactionTypeId || !monthFor || !yearFor) {
+      const { propertyId, monthFor, yearFor, notes } = invoiceFormData;
+      if (!propertyId || !monthFor || !yearFor) {
         return "Please fill in all required fields.";
       }
       if(!validateTextInput(notes, true)){
         return "Notes cannot be empty";
       }
 
-      if(isNaN(amount)){
-        return "Enter a valid amount";
-      }
-
-      if(isNaN(propertyId) || isNaN(unitId) || isNaN(transactionCategoryId) || isNaN(transactionTypeId) || isNaN(paymentMethodId) || isNaN(monthFor) || isNaN(yearFor)){
+      if(isNaN(propertyId) || isNaN(monthFor) || isNaN(yearFor)){
         return "Please enter valid values";
       }
       return '';
@@ -228,7 +191,6 @@ const handleFormSubmit = (e) => {
     endpoint: 'Transaction',
     setFormError,
     setLoadingBtn,
-    setFormData,
     setShowModal,
     setData: setTransactions,
     getdata: true,
@@ -264,17 +226,17 @@ const handleFormSubmit = (e) => {
       <div className="header">
           <h3>List of all Transactions</h3>
           <div className="row">
-            <PrimaryButton
-              name="Add Rent"
-              onClick={() => setShowModal(true) }
-            />
-          <PrimaryButton
-              name="Add Bulk"
-              onClick={() => setShowBulkModal(true) }
-            />
-            <PrimaryButton
-              name="Add Utility"
-              onClick={() => setShowBulkModal(true) }
+            <Select
+              name="propertyId"
+              value={invoiceFormData.propertyId || ''}
+              disabled={invoiceFormData.userId}
+              onChange={handleSelectOptions}
+              options={[
+                { value: "addBulkInvoice", label: "Add Bulk Invoice" },
+                { value: "addRecurringUtilities", label: "Add Recurring Utilities" },
+                { value: "addExpense", label: "Add Expense" },
+              ]}
+              text='-- Actions --'
             />
           </div>
         </div>
@@ -304,105 +266,43 @@ const handleFormSubmit = (e) => {
 
 
 
-      {/* BULK MODAL */}
+      {/* ADD BULK INVOICE MODAL */}
       <Modal
         isOpen={showBulkModal}
-        onClose={handleBulkCloseModal}
+        onClose={handleCloseModal}
         onSubmit={isEditMode ? handleUpdateSubmit : handleFormSubmit}
         errorMessage={formError}
-        title={isEditMode ? "Update Bulk" : "Add Bulk"}
+        title={isEditMode ? "Update Invoice" : "Add Invoice"}
         loadingBtn={loadingBtn}
         isEditMode={isEditMode}
       >
         <Select
-          name="userId"
-          labelName="Tenant"
-          value={formData.userId || ''}
+          name="propertyId"
+          labelName="Property Name"
+          value={invoiceFormData.propertyId || ''}
+          disabled={invoiceFormData.userId}
           onChange={handleSelect}
-          options={tenants.map(t => ({ value: t.user.id, label: t.fullName }))}
+          options={
+            properties && properties.length > 0
+            ? properties.map(p => ({ value: p.id, label: p.name }))
+            : [{ value: '', label: 'No Available Properties', disabled: true }]
+          }
         />
-      </Modal>
-
-
-
-      <Modal
-          isOpen={showModal}
-          onClose={handleCloseModal}
-          onSubmit={isEditMode ? handleUpdateSubmit : handleFormSubmit}
-          errorMessage={formError}
-          title={isEditMode ? "Update Transaction" : "Add Transaction"}
-          loadingBtn={loadingBtn}
-          isEditMode={isEditMode}
-        >
-          <Select
-            name="userId"
-            labelName="Tenant"
-            value={formData.userId || ''}
-            onChange={handleSelect}
-            options={tenants.map(t => ({ value: t.user.id, label: t.fullName }))}
-          />
-
-          <Select
-            name="propertyId"
-            labelName="Property Name"
-            value={property.id || formData.propertyId || ''}
-            disabled={formData.userId}
-            onChange={handleSelect}
-            options={
-              properties && properties.length > 0
-              ? properties.map(p => ({ value: p.id, label: p.name }))
-              : [{ value: '', label: 'No Available Units', disabled: true }]
-            }
-          />
-          <Select
-            name="unitId"
-            labelName="Unit"
-            value={formData.unitId || ''}
-            onChange={handleSelect}
-            options={
-              units && units.length > 1
-                ? units.map(p => ({ value: p.id, label: p.name }))
-                : units && units.length == 1
-                ? { value: units.id, label: units.name, disabled: true }
-                : [{ value: '', label: 'No Available Units', disabled: true }]
-            }
-            text={formData.propertyId ? "Select Unit" : "Choose Property First"}
-          />
-
-          <Input
-            type="text"
-            name="amount"
-            placeholder="Enter Amount"
-            value={formData.amount || ''}
-            labelName="Amount Paid"
-            onChange={handleInputChange}
-          />
-          <Select
-            name="transactionTypeId"
-            labelName="Type"
-            value={formData.transactionTypeId || ''}
-            onChange={handleSelect}
-            options={
-              transactionTypes && transactionTypes.length > 0
-                ? transactionTypes.map(p => ({ value: p.id, label: p.item }))
-                : [{ value: '', label: 'No Available transaction types', disabled: true }]
-            }
-          />
-          <Select
-            name="transactionCategoryId"
-            labelName="Category"
-            value={formData.transactionCategoryId || ''}
-            onChange={handleSelect}
-            options={
-              transactionCategories && transactionCategories.length > 0
-                ? transactionCategories.map(p => ({ value: p.id, label: p.item }))
-                : [{ value: '', label: 'No Available transaction categories', disabled: true }]
-            }
-          />
-          <Select
+        <Select
+          name="utilityBillId"
+          labelName="Utillity Type"
+          value={invoiceFormData.utilityBillId || ''}
+          onChange={handleSelect}
+          options={
+            transactionCategories && transactionCategories.length > 0
+              ? transactionCategories.map(p => ({ value: p.id, label: p.item }))
+              : [{ value: '', label: 'No Available transaction categories', disabled: true }]
+          }
+        />
+        <Select
             name="monthFor"
             labelName="Month For"
-            value={formData.monthFor || ''}
+            value={invoiceFormData.monthFor || ''}
             onChange={handleSelect}
             options={
               months && months.length > 0
@@ -413,7 +313,7 @@ const handleFormSubmit = (e) => {
           <Select
             name="yearFor"
             labelName="Year For"
-            value={formData.yearFor || ''}
+            value={invoiceFormData.yearFor || ''}
             onChange={handleSelect}
             options={
               years && years.length > 0
@@ -421,25 +321,11 @@ const handleFormSubmit = (e) => {
                 : [{ value: '', label: 'No Available Years', disabled: true }]
             }
           />
-          <Select
-            name="paymentMethodId"
-            labelName="Payment Method"
-            value={formData.paymentMethodId || ''}
-            onChange={handleSelect}
-            options={
-              paymentMethods && paymentMethods.length > 0
-                ? paymentMethods.map(pm => ({ value: pm.id, label: pm.item }))
-                : [{ value: '', label: 'No Available Payment Methods', disabled: true }]
-            }
-          />
-          <TextArea
-            name="notes"
-            labelName="Notes"
-            placeholder="Enter a description"
-            value={formData.notes || ''}
-            onChange={handleInputChange}
-          />
-          </Modal>
+      </Modal>
+
+
+
+
           
     </section>
   </>

@@ -1,4 +1,5 @@
 import ActionCell from "../components/ActionCell";
+import PropertyImage from "../assets/TenantDefaultProfile.png";
 import { Link } from 'react-router-dom';
 import '../css/tenant.css';
 
@@ -17,6 +18,19 @@ export const getColumns = ({
   data,
   setActiveTenant,
 }) => [
+  {
+    header: 'Img',
+    accessorKey: 'profilePhotoUrl',
+    cell: info => (
+      <img
+        src={info.getValue() || PropertyImage}
+        alt="property"
+        width="25"
+        height="25"
+        style={{ borderRadius: "8px" }}
+      />
+    ),
+  },
   { header: 'Full Names', accessorKey: 'fullName' },
   { header: 'Email Address', accessorKey: 'emailAddress' },
   { header: 'Mobile Number', accessorKey: 'mobileNumber' },

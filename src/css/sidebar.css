@@ -23,6 +23,10 @@
     color: var(--HeaderColor);
     border-bottom: 1px solid var(--borderColor);
 }
+#sidebar .header .header-left{
+    display: flex;
+    flex-direction: row;
+}
 #sidebar .header .logoIcon{
     margin-right: 20px;
     font-size: 30px;
@@ -129,6 +133,7 @@
 
 
 
+
 /* When sidebar is open */
 @media (max-width: 768px) {
   #sidebar {
@@ -159,7 +164,7 @@
     #sidebar .header{
         display: flex;
         flex-direction: row;
-        justify-content: space-around;
+        justify-content: center;
         align-items: center;
         width: 100%;
     }

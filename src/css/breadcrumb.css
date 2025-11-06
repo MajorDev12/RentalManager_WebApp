@@ -24,3 +24,6 @@
 #breadCrumb .navigator .active{
     color: var(--lightTextColor);
 }
+#breadCrumb .navigator .icon{
+    color: var(--iconColor);
+}

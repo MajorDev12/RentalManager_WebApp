@@ -8,7 +8,7 @@ import "../css/table.css";
 import Spinner from '../components/Spinner';
 import NoDataImage from "../assets/NoData.png";
 
-const Table = ({ data, columns, loading, error }) => {
+const Table = ({ data, columns, loading, onclickItem, error }) => {
   const table = useReactTable({
     data: data || [],
     columns,
@@ -41,7 +41,7 @@ const Table = ({ data, columns, loading, error }) => {
                 alt="No data"
                 style={{ maxWidth: "350px", margin: "0 auto" }}
               />
-              <p>{error}</p>
+              <p>{error ? error : "something went wrong"}</p>
             </td>
           </tr>
         ) : loading ? (
@@ -63,7 +63,14 @@ const Table = ({ data, columns, loading, error }) => {
           </tr>
         ) : (
           table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
+            <tr 
+              key={row.id} 
+              onClick={(e) => {
+                // If the user clicked something inside a button, link, or icon, ignore
+                if (e.target.closest('svg') || e.target.closest('a') || e.target.closest('li')) return;
+                onclickItem?.(row);
+              }}
+              style={{ cursor: onclickItem ? "pointer" : "default" }}>
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

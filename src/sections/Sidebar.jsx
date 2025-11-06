@@ -41,7 +41,7 @@ const Sidebar = ({ width, setWidth }) => {
       <div id="sidebar" style={{ width: `${width}px` }}>
         <div className="header">
           <div className="header-left">
-            {width === initialWidth && <MdDashboard className="logoIcon" />}
+            <MdDashboard className="logoIcon" />
             {width === initialWidth && <h3 className="logoName">REAL ESTATE</h3>}
           </div>
 

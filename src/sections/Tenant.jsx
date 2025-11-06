@@ -408,12 +408,14 @@ const Tenant = () => {
     <BreadCrumb  greetings="" />
     <div id="Section">
       <div className="header">
-          <h3>List of all Tenants</h3>
+        <h3>List of all Tenants</h3>
+        <div className="row">
           <PrimaryButton
-            name="Add New"
+            name="Add Tenant"
             onClick={() => setShowModal(true) }
           />
         </div>
+      </div>
 
       <div className="TableContainer">
           <Table data={tenants} columns={columns} loading={loading}  error={error}/>
@@ -504,6 +506,46 @@ const Tenant = () => {
           />
         </Modal>
 
+
+    {/* ADD PAYMENT */}
+        <Modal
+          isOpen={addPaymentModal}
+          onClose={() => setAddPaymentModal(false)}
+          onSubmit={handleAssignUnitFormSubmit}
+          errorMessage={formError}
+          title={"Add Invoice"}
+          loadingBtn={loadingBtn}
+        >
+          <Select
+            name="utillityBillId"
+            labelName="utillity Bill"
+            value={addPaymentData.utillityBillId || 0}
+            onChange={handleSelect}
+            options={utillityBill.map(p => ({ value: p.id, label: p.name }))}
+          />
+
+          <Select
+            name="monthFor"
+            labelName="Month For"
+            value={addPaymentData.MonthFor || 0}
+            onChange={handleSelect}
+            options={months.map(p => ({ value: p.id, label: p.name }))}
+          />
+
+          <Select
+            name="yearFor"
+            labelName="Year For"
+            value={addPaymentData.yearFor || 0}
+            onChange={handleSelect}
+            options={years.map(p => ({ value: p.id, label: p.name }))}
+          />
+
+          <Input
+            type="hidden"
+            name="tenantId" 
+            value={selectedId || ""} 
+          />
+        </Modal>
 
 
 

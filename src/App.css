@@ -56,10 +56,26 @@ body #app #rightSide{
     justify-content: space-between;
     align-items: center;
 }
+#Section .header .row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
 #Section h3{
     font-family: var(--fontFamily);
-    font-size: 20px;
+    font-size: var(--headerFontSize);
     font-weight: 400;
     color: var(--textColor);
     padding: 10px;
+}
+
+
+
+@media (max-width: 768px) {
+  #Section .header{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+  }
 }

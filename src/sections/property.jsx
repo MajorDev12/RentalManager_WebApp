@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MdArrowCircleDown, MdArrowCircleUp } from "react-icons/md";
 import BreadCrumb from '../components/BreadCrumb';
 import PrimaryButton from '../components/PrimaryButton';
@@ -18,6 +19,7 @@ import Textarea from '../components/Textarea';
 import Select from '../components/Select';
 
 const Property = () => {
+  const navigate = useNavigate();
   const [activeRow, setActiveRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [properties, setProperties] = useState([]);
@@ -162,6 +164,11 @@ const handleUpdateSubmit = (e) => {
   }
  }
 
+  const handleRowClick = (row) => {
+      navigate(`/properties/${row.id}`);
+  };
+
+
 
 
 
@@ -178,7 +185,7 @@ const handleUpdateSubmit = (e) => {
         </div>
 
         <div className="TableContainer">
-          <Table data={properties} columns={columns} loading={loading}  error={error}/>
+          <Table data={properties} onclickItem={handleRowClick} columns={columns} loading={loading}  error={error}/>
         </div>
 
 
