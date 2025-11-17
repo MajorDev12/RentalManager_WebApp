@@ -39,17 +39,18 @@ const Sidebar = ({ width, setWidth }) => {
       )}
 
       <div id="sidebar" style={{ width: `${width}px` }}>
+          { width >= 68 &&
         <div className="header">
           <div className="header-left">
             <MdDashboard className="logoIcon" />
             {width === initialWidth && <h3 className="logoName">REAL ESTATE</h3>}
           </div>
-
           {/* Close Icon for mobile */}
           {window.innerWidth <= 768 && width === initialWidth && (
             <FaXmark className="closeIcon" onClick={handleCloseSidebar} />
           )}
         </div>
+        }
 
         <ul className="navLinks">
           <NavLink

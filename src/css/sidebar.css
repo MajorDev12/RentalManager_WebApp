@@ -156,23 +156,25 @@
     }
 
     .closeIcon {
-        font-size: 1.2rem;
+        float: right;
+        font-size: var(--headerFontSize);
         cursor: pointer;
-        color: #fff;
+        color: var(--textColor);
         margin-right: 10px;
     }
     #sidebar .header{
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        width: 100%;
+        /* background-color: blueviolet; */
     }
     #sidebar .header .header-left{
         display: flex;
         flex-direction: row;
         justify-content: start;
         align-items: center;
+        /* background-color: aqua; */
     }
 
 }
