@@ -518,7 +518,7 @@ const Tenant = () => {
         >
           <Select
             name="utillityBillId"
-            labelName="utillity Bill"
+            labelName="Item Type"
             value={addPaymentData.utillityBillId || 0}
             onChange={handleSelect}
             options={utillityBill.map(p => ({ value: p.id, label: p.name }))}

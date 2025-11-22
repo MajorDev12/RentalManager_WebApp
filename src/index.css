@@ -38,6 +38,7 @@ html {
 
   --borderColor: #6c757d70;
   --borderLine: #76768050;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   --sideNavTextColor: #FCFEF5;
 }
