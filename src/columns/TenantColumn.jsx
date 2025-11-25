@@ -15,6 +15,8 @@ export const getColumns = ({
   setOriginalData,
   setShowModal,
   setAddPaymentModal,
+  setAssignStatusModal,
+  setAddInvoiceModal,
   data,
   setActiveTenant,
 }) => [
@@ -90,8 +92,9 @@ export const getColumns = ({
 
           <li onClick={() => {
             setSelectedId(rowId);
+            setActiveTenant(rowData);
             setActiveRow(null);
-            setAddPaymentModal(true);
+            setAddInvoiceModal(true);
           }} className="actionLink">Add Invoice</li>
 
           <li onClick={() => {
@@ -102,7 +105,8 @@ export const getColumns = ({
 
           <li onClick={() => {
             setSelectedId(rowId);
-            setDeleteModalOpen(true);
+            setActiveTenant(rowData);
+            setAssignStatusModal(true);
             setActiveRow(null);
           }} className="actionLink">Status</li>
         </>

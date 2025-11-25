@@ -21,3 +21,39 @@
 .status-gray {
   color: #555;
 }
+
+
+.add-btn{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  text-align: center;
+  color: var(--lightTextColor);
+  font-family: var(--fontFamily);
+  cursor: pointer;
+  transition: .3s ease-in-out;
+
+}
+.delete-btn{
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  text-align: center;
+  color: var(--red);
+  font-family: var(--fontFamily);
+  cursor: pointer;
+  transition: .3s ease-in-out;
+}
+.add-btn:hover{
+  color: var(--highlightColor);
+}
+.add-btn .plusIcon{
+  font-size: var(--normalFontSize);
+  padding-right: 5px;
+}

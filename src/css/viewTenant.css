@@ -26,8 +26,9 @@
 }
 
 .tenant-name {
+  color: var(--textColor);
   font-size: var(--headerFontSize);
-  font-weight: 600;
+  font-weight: 700;
   margin: 5px 0;
 }
 .tenant-property{

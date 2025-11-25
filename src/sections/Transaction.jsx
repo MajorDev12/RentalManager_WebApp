@@ -232,9 +232,10 @@ const handleFormSubmit = (e) => {
               disabled={invoiceFormData.userId}
               onChange={handleSelectOptions}
               options={[
-                { value: "addBulkInvoice", label: "Add Bulk Invoice" },
-                { value: "addRecurringUtilities", label: "Add Recurring Utilities" },
-                { value: "addExpense", label: "Add Expense" },
+                { value: "addInvoice", label: "Add Invoice" },
+                { value: "addPayment", label: "Add Payment" },
+                { value: "rentInvoice", label: "Generate Rent Invoices" },
+                { value: "addRecurringUtilities", label: "Generate Recurring bills Invoices" },
               ]}
               text='-- Actions --'
             />

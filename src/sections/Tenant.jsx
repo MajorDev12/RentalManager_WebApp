@@ -1,4 +1,7 @@
 import React, { useState, useEffect, act } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaPlusCircle } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import BreadCrumb from '../components/BreadCrumb';
 import PrimaryButton from '../components/PrimaryButton';
 import Table from '../components/Table';
@@ -7,12 +10,14 @@ import Modal from '../components/Modal';
 import DeleteModal from '../components/DeleteModal';  
 import Input from '../components/Input';
 import Select from '../components/Select';
+import Textarea from '../components/Textarea';
 import { validateTextInput } from '../helpers/validateTextInput'; 
 import { validateEmail } from '../helpers/validateEmail'; 
 import { getData } from '../helpers/getData';
 import { addData } from '../helpers/addData';
 import { updateData } from '../helpers/updateData';
 import { handleDelete } from '../helpers/deleteData';
+import { getDate } from '../helpers/getDate';
 import { months } from '../includes/months';
 import { years } from '../includes/years';
 
@@ -28,8 +33,10 @@ const Tenant = () => {
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [assignStatusModal, setAssignStatusModal] = useState(false);
     const [assignUnitModal, setAssignUnitModal] = useState(false);
     const [addPaymentModal, setAddPaymentModal] = useState(false);
+    const [addInvoiceModal, setAddInvoiceModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [originalData, setOriginalData] = useState(null);
     const [formError, setFormError] = useState('');
@@ -39,8 +46,22 @@ const Tenant = () => {
     const [properties, setProperties] = useState([]);
     const [transactionType, setTransactionType] = useState([]);
     const [utillityBill, setUtillityBill] = useState([]);
+    const [invoiceItems, setInvoiceItems] = useState([
+      { utillityBillName: '', invoiceAmount: 0 }
+    ]);
+
+    const [invoiceData, setInvoiceData] = useState({
+      userId: 0,
+      invoiceMonth: parseInt(getDate("month")),
+      invoiceYear: parseInt(getDate("year")),
+      notes: "",
+      combine: true
+    });
+
+
     const [genders, setGender] = useState([]);
     const [units, setUnit] = useState([]);
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
       user: {
         propertyId: 0,
@@ -66,16 +87,17 @@ const Tenant = () => {
       paymentDate: new Date(),
     });
 
+    const [assignStatusData, setAssignStatusData] = useState({
+      tenantId: 0,
+      tenantStatus: 0,
+    });
+
 
     const [addPaymentData, setAddPaymentData] = useState({
       tenantId: 0,
-      transactionTypeId: 0,
-      utillityBillId: 0,
-      paymentMethodId: 0,
       amount: 0,
-      monthFor: 0,
-      yearFor: 0,
-      paymentDate: new Date(),
+      paymentMethod: 0,
+      notes: '',
     });
 
 
@@ -102,6 +124,11 @@ const Tenant = () => {
           tenantId: activeTenant.id,
           unitId: activeTenant.unitId
         }));
+
+        setInvoiceData(prev => ({
+          ...prev,
+          tenantId: activeTenant.id,
+        }));
       }
     }, [activeTenant]);
 
@@ -109,17 +136,24 @@ const Tenant = () => {
     // Get AppPayment Data
     useEffect(() => {
       if (addPaymentModal && selectedId) {
-        getData({
-          endpoint: 'SystemCodeItem/BY-NAME/TRANSACTIONTYPE',
-          setData: setTransactionType,
-          setLoading,
-          setError
-        });
-
 
         getData({
           endpoint: 'SystemCodeItem/By-Name/PAYMENTMETHOD',
           setData: setPaymentMethods,
+          setLoading,
+          setError
+        });
+
+      }
+    }, [addPaymentModal]);
+
+
+    // Get AddInvoice Data
+    useEffect(() => {
+      if (addInvoiceModal && selectedId) {
+        getData({
+          endpoint: 'SystemCodeItem/BY-NAME/TRANSACTIONTYPE',
+          setData: setTransactionType,
           setLoading,
           setError
         });
@@ -132,7 +166,22 @@ const Tenant = () => {
         });
 
       }
-    }, [addPaymentModal]);
+    }, [addInvoiceModal]);
+
+
+    // Get TenantStatus Data
+    useEffect(() => {
+      if (assignStatusModal && selectedId) {
+
+        getData({
+          endpoint: 'SystemCodeItem/By-Name/TENANTSTATUS',
+          setData: setTenantStatus,
+          setLoading,
+          setError
+        });
+
+      }
+    }, [assignStatusModal]);
     
 
 
@@ -208,6 +257,8 @@ const Tenant = () => {
     setOriginalData,
     setShowModal,
     setAddPaymentModal,
+    setAssignStatusModal,
+    setAddInvoiceModal,
     tenants
   });
 
@@ -219,8 +270,9 @@ const Tenant = () => {
 
     const userFields = ['propertyId', 'genderId', 'firstName', 'lastName', 'emailAddress', 'mobileNumber', 'alternativeNumber', 'nationalId'];
     const assignUnitFields = ['tenantId', 'unitId', 'status', 'paymentMethodId', 'depositAmount', 'amountPaid', 'paymentDate'];
-    const addPaymentFields = ['tenantId', 'transactionType', 'utillityBillId', 'amount', 'monthFor', 'yearFor', 'paymentMethodId', 'paymentDate'];
-
+    const addPaymentFields = ['paymentMethod'];
+    const addInvoiceFields = ["userId", "invoiceMonth", "invoiceYear", "combine", "notes"];
+    const addStatusField = ["tenantStatus"];
 
     if (assignUnitFields.includes(name)) {
       setAssignUnitFormData(prev => ({
@@ -246,6 +298,16 @@ const Tenant = () => {
         ...prev,
         [name]: value
       }));
+    }else if(addStatusField.includes(name)){
+      setAssignStatusData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }else if(addInvoiceFields.includes(name)){
+      setInvoiceData(prev => ({
+        ...prev,
+        [name]: value
+      }));
     } else {
       setFormData(prev => ({
         ...prev,
@@ -259,7 +321,7 @@ const Tenant = () => {
     // Fields that belong inside the `user` object
   const userFields = ['propertyId', 'genderId', 'firstName', 'lastName', 'emailAddress', 'mobileNumber', 'alternativeNumber', 'nationalId'];
   const assignUnitFields = ['tenantId', 'unitId', 'status', 'paymentMethodId', 'depositAmount', 'amountPaid', 'paymentDate'];
-
+  const addPaymentData = ['amount', 'notes'];
 
     if (userFields.includes(name)) {
       setFormData(prev => ({
@@ -274,6 +336,11 @@ const Tenant = () => {
         ...prev,
         [name]: value
       }));
+    } else if (addPaymentData.includes(name)) {
+      setAddPaymentData(prev => ({
+        ...prev,
+        [name]: value
+      }));
     } else {
       setFormData(prev => ({
         ...prev,
@@ -284,20 +351,63 @@ const Tenant = () => {
 
 
 
-  const handleCloseModal = () => {
+
+  const handleInvoiceCloseModal = () => {
     setFormError('');
-    setIsEditMode(false);
-    setFormData({});
-    setShowModal(false);
+    setInvoiceData({invoiceMonth: parseInt(getDate("month")), invoiceYear: parseInt(getDate("year")) });
+    setInvoiceItems([{utillityBillName: '', invoiceAmount: 0}]);
+    setAddInvoiceModal(false);
   };
+
+
   
 
-  const handlePaymentModal = () => {
+  const handleCloseModal = () => {
     setFormError('');
-    setIsEditMode(false);
-    setFormData({});
-    setAddPaymentModal(false);
+    setInvoiceData({});
+    setAddInvoiceModal(false);
   };
+
+
+
+    const validateInvoiceForm = () => {
+
+      var { userId, invoiceMonth, invoiceYear } = invoiceData;
+
+      if(activeTenant){
+        userId = activeTenant.user.id;
+      }
+
+      // Validate main required fields
+      if (!userId || !invoiceMonth || !invoiceYear) {
+      return "Please fill all required fields.";
+      }
+
+      
+      // Validate invoice items
+      if (!invoiceItems || invoiceItems.length === 0) {
+      return "Please add at least one invoice item.";
+      }
+
+      for (let i = 0; i < invoiceItems.length; i++) {
+        const item = invoiceItems[i];
+
+        if (!item.utillityBillName || utillityBillName.length <= 0) {
+          return `Item #${i + 1}: Please select a utility bill.`;
+        }
+
+        if (!item.invoiceAmount || item.invoiceAmount <= 0) {
+          return `Item #${i + 1}: Please enter a valid amount.`;
+        }
+        
+
+      }
+
+      // Valid ✓
+      return false;
+      };
+
+
 
 
 
@@ -349,6 +459,44 @@ const Tenant = () => {
   }
 
 
+  const validatePaymentForm = () => {
+    var { tenantId, paymentMethod, amount, notes } = addPaymentData;
+
+    if(selectedId)
+      tenantId = selectedId;
+
+
+    if (!tenantId || !amount || !paymentMethod) {
+      return "Please fill in all required fields.";
+    }
+
+    if (isNaN(amount) || isNaN(paymentMethod)) {
+      return "Amount and paymentMethod must be a number.";
+    }
+
+    return false;
+
+  }
+
+
+  const validateStatusForm = () => {
+    var { tenantId, tenantStatus } = assignStatusData;
+
+    if(selectedId)
+      tenantId = selectedId;
+
+
+    if (!tenantId || !tenantStatus) {
+      return "Please fill in all required fields.";
+    }
+
+    if (isNaN(tenantId) || isNaN(tenantStatus)) {
+      return "TenantStatus must be a number.";
+    }
+
+    return false;
+
+  }
   
   const handleAssignUnitFormSubmit = (e) => {
     addData({
@@ -385,6 +533,84 @@ const Tenant = () => {
     };
 
 
+    const handleInvoiceFormSubmit = (e) => {
+
+      const payload = {
+        userId: activeTenant.user.id,
+        monthFor: invoiceData.invoiceMonth,  // mapped here
+        yearFor: invoiceData.invoiceYear,    // mapped here
+        notes: invoiceData.notes,
+        combine: invoiceData.combine,
+        item: invoiceItems.map(i => ({
+          TransactionCategory: i.utillityBillName,
+          Amount: i.invoiceAmount
+        }))
+      };
+
+      addData({
+      e,
+      validateForm: validateInvoiceForm,
+      formData: payload,
+      endpoint: 'Transaction/AddInvoice',
+      setFormError,
+      setLoadingBtn,
+      setFormData,
+      setShowModal: setShowModal,
+      setData: setTenants,
+      getdata: true,
+      setLoading,
+    });
+    };
+
+
+
+    const handlePaymentFormSubmit = (e) => {
+
+      const payload = {
+        tenantId: selectedId,
+        paymentMethodId: addPaymentData.paymentMethod,  // mapped here
+        amount: addPaymentData.amount,    // mapped here
+        notes: addPaymentData.notes,
+      };
+
+      addData({
+        e,
+        validateForm: validatePaymentForm,
+        formData: payload,
+        endpoint: 'Transaction/AddPayment',
+        setFormError,
+        setLoadingBtn,
+        setFormData,
+        setShowModal: setShowModal,
+        setData: setTenants,
+        getdata: true,
+        setLoading,
+      });
+    };
+
+
+    const handleStatusFormSubmit = (e) => {
+
+      const payload = {
+        tenantId: assignStatusData.tenantId,
+        status: assignStatusData.tenantStatus,
+      };
+
+      addData({
+        e,
+        validateForm: validateStatusForm,
+        formData: payload,
+        endpoint: 'Transaction/AddPayment',
+        setFormError,
+        setLoadingBtn,
+        setFormData,
+        setShowModal: setShowModal,
+        setData: setTenants,
+        getdata: true,
+        setLoading,
+      });
+    };
+
 
   const handleUpdateSubmit = (e) => {
     updateData({
@@ -403,6 +629,36 @@ const Tenant = () => {
     });
   };
 
+
+  const handleRowClick = () => {
+      navigate(`/Tenants/Tenant`);
+  };
+
+
+  const handleAddItem = () => {
+    setInvoiceItems(prev => [
+      ...prev,
+      { utillityBillName: '', invoiceAmount: 0 }
+    ]);
+  };
+
+
+  const handleRemoveItem = (index) => {
+    setInvoiceItems(invoiceItems.filter((_, i) => i !== index));
+  };
+
+  const handleItemChange = (index, field, value) => {
+    setInvoiceItems(prev => {
+      const updated = [...prev];
+      updated[index][field] = value;
+      return updated;
+    });
+  };
+
+
+
+
+
   return (
     <>
     <BreadCrumb  greetings="" />
@@ -418,7 +674,7 @@ const Tenant = () => {
       </div>
 
       <div className="TableContainer">
-          <Table data={tenants} columns={columns} loading={loading}  error={error}/>
+          <Table data={tenants} onclickItem={handleRowClick} columns={columns} loading={loading}  error={error}/>
         </div>
 
 
@@ -445,26 +701,11 @@ const Tenant = () => {
         <Modal
           isOpen={addPaymentModal}
           onClose={() => setAddPaymentModal(false)}
-          onSubmit={handleAssignUnitFormSubmit}
+          onSubmit={handlePaymentFormSubmit}
           errorMessage={formError}
           title={"Add Payment"}
           loadingBtn={loadingBtn}
         >
-          <Select
-            name="utillityBillId"
-            labelName="utillity Bill"
-            value={addPaymentData.utillityBillId || 0}
-            onChange={handleSelect}
-            options={utillityBill.map(p => ({ value: p.id, label: p.name }))}
-          />
-
-          <Select
-            name="transactionTypeId"
-            labelName="Type"
-            value={addPaymentData.transactionTypeId || 0}
-            onChange={handleSelect}
-            options={transactionType.map(p => ({ value: p.id, label: p.item }))}
-          />
 
           <Input
             type="number"
@@ -472,79 +713,163 @@ const Tenant = () => {
             placeholder="Enter amount Paid" 
             name="amount" 
             onChange={handleInputChange}
-            value={addPaymentData.amount || ""} 
+            value={addPaymentData.amount || ''} 
           />
 
-          <Select
-            name="monthFor"
-            labelName="Month For"
-            value={addPaymentData.MonthFor || 0}
-            onChange={handleSelect}
-            options={months.map(p => ({ value: p.id, label: p.name }))}
-          />
 
           <Select
-            name="yearFor"
-            labelName="Year For"
-            value={addPaymentData.yearFor || 0}
-            onChange={handleSelect}
-            options={years.map(p => ({ value: p.id, label: p.name }))}
-          />
-
-          <Select
-            name="paymentMethodId"
+            name="paymentMethod"
             labelName="payment Method"
-            value={addPaymentData.paymentMethodId || 0}
+            value={addPaymentData.paymentMethod || 0}
             onChange={handleSelect}
             options={paymentMethods.map(p => ({ value: p.id, label: p.item }))}
           />
 
+          <Textarea
+            type="text"
+            name="notes"
+            placeholder="Enter description"
+            value={addPaymentData.notes || ''}
+            labelName="Notes"
+            onChange={handleInputChange}
+          />
+
           <Input
             type="hidden"
             name="tenantId" 
-            value={selectedId || ""} 
+            value={selectedId || 0} 
           />
         </Modal>
 
 
-    {/* ADD PAYMENT */}
+    {/* ADD INVOICE */}
         <Modal
-          isOpen={addPaymentModal}
-          onClose={() => setAddPaymentModal(false)}
-          onSubmit={handleAssignUnitFormSubmit}
+          isOpen={addInvoiceModal}
+          onClose={() => handleInvoiceCloseModal(false)}
+          onSubmit={handleInvoiceFormSubmit}
           errorMessage={formError}
           title={"Add Invoice"}
           loadingBtn={loadingBtn}
         >
-          <Select
-            name="utillityBillId"
-            labelName="Item Type"
-            value={addPaymentData.utillityBillId || 0}
-            onChange={handleSelect}
-            options={utillityBill.map(p => ({ value: p.id, label: p.name }))}
+          
+          <div className="col">
+            <div className="row">
+              <Select
+                name="invoiceMonth"
+                labelName="Month For"
+                value={invoiceData.invoiceMonth || parseInt(getDate("month"))}
+                onChange={handleSelect}
+                options={months.map(p => ({ value: p.value, label: p.name }))}
+
+              />
+
+              <Select
+                name="invoiceYear"
+                labelName="Year For"
+                value={invoiceData.invoiceYear || parseInt(getDate("year"))}
+                onChange={handleSelect}
+                options={years.map(p => ({ value: p.id, label: p.name }))}
+              />
+            </div>
+          </div>
+          
+
+        <div className="col">
+
+          {invoiceItems.map((item, index) => (
+            <div key={index} className="row" style={{ alignItems: "center" }}>
+
+              <Select
+                name="utillityBillName"
+                labelName="Item Type"
+                value={item.utillityBillName ?? ''}
+                onChange={(e) =>
+                  handleItemChange(index, "utillityBillName", e.target.value)
+                }
+                options={utillityBill.map(p => ({
+                  value: p.name,
+                  label: p.name
+                }))}
+              />
+
+              <Input
+                type="number"
+                labelName="Amount"
+                name="invoiceAmount"
+                value={item.invoiceAmount ?? 0}
+                onChange={(name, value) =>
+                  handleItemChange(index, name, value)
+                }
+              />
+
+              {index > 0 && (
+                <button
+                  type="button"
+                  onClick={() => handleRemoveItem(index)}
+                  className="delete-btn"
+                >
+                  <RiDeleteBin6Line />
+                </button>
+              )}
+            </div>
+          ))}
+
+          
+          <button
+            type="button"
+            onClick={handleAddItem}
+            className="add-btn"
+          >
+            <FaPlusCircle className='plusIcon' /> Add Item
+          </button>
+
+        </div>
+
+        <Input
+            type="hidden" 
+            name="userId" 
+            value={activeTenant?.user.id || 0} 
           />
 
-          <Select
-            name="monthFor"
-            labelName="Month For"
-            value={addPaymentData.MonthFor || 0}
-            onChange={handleSelect}
-            options={months.map(p => ({ value: p.id, label: p.name }))}
-          />
 
-          <Select
-            name="yearFor"
-            labelName="Year For"
-            value={addPaymentData.yearFor || 0}
-            onChange={handleSelect}
-            options={years.map(p => ({ value: p.id, label: p.name }))}
-          />
+          
+        </Modal>
 
+
+       {/* ASSIGN STATUS MODAL */}
+        <Modal
+          isOpen={assignStatusModal}
+          onClose={() => setAssignStatusModal(false)}
+          onSubmit={handleStatusFormSubmit}
+          errorMessage={formError}
+          title={"Change Tenant Status"}
+          loadingBtn={loadingBtn}
+        >
           <Input
-            type="hidden"
+            type="hidden" 
             name="tenantId" 
-            value={selectedId || ""} 
+            value={assignStatusData.tenantId || activeTenant?.id || 0} 
           />
+
+          <div className="row">
+          
+            <Select
+              name="tenantStatus"
+              labelName="Tenant Status"
+              value={assignStatusData.tenantStatus || activeTenant?.tenantStatus || 0}
+              disabled={activeTenant?.tenantStatus.toLowerCase() != "active"}
+              onChange={handleSelect}
+              options={tenantStatus
+                .map(p => ({ value: p.id, label: p.item, disabled: p.item === activeTenant?.tenantStatus}))
+              }
+            />
+
+  
+          </div>
+
+
+
+
         </Modal>
 
 
