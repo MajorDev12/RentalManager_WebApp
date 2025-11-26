@@ -1,3 +1,8 @@
+#tenantContainer{
+  width: 100%;
+  height: 100vh;
+  margin-bottom: 20px;
+}
 .tenant-container {
   display: flex;
   justify-content: space-between;
@@ -23,7 +28,16 @@
   box-shadow: var(--shadow);
   border-radius: 50%;
   margin-bottom: 10px;
+  overflow: hidden; /* optional - ensures no overflow */
 }
+
+.tenant-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 
 .tenant-name {
   color: var(--textColor);

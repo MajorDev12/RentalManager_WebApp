@@ -43,7 +43,7 @@ function Layout() {
           <Route path="/UnitType" element={<UnitType />} />
           <Route path="/UtilityBill" element={<UnitCharge />} />
           <Route path="/Tenants" element={<Tenant />} />
-          <Route path="/Tenants/Tenant" element={<ViewTenant />} />
+          <Route path="/Tenants/:id" element={<ViewTenant />} />
           <Route path="/AssignUnit" element={<AssignUnit />} />
           <Route path="/Transactions" element={<Transaction />} />
           <Route path="/UnpaidTenants" element={<UnpaidTenant />} />

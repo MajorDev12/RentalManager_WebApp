@@ -1,0 +1,68 @@
+import ActionCell from "../components/ActionCell";
+import { Link } from 'react-router-dom';
+
+export const getColumns = ({
+  endpoint,
+  activeRow,
+  setActiveRow,
+  setSelectedId,
+  setIsEditMode,
+  setDeleteModalOpen,
+  setFormData,
+  setShowModal,
+  data
+}) => [
+  { header: 'Category', accessorKey: 'transactionCategory' },
+  { header: 'Amount', accessorKey: 'amount' },
+  { header: 'Month For', accessorKey: 'monthFor' },
+  { header: 'Year For', accessorKey: 'yearFor' },
+  { header: 'transaction Date', accessorKey: 'transactionDate' },
+  {
+    header: 'Action',
+    accessorKey: 'id',
+    cell: info => {
+      const rowData = info.row.original; 
+      const rowId = info.getValue();
+
+      const actions = (
+        <>
+          <li onClick={() => {
+            setIsEditMode(true);
+            setFormData(rowData);
+            setOriginalData(rowData);
+            setShowModal(true);
+            setActiveRow(null);
+          }} className="actionLink">Edit</li>
+
+          <li className="actionLink">
+            <Link to={`/${endpoint}/${rowId}`} className="view">Print</Link>
+          </li>
+
+          <li onClick={() => {
+            setSelectedId(rowId);
+            setDeleteModalOpen(true);
+            setActiveRow(null);
+          }} className="actionLink">Delete</li>
+        </>
+      );
+
+      return (
+        <ActionCell
+          endpoint={endpoint}
+          rowIndex={info.row.index}
+          activeRow={activeRow}
+          setActiveRow={setActiveRow}
+          rowId={rowId}
+          setSelectedId={setSelectedId}
+          setIsEditMode={setIsEditMode}
+          setDeleteModalOpen={setDeleteModalOpen}
+          setFormData={setFormData}
+          setShowModal={setShowModal}
+          items={data}
+          actions={actions}
+        />
+      );
+      
+    },
+  },
+];

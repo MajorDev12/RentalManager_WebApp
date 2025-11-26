@@ -32,17 +32,40 @@ const CustomTabs = ({ tabs }) => {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", minHeight: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs value={value} onChange={handleChange}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          sx={{
+            "& .MuiTabs-indicator": {
+              backgroundColor: "var(--highlightColor)",
+            },
+            "& .MuiTab-root": {
+              color: "var(--lightTextColor)",
+              fontFamily: "var(--fontFamily)",
+              textTransform: "none",
+            },
+            "& .MuiTab-root.Mui-selected": {
+              color: "var(--highlightColor)",
+              fontWeight: "bold"
+            },
+          }}
+        >
           {tabs.map((tab, i) => (
-            <Tab key={i} label={tab.label} id={`tab-${i}`} aria-controls={`tabpanel-${i}`} />
+            <Tab
+              key={i}
+              label={tab.label}
+              id={`tab-${i}`}
+              aria-controls={`tabpanel-${i}`}
+            />
           ))}
         </Tabs>
+
       </Box>
 
       {tabs.map((tab, i) => (
-        <CustomTabPanel key={i} value={value} index={i}>
+        <CustomTabPanel key={i} value={value} index={i} sx={{ backgroundColor: "red"}}>
           {tab.content}
         </CustomTabPanel>
       ))}

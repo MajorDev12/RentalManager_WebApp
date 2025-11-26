@@ -46,10 +46,12 @@ const Tenant = () => {
     const [properties, setProperties] = useState([]);
     const [transactionType, setTransactionType] = useState([]);
     const [utillityBill, setUtillityBill] = useState([]);
+    const [genders, setGender] = useState([]);
+    const [units, setUnit] = useState([]);
+    const navigate = useNavigate();
     const [invoiceItems, setInvoiceItems] = useState([
       { utillityBillName: '', invoiceAmount: 0 }
     ]);
-
     const [invoiceData, setInvoiceData] = useState({
       userId: 0,
       invoiceMonth: parseInt(getDate("month")),
@@ -57,11 +59,6 @@ const Tenant = () => {
       notes: "",
       combine: true
     });
-
-
-    const [genders, setGender] = useState([]);
-    const [units, setUnit] = useState([]);
-    const navigate = useNavigate();
     const [formData, setFormData] = useState({
       user: {
         propertyId: 0,
@@ -76,7 +73,6 @@ const Tenant = () => {
       },
       unitId: 0
     });
-
     const [assignUnitFormData, setAssignUnitFormData] = useState({
       tenantId: 0,
       unitId: 0,
@@ -86,13 +82,10 @@ const Tenant = () => {
       amountPaid: 0,
       paymentDate: new Date(),
     });
-
     const [assignStatusData, setAssignStatusData] = useState({
       tenantId: 0,
       tenantStatus: 0,
     });
-
-
     const [addPaymentData, setAddPaymentData] = useState({
       tenantId: 0,
       amount: 0,
@@ -105,7 +98,7 @@ const Tenant = () => {
 
     useEffect(() => {
       getData({
-            endpoint: 'Tenant',
+            endpoint: 'Tenants',
             setData: setTenants,
             setLoading,
             setError
@@ -245,7 +238,7 @@ const Tenant = () => {
 
 
   const columns = getColumns({
-    endpoint: "Tenant",
+    endpoint: "Tenants",
     activeRow,
     setActiveRow,
     setSelectedId,  
@@ -364,8 +357,7 @@ const Tenant = () => {
 
   const handleCloseModal = () => {
     setFormError('');
-    setInvoiceData({});
-    setAddInvoiceModal(false);
+    setShowModal(false);
   };
 
 
@@ -630,8 +622,8 @@ const Tenant = () => {
   };
 
 
-  const handleRowClick = () => {
-      navigate(`/Tenants/Tenant`);
+  const handleRowClick = (row) => {
+      navigate(`/Tenants/${row.id}`);
   };
 
 
@@ -990,7 +982,7 @@ const Tenant = () => {
             {/* TENANT MODAL */}
       <Modal
           isOpen={showModal}
-          onClose={handleCloseModal}
+          onClose={() => handleCloseModal(false)}
           onSubmit={isEditMode ? handleUpdateSubmit : handleFormSubmit}
           errorMessage={formError}
           title={isEditMode ? "Update Tenant" : "Add Tenant"}
