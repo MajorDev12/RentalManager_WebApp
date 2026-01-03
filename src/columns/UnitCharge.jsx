@@ -16,6 +16,7 @@ export const getColumns = ({
   { header: 'Property Name', accessorKey: 'propertyName' },
   { header: 'Name', accessorKey: 'name' },
   { header: 'Amount', accessorKey: 'amount' },
+  { header: 'isReccuring', accessorKey: 'isReccuring' },
   {
     header: 'Action',
     accessorKey: 'id',

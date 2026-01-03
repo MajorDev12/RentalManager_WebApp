@@ -91,6 +91,7 @@ const Sidebar = ({ width, setWidth }) => {
           >
             <DropDownList itemName="All Houses" route={"/units"} />
             <DropDownList itemName="Vacants" route={"/units"} />
+            <DropDownList itemName="Maintenance" route={"/Maintenance"} />
           </NavLink>
 
           <NavLink
@@ -108,16 +109,6 @@ const Sidebar = ({ width, setWidth }) => {
             <DropDownList itemName="Vacated" route={"/units"} />
           </NavLink>
 
-          <NavLink
-            route={"/Properties"}
-            icon={<FaBuildingUser className="navLinkIcon" />}
-            name="Landlords"
-            isOpen={width === initialWidth}
-            index={4}
-            activeIndex={activeIndex}
-            setActiveIndex={setActiveIndex}
-            onItemClick={handleCloseSidebar}
-          />
 
           <NavLink
             icon={<FaMoneyCheckDollar className="navLinkIcon" />}
@@ -148,15 +139,13 @@ const Sidebar = ({ width, setWidth }) => {
           <NavLink
             icon={<IoIosNotifications className="navLinkIcon" />}
             name="Notifications"
-            arrow={true}
+            arrow={false}
             isOpen={width === initialWidth}
             index={7}
             activeIndex={activeIndex}
             setActiveIndex={setActiveIndex}
             onItemClick={handleCloseSidebar}
           >
-            <DropDownList itemName="Email" route={"/units"} />
-            <DropDownList itemName="Sms" route={"/units"} />
           </NavLink>
 
           <NavLink

@@ -34,7 +34,7 @@ const AssignUnit = () => {
 
     useEffect(() => {
         getData({
-            endpoint: 'Tenant',
+            endpoint: 'Tenants',
             setData: setTenants,
             setLoading,
             setError

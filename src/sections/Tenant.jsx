@@ -182,13 +182,6 @@ const Tenant = () => {
     useEffect(() => {
       if(showModal){
         getData({
-            endpoint: 'Tenant',
-            setData: setTenants,
-            setLoading,
-            setError
-        });
-  
-        getData({
           endpoint: 'Properties',
           setData: setProperties,
           setLoading,
@@ -513,7 +506,7 @@ const Tenant = () => {
       e,
       validateForm: validateForm,
       formData: formData,
-      endpoint: 'Tenant',
+      endpoint: 'Tenants',
       setFormError,
       setLoadingBtn,
       setFormData,
@@ -622,9 +615,7 @@ const Tenant = () => {
   };
 
 
-  const handleRowClick = (row) => {
-      navigate(`/Tenants/${row.id}`);
-  };
+
 
 
   const handleAddItem = () => {
@@ -666,12 +657,12 @@ const Tenant = () => {
       </div>
 
       <div className="TableContainer">
-          <Table data={tenants} onclickItem={handleRowClick} columns={columns} loading={loading}  error={error}/>
+          <Table data={tenants} columns={columns} loading={loading}  error={error}/>
         </div>
 
 
         <DeleteModal
-          isOpen={deleteModalOpen}
+          isOpen={deleteModalOpen}i
           title="Delete Tenant"
           onClose={() => setDeleteModalOpen(false)}
           onSubmit={(e) => handleDelete({
@@ -980,9 +971,9 @@ const Tenant = () => {
 
 
             {/* TENANT MODAL */}
-      <Modal
+        <Modal
           isOpen={showModal}
-          onClose={() => handleCloseModal(false)}
+          onClose={handleCloseModal}
           onSubmit={isEditMode ? handleUpdateSubmit : handleFormSubmit}
           errorMessage={formError}
           title={isEditMode ? "Update Tenant" : "Add Tenant"}
@@ -1054,7 +1045,7 @@ const Tenant = () => {
             options={genders.map(p => ({ value: p.id, label: p.item }))}
           />
 
-          </Modal>
+        </Modal>
     </div>
   </>
   )

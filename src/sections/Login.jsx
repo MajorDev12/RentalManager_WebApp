@@ -85,29 +85,75 @@ const Login = () =>{
             <div className="right">
                 <h1 className="header">Property Management System</h1>
                 <form onSubmit={handleFormSubmit}>
-                    <Input
-                        type="text"
-                        name={"loginIdentifier" }
-                        placeholder="Email Address or Mobile Number"
-                        value={formData.loginIdentifier || ''}
-                        labelName="Email Address / Mobile Number"
-                        onChange={handleInputChange}
-                    />
-                    <Input
-                        type="password"
-                        name="password"
-                        placeholder="Enter Your Password"
-                        value={formData.password || ''}
-                        labelName="Password"
-                        onChange={handleInputChange}
-                    />
+                    <div className="col">
+                        <div className="row">
+                            <Input
+                                type="text"
+                                name={"loginIdentifier" }
+                                placeholder="First Name"
+                                value={formData.loginIdentifier || ''}
+                                labelName="First Name"
+                                onChange={handleInputChange}
+                            />
+                            <Input
+                                type="text"
+                                name={"loginIdentifier" }
+                                placeholder="Last Name"
+                                value={formData.loginIdentifier || ''}
+                                labelName="Last Name"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="row">
+                            <Input
+                                type="text"
+                                name={"loginIdentifier" }
+                                placeholder="Email Address"
+                                value={formData.loginIdentifier || ''}
+                                labelName="Email Address"
+                                onChange={handleInputChange}
+                            />
+                            <Input
+                                type="text"
+                                name="password"
+                                placeholder="Enter Your Mobile Number"
+                                value={formData.password || ''}
+                                labelName="Mobile Number"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="row">
+                            <Input
+                            type="password"
+                            name="password"
+                            placeholder="Enter Your Password"
+                            value={formData.password || ''}
+                            labelName="Password"
+                            onChange={handleInputChange}
+                        />
+
+                        <Input
+                            type="password"
+                            name="password"
+                            placeholder="Confirm Your Password"
+                            value={formData.password || ''}
+                            labelName="Confirm Password"
+                            onChange={handleInputChange}
+                        />
+                        </div>
+                        <div className="row options">
+                            <p>Forgot password ?</p>
+                            <p>Remember Me</p>
+                        </div>
+                    </div>
                     {formError && <p className='errorMessage'>{formError}</p>}
                     <PrimaryButton 
                         name="Login" 
                         type="submit" 
                         disabled={loadingBtn}
                         loading={loadingBtn}
-                    />
+                    /> 
+                    <p className='loginText'>Already Registered?  <span> Login Here</span></p>
                 </form>
             </div>
         </div>

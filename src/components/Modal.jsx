@@ -16,8 +16,8 @@ const Modal = ({ isOpen, onClose, onSubmit, isEditMode, children, title = "Add I
 
         <form onSubmit={onSubmit} className="modalForm">
           {children}
+          <p className="caution">Only inputs with asterik (*) are mandatory</p>
           {errorMessage && <p className='errorMessage'>{errorMessage}</p>}
-
           <div className="modalActions">
             <button type="button" onClick={onClose} className="cancelBtn">Cancel</button>
 

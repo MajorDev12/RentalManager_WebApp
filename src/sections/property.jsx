@@ -245,9 +245,7 @@ const handleUpdateSubmit = (e) => {
                 labelName="Mobile"
                 onChange={handleInputChange}
               />
-            </div>
 
-            <div className="row">
               <Input
                 type="text"
                 name="physicalAddress"
@@ -275,9 +273,6 @@ const handleUpdateSubmit = (e) => {
                 onChange={handleInputChange}
               />
 
-            </div>
-
-            <div className="row">
               <Input
                 type="text"
                 name="area"
@@ -336,9 +331,8 @@ const handleUpdateSubmit = (e) => {
           {showMoreInputs && (
             <>
 
-              <div className="row">
-                <p className='headerTitle'>Utilitiy Bills <span>(Optional)</span></p>
-              </div>
+              <p className='headerTitle'>Utilitiy Bills <span>(Optional)</span></p>
+              
               <div className="row">
                 <Input
                   type="text"
