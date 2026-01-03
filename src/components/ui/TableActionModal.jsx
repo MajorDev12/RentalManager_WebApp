@@ -1,5 +1,5 @@
 import React from 'react'
-import "../css/tableactionmodal.css"
+import "../../css/tableactionmodal.css"
 import { Link } from 'react-router-dom';
 
 

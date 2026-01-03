@@ -1,6 +1,6 @@
 // src/columns/propertyColumns.js
 import PropertyImage from "../assets/PropertyImg.png";
-import ActionCell from "../components/ActionCell";
+import ActionCell from "../components/ui/ActionCell";
 import { Link } from 'react-router-dom';
 
 export const getPropertyColumns = ({

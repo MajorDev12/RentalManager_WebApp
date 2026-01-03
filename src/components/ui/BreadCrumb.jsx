@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IoIosArrowForward } from 'react-icons/io';
-import '../css/breadcrumb.css';
+import '../../css/breadcrumb.css';
 
 const BreadCrumb = ({ greetings = "Good Morning, Admin" }) => {
   const location = useLocation();

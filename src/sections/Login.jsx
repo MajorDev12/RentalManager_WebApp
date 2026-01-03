@@ -1,32 +1,34 @@
 import React, { useState } from 'react';
-import Input from "../components/Input"
-import PrimaryButton from "../components/PrimaryButton"
-import  "../css/login.css";
+import Input from "../components/ui/Input"
+import PrimaryButton from "../components/ui/PrimaryButton"
 import PropertyImage from "../assets/property.jpg";
 import { validateTextInput } from '../helpers/validateTextInput'; 
 import { validateMobileNumber } from '../helpers/validateMobileNumber'; 
 import { validateEmail } from '../helpers/validateEmail'; 
 import { addData } from '../helpers/addData';
+import  "../css/login.css";
+import { useApiRequest } from '../hooks/useApiRequest';
+import { useAuthContext } from '../auth/AuthContext';
 
 
 
 
 const Login = () =>{
+    const { execute, loading } = useApiRequest();
+    const { login } = useAuthContext();
     const [loadingBtn, setLoadingBtn] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [charges, setCharges] = useState([]);
     const [formError, setFormError] = useState('');
     const [formData, setFormData] = useState({
         loginIdentifier: '',
         password: '',
     });
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+        ...prev,
+        [field]: value
+        }));
+    };
 
 
     const validateForm = () => {
@@ -55,24 +57,20 @@ const Login = () =>{
   
   
   
-  const handleFormSubmit = (e) => {
-    const isEmail = validateEmail(formData.loginIdentifier);
-    const payload = isEmail
-    ? { emailAddress: formData.loginIdentifier, password: formData.password }
-    : { mobileNumber: formData.loginIdentifier, password: formData.password };
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+
+        const isEmail = validateEmail(formData.loginIdentifier);
+        const payload = isEmail
+        ? { Email: formData.loginIdentifier, Password: formData.password }
+        : { mobileNumber: formData.loginIdentifier, password: formData.password };
 
 
-    addData({
-    e,
-    validateForm,
-    formData: payload,
-    endpoint: 'Login',
-    setFormError,
-    setLoadingBtn,
-    setFormData,
-    setData: setCharges,
-    setLoading,
-    });
+        await execute({
+            request: () => login(payload),
+            successMessage: "Login successful",
+        });
+        
     };
 
 
@@ -83,27 +81,9 @@ const Login = () =>{
                 <img src={PropertyImage} alt="" />
             </div>
             <div className="right">
-                <h1 className="header">Property Management System</h1>
+                <h1 className="header">Login</h1>
                 <form onSubmit={handleFormSubmit}>
                     <div className="col">
-                        <div className="row">
-                            <Input
-                                type="text"
-                                name={"loginIdentifier" }
-                                placeholder="First Name"
-                                value={formData.loginIdentifier || ''}
-                                labelName="First Name"
-                                onChange={handleInputChange}
-                            />
-                            <Input
-                                type="text"
-                                name={"loginIdentifier" }
-                                placeholder="Last Name"
-                                value={formData.loginIdentifier || ''}
-                                labelName="Last Name"
-                                onChange={handleInputChange}
-                            />
-                        </div>
                         <div className="row">
                             <Input
                                 type="text"
@@ -113,37 +93,19 @@ const Login = () =>{
                                 labelName="Email Address"
                                 onChange={handleInputChange}
                             />
-                            <Input
-                                type="text"
-                                name="password"
-                                placeholder="Enter Your Mobile Number"
-                                value={formData.password || ''}
-                                labelName="Mobile Number"
-                                onChange={handleInputChange}
-                            />
                         </div>
                         <div className="row">
                             <Input
-                            type="password"
-                            name="password"
-                            placeholder="Enter Your Password"
-                            value={formData.password || ''}
-                            labelName="Password"
-                            onChange={handleInputChange}
-                        />
-
-                        <Input
-                            type="password"
-                            name="password"
-                            placeholder="Confirm Your Password"
-                            value={formData.password || ''}
-                            labelName="Confirm Password"
-                            onChange={handleInputChange}
-                        />
+                                type="password"
+                                name="password"
+                                placeholder="Enter Your Password"
+                                value={formData.password || ''}
+                                labelName="Password"
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="row options">
                             <p>Forgot password ?</p>
-                            <p>Remember Me</p>
                         </div>
                     </div>
                     {formError && <p className='errorMessage'>{formError}</p>}

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import DoughnutChart from '../components/DoughnutChart';
-import { getColumns } from '../columns/BalanceHomeColumn';
-import { getData } from '../helpers/getData';
-import Table from '../components/Table';
-import Select from '../components/Select';
-import LineChart from '../components/LineChart';
-import HomeIcon1 from "../assets/HomeIcon1.svg";
-import HomeIcon2 from "../assets/HomeIcon2.svg";
-import HomeIcon3 from "../assets/HomeIcon3.svg";
-import HomeIcon4 from "../assets/HomeIcon4.svg";
-import BarChart from '../components/BarChart';
-import "../css/center.css";
+import DoughnutChart from '../../components/ui/DoughnutChart';
+import { getColumns } from '../../columns/BalanceHomeColumn';
+import { getData } from '../../helpers/getData';
+import Table from '../../components/ui/Table';
+import Select from '../../components/ui/Select';
+import LineChart from '../../components/ui/LineChart';
+import HomeIcon1 from "../../assets/HomeIcon1.svg";
+import HomeIcon2 from "../../assets/HomeIcon2.svg";
+import HomeIcon3 from "../../assets/HomeIcon3.svg";
+import HomeIcon4 from "../../assets/HomeIcon4.svg";
+import BarChart from '../../components/ui/BarChart';
+import "../../css/center.css";
 
 
 const CenterPage = () => {
@@ -69,6 +69,20 @@ const CenterPage = () => {
     };
 
 
+
+
+    // useEffect(() => {
+    //   getData({
+    //       endpoint: 'Transaction/UnpaidTenants',
+    //       setData: setBalances,
+    //       setLoading,
+    //       setError
+    //   });
+  
+    // }, []);
+
+
+
   const handleSelect = (e) => {
   const { name, value } = e.target;
     setSelect(value);
@@ -79,19 +93,6 @@ const CenterPage = () => {
   };
 
 
-
-
-
-
-   useEffect(() => {
-      getData({
-          endpoint: 'Transaction/UnpaidTenants',
-          setData: setBalances,
-          setLoading,
-          setError
-      });
-  
-      }, []);
 
    const unpaidTenantColumn = getColumns();
 

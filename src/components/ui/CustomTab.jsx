@@ -1,4 +1,4 @@
-import "../css/customTab.css";
+import "../../css/customTab.css";
 import { Tabs, Tab } from "react-bootstrap";
 
 const CustomTab = ({ activeKey, onSelect }) => {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import BreadCrumb from "../components/BreadCrumb";
-import CustomTabs from "../components/Tab";
-import Table from "../components/Table";
+import BreadCrumb from "../components/ui/BreadCrumb";
+import CustomTabs from "../components/ui/Tab";
+import Table from "../components/ui/Table";
 import { getData } from "../helpers/getData";
 import { getColumns } from "../columns/TenantInvoiceColumns";
 import defaultProfilePic from "../assets/TenantDefaultProfile.png";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import BreadCrumb from '../components/BreadCrumb';
+import BreadCrumb from '../components/ui/BreadCrumb';
 import NotFound from '../sections/NotFound';
 import "../css/viewproperty.css";
 import PropertyImage from "../assets/property.jpg";

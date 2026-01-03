@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import CustomTabs from '../components/CustomTab';
+import CustomTabs from '../components/ui/CustomTab';
 import LineChart from "../assets/lineChart.svg";
 import ExpenseLineChart from "../assets/ExpenseLineChart.svg";
 import ProfitLineChart from "../assets/ProfitLineChart.svg";
-import BreadCrumb from '../components/BreadCrumb';
-import Select from '../components/Select';
+import BreadCrumb from '../components/ui/BreadCrumb';
+import Select from '../components/ui/Select';
 import { getData } from '../helpers/getData';
 import { getDate } from '../helpers/getDate';
 import { years } from '../includes/years';
-import BarChart from '../components/BarChart';
+import BarChart from '../components/ui/BarChart';
 import '../css/report.css';
 
 

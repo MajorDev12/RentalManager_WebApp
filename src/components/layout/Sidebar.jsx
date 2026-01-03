@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { adjustSidebarWidth } from '../helpers/adjustSidebarWidth';
-import "../css/sidebar.css";
-import NavLink from '../components/NavLink';
-import DropDownList from '../components/DropDownList';
+import { adjustSidebarWidth } from '../../helpers/adjustSidebarWidth';
+import "../../css/sidebar.css";
+import NavLink from '../ui/NavLink';
+import DropDownList from '../ui/DropDownList';
 import { MdDashboard } from "react-icons/md";
 import { BsBuildingFill } from "react-icons/bs";
 import { FaHouse, FaBuildingUser, FaUsers, FaMoneyCheckDollar, FaXmark } from "react-icons/fa6";

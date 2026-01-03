@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import ActionCell from "../components/ActionCell";
+import ActionCell from "../components/ui/ActionCell";
 
 export const getColumns = ({
   endpoint,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaXmark } from "react-icons/fa6";
 import PrimaryButton from './PrimaryButton'; // adjust path if needed
-import '../css/modal.css';
+import '../../css/modal.css';
 
 const Modal = ({ isOpen, onClose, onSubmit, isEditMode, children, title = "Add Item", errorMessage = "", loadingBtn = false }) => {
   if (!isOpen) return null;

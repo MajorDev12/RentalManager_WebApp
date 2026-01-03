@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import BreadCrumb from '../components/BreadCrumb';
-import Table from '../components/Table';
+import BreadCrumb from '../components/ui/BreadCrumb';
+import Table from '../components/ui/Table';
 import { getColumns } from "../columns/UnpaidTenantColumn";
 import { getData } from '../helpers/getData';
 

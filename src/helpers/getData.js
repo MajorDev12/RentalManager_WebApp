@@ -1,5 +1,3 @@
-import { fetchData } from '../helpers/fetchData'; 
-import { toast } from 'react-toastify';
 
 export const getData = async ({
   endpoint,
@@ -8,18 +6,16 @@ export const getData = async ({
   setError
 }) => {
   try {
-    const response = await fetchData(endpoint, 'GET');
-    if (response.success){
-        setData(response.data);
-    }
-    else{
-        setError(true);
-        //log error
+    const response = await fetchData(endpoint, 'GET', formData);
+
+    if (response.success) {
+      setData(response.data);
+    } else {
+      setError(true);
     }
   } catch (error) {
-    //log error
     setError(true);
   } finally {
-    if (setLoading) setLoading(false);
+    setLoading?.(false);
   }
 };

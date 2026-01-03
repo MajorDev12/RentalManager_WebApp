@@ -1,6 +1,6 @@
 import React from 'react';
-import '../css/button.css';
-import Spinner from '../components/Spinner'; 
+import '../../css/button.css';
+import Spinner from './Spinner'; 
 
 const PrimaryButton = ({ name, onClick, type, disabled, loading }) => {
   return (

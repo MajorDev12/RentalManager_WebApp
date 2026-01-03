@@ -1,4 +1,4 @@
-import ActionCell from "../components/ActionCell";
+import ActionCell from "../components/ui/ActionCell";
 import { TiArrowDown } from "react-icons/ti";
 import { TiArrowUp } from "react-icons/ti";
 import { Link } from 'react-router-dom';

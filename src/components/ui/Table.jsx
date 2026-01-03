@@ -4,9 +4,9 @@ import {
   getCoreRowModel,
   flexRender,
 } from '@tanstack/react-table';
-import "../css/table.css";
-import Spinner from '../components/Spinner';
-import NoDataImage from "../assets/NoData.png";
+import "../../css/table.css";
+import Spinner from './Spinner';
+import NoDataImage from "../../assets/NoData.png";
 
 const Table = ({ data, columns, loading, onclickItem, error }) => {
   const table = useReactTable({

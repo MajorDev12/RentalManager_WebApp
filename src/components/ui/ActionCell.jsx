@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import TableActionModal from '../components/TableActionModal';
-import "../css/actioncell.css";
+import TableActionModal from './TableActionModal';
+import "../../css/actioncell.css";
 
 const ActionCell = ({
   rowIndex,

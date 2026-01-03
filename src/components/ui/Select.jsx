@@ -1,5 +1,5 @@
 import React from 'react';
-import "../css/select.css"
+import "../../css/select.css"
 
 const Select = ({ text = "--Select--", name, labelName, value, onChange, options = [], disabled }) => {
   return (

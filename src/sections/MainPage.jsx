@@ -1,7 +1,7 @@
 import React from "react"
 import '../css/mainpage.css'
-import BreadCrumb from '../components/BreadCrumb'
-import CenterPage from '../components/CenterPage'
+import BreadCrumb from '../components/ui/BreadCrumb'
+import CenterPage from '../features/home/CenterPage'
 
 const MainPage = () => {
   return (

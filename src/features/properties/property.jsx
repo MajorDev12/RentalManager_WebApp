@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowCircleDown, MdArrowCircleUp } from "react-icons/md";
-import BreadCrumb from '../components/BreadCrumb';
-import PrimaryButton from '../components/PrimaryButton';
-import Table from '../components/Table';
-import { getPropertyColumns } from "../columns/propertyColumns";
-import Modal from '../components/Modal'; 
-import DeleteModal from '../components/DeleteModal'; 
-import Input from '../components/Input';
-import { getData } from '../helpers/getData'; 
-import { addData } from '../helpers/addData';
-import { updateData } from '../helpers/updateData';
-import { handleDelete } from '../helpers/deleteData';
-import { validateTextInput } from '../helpers/validateTextInput'; 
-import { validateEmail } from '../helpers/validateEmail';
-import '../css/property.css';
-import Textarea from '../components/Textarea';
-import Select from '../components/Select';
+import BreadCrumb from '../../components/ui/BreadCrumb';
+import PrimaryButton from '../../components/ui/PrimaryButton';
+import Table from '../../components/ui/Table';
+import { getPropertyColumns } from "../../columns/propertyColumns";
+import Modal from '../../components/ui/Modal'; 
+import DeleteModal from '../../components/ui/DeleteModal'; 
+import Input from '../../components/ui/Input';
+import { getData } from '../../helpers/getData'; 
+import { addData } from '../../helpers/addData';
+import { updateData } from '../../helpers/updateData';
+import { handleDelete } from '../../helpers/deleteData';
+import { validateTextInput } from '../../helpers/validateTextInput'; 
+import { validateEmail } from '../../helpers/validateEmail';
+import Textarea from '../../components/ui/Textarea';
+import Select from '../../components/ui/Select';
+import { propertyService } from "./propertyService";
+import '../../css/property.css';
 
 const Property = () => {
   const navigate = useNavigate();
@@ -66,14 +67,9 @@ const Property = () => {
 
 
 
-useEffect(() => {
-  getData({
-    endpoint: 'Properties',
-    setData: setProperties,
-    setLoading,
-    setError
-  });
-}, []);
+  useEffect( async () => {
+      execute({ request: () => propertyService.getAll() });
+  }, []);
 
 
   

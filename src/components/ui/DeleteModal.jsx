@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaXmark } from "react-icons/fa6";
 import PrimaryButton from './PrimaryButton';
-import '../css/modal.css';
+import '../../css/modal.css';
 
 const DeleteModal = ({ isOpen, title, onClose, onSubmit, loadingBtn }) => {
   if (!isOpen) return null;

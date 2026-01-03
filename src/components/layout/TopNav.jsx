@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { toggleSidebar } from '../helpers/toggleSidebar';
-import ThemeMode from '../components/ThemeToggle';
-import "../css/topbar.css";
-import ProfileImg from "../assets/profile.png";
+import { toggleSidebar } from '../../helpers/toggleSidebar';
+import ThemeMode from '../../components/ui/ThemeToggle';
+import "../../css/topbar.css";
+import ProfileImg from "../../assets/profile.png";
 import { FiMessageSquare } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { GiHamburgerMenu } from "react-icons/gi";

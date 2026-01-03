@@ -1,5 +1,5 @@
 import React from 'react'
-import "../css/input.css"
+import "../../css/input.css"
 
 const Textarea = ({type, labelName, name, placeholder, value, onChange}) => {
   return (

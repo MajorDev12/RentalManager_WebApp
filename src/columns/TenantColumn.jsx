@@ -1,4 +1,4 @@
-import ActionCell from "../components/ActionCell";
+import ActionCell from "../components/ui/ActionCell";
 import PropertyImage from "../assets/TenantDefaultProfile.png";
 import { Link } from 'react-router-dom';
 import '../css/tenant.css';
