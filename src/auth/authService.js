@@ -24,8 +24,17 @@ export const authService = {
     return res;
   },
 
-  logout() {
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
+  async logout() {
+    try {
+      var res = await apiClient.post("logout");
+
+      if(res.success){
+        localStorage.removeItem(ACCESS_TOKEN_KEY);
+
+      }
+    } finally {
+      window.location.href = "/login";
+    }
   },
 
   getAccessToken() {

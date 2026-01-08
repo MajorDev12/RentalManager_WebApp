@@ -5,20 +5,20 @@ import ProtectedRoute from "../auth/ProtectedRoute";
 import PageWrapper from "../components/layout/PageWrapper";
 
 // pages
-import Login from "../sections/Login";
-import MainPage from "../sections/MainPage";
+import Login from "../features/auth/Login";
+import MainPage from "../features/home/MainPage";
 import Property from "../features/properties/property";
-import ViewProperty from "../sections/ViewProperty";
-import Unit from "../sections/Unit";
-import UnitType from "../sections/UnitType";
-import UnitCharge from "../sections/UnitCharge";
-import Tenant from "../sections/Tenant";
-import ViewTenant from "../sections/ViewTenant";
-import AssignUnit from "../sections/AssignUnit";
-import Transaction from "../sections/Transaction";
-import UnpaidTenant from "../sections/UnpaidTenant";
-import Expense from "../sections/Expense";
-import Report from "../sections/Report";
+import ViewProperty from "../features/properties/ViewProperty";
+import Unit from "../features/units/Unit";
+import UnitType from "../features/unitTypes/UnitType";
+import UnitCharge from "../features/utilities/UnitCharge";
+import Tenant from "../features/tenants/Tenant";
+import ViewTenant from "../features/tenants/ViewTenant";
+import AssignUnit from "../features/units/AssignUnit";
+import Transaction from "../features/transactions/Transaction";
+import UnpaidTenant from "../features/tenants/UnpaidTenant";
+import Expense from "../features/expense/Expense";
+import Report from "../features/reports/Report";
 import NotFound from "../sections/NotFound";
 
 export default function Router() {
@@ -62,7 +62,6 @@ export default function Router() {
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
 
-        {/* <ToastContainer position="top-right" autoClose={4000} /> */}
       </Routes>
     </BrowserRouter>
   );

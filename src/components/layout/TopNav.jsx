@@ -14,9 +14,16 @@ import Menu from '@mui/joy/Menu';
 import MenuItem from '@mui/joy/MenuItem';
 import MenuButton from '@mui/joy/MenuButton';
 
+import { useAuthContext } from "../../auth/AuthContext";
+
 
 const TopNav = ({ width, setWidth }) => {
+  const { isAuthenticated, logout, user} = useAuthContext();
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  }
 
   return (
     <div id="topBar">
@@ -131,7 +138,16 @@ const TopNav = ({ width, setWidth }) => {
           }} className='menu'>
             <MenuItem className='menuItem'>My Profile</MenuItem>
             <MenuItem className='menuItem'>Settings</MenuItem>
-            <Link to="/Login" className='login'><MenuItem className='menuItem'>Login</MenuItem></Link>
+
+            {!isAuthenticated ? (
+              <Link to="/login" className="login">
+                <MenuItem className="menuItem">Login</MenuItem>
+              </Link>
+            ) : (
+              <MenuItem className="menuItem" onClick={handleLogout}>
+                Logout
+              </MenuItem>
+            )}
           </Menu>
         </Dropdown>
       </div>

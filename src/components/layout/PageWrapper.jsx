@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { AuthContext } from "../../auth/AuthContext";
+import { useAuthContext } from "../../auth/AuthContext";
 
 export default function PageWrapper({
   children,
@@ -12,7 +12,7 @@ export default function PageWrapper({
     user,
     hasRole,
     hasPermission,
-  } = AuthContext();
+  } = useAuthContext();
 
   // ⏳ Wait until auth is resolved
   if (isLoading) return null; // or spinner
@@ -28,9 +28,9 @@ export default function PageWrapper({
   }
 
   // 🔑 Permission enforcement
-  if (permissions.length > 0 && !permissions.some(hasPermission)) {
-    return <Navigate to="/403" replace />;
-  }
+  // if (permissions.length > 0 && !permissions.some(hasPermission)) {
+  //   return <Navigate to="/403" replace />;
+  // }
 
   return children;
 }

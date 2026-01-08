@@ -8,10 +8,18 @@ import { BsBuildingFill } from "react-icons/bs";
 import { FaHouse, FaBuildingUser, FaUsers, FaMoneyCheckDollar, FaXmark } from "react-icons/fa6";
 import { BiSolidReport } from "react-icons/bi";
 import { IoIosNotifications, IoMdSettings } from "react-icons/io";
+import { useAuthContext } from "../../auth/AuthContext";
+
 
 const Sidebar = ({ width, setWidth }) => {
+  const { user } = useAuthContext();
+  const roles = user?.roles ?? [];
   const [activeIndex, setActiveIndex] = useState(null);
   const initialWidth = 260;
+
+  const hasRole = (...allowed) =>
+  roles.some(r => allowed.includes(r));
+
 
   useEffect(() => {
     const handleResize = () => adjustSidebarWidth(setWidth);
@@ -63,21 +71,23 @@ const Sidebar = ({ width, setWidth }) => {
             setActiveIndex={setActiveIndex}
             onItemClick={handleCloseSidebar}
           />
+            {hasRole("Owner", "Manager") && (
+              <NavLink
+                icon={<BsBuildingFill className="navLinkIcon" />}
+                name="Properties"
+                arrow={true}
+                isOpen={width === initialWidth}
+                index={1}
+                activeIndex={activeIndex}
+                setActiveIndex={setActiveIndex}
+                onItemClick={handleCloseSidebar}
+              >
+                <DropDownList itemName="All Properties" route={"/Properties"} />
+                <DropDownList itemName="Utility Bills" route={"/UtilityBill"} />
+                <DropDownList itemName="Add Unit Type" route={"/UnitType"} />
+              </NavLink>
+            )}
 
-          <NavLink
-            icon={<BsBuildingFill className="navLinkIcon" />}
-            name="Properties"
-            arrow={true}
-            isOpen={width === initialWidth}
-            index={1}
-            activeIndex={activeIndex}
-            setActiveIndex={setActiveIndex}
-            onItemClick={handleCloseSidebar}
-          >
-            <DropDownList itemName="All Properties" route={"/Properties"} />
-            <DropDownList itemName="Utility Bills" route={"/UtilityBill"} />
-            <DropDownList itemName="Add Unit Type" route={"/UnitType"} />
-          </NavLink>
 
           <NavLink
             icon={<FaHouse className="navLinkIcon" />}
@@ -91,7 +101,9 @@ const Sidebar = ({ width, setWidth }) => {
           >
             <DropDownList itemName="All Houses" route={"/units"} />
             <DropDownList itemName="Vacants" route={"/units"} />
-            <DropDownList itemName="Maintenance" route={"/Maintenance"} />
+            {hasRole("Owner", "Manager") && (
+              <DropDownList itemName="Maintenance" route={"/Maintenance"} />
+            )}
           </NavLink>
 
           <NavLink

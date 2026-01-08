@@ -1,9 +1,11 @@
 import { AuthProvider } from "../auth/AuthContext";
+import { ToastContainer } from "react-toastify";
+import "../css/toast.css";
 
-const Providers = ({ children }) => (
-  <AuthProvider>
-    {children}
-  </AuthProvider>
-);
-
-export default Providers;
+export default function Providers({ children }) {
+  return (
+    <AuthProvider>
+      {children}
+    </AuthProvider>
+  );
+}

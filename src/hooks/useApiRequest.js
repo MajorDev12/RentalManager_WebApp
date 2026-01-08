@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 export function useApiRequest() {
-  const [loading, setLoading] = useState(false);
+  const [apiLoading, setApiLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const execute = async ({
@@ -12,7 +12,7 @@ export function useApiRequest() {
     successMessage,
     errorMessage,
   }) => {
-    setLoading(true);
+    setApiLoading(true);
     setError(null);
 
     try {
@@ -37,9 +37,9 @@ export function useApiRequest() {
       onError?.(err);
       return null;
     } finally {
-      setLoading(false);
+      setApiLoading(false);
     }
   };
 
-  return { execute, loading, error };
+  return { execute, apiLoading, error };
 }

@@ -1,11 +1,26 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IoIosArrowForward } from 'react-icons/io';
+import { useAuthContext } from "../../auth/AuthContext";
 import '../../css/breadcrumb.css';
 
-const BreadCrumb = ({ greetings = "Good Morning, Admin" }) => {
+const BreadCrumb = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAuthenticated, user} = useAuthContext();
+  const isHome = location.pathname === "/";
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
+  };
+
+  const greetingText = isAuthenticated && user
+  ? `${getGreeting()}, ${user.roles?.[0] ?? "User"}`
+  : getGreeting();
+
 
   const segmentNameMap = {
     home: 'home',
@@ -16,7 +31,7 @@ const BreadCrumb = ({ greetings = "Good Morning, Admin" }) => {
   };
 
 
-  const pathnames = location.pathname.split('/').filter(Boolean); // Removes empty strings
+  const pathnames = location.pathname.split('/').filter(Boolean);
 
   const handleClick = (index) => {
     const path = '/' + pathnames.slice(0, index + 1).join('/');
@@ -25,7 +40,11 @@ const BreadCrumb = ({ greetings = "Good Morning, Admin" }) => {
 
   return (
     <div id="breadCrumb">
-      <h1 className="greetings">{greetings}</h1>
+      {isHome && (
+        <h1 className="greetings">
+          {greetingText}
+        </h1>
+      )}
       <div className="navigator">
         <p onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Home</p>
         {

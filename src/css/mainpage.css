@@ -4,7 +4,7 @@ main{
     background-color: var(--backgroundColor);
     display: flex;
     flex-direction: column;
-    overflow: scroll;
+    overflow: auto;
     padding: 0;
     margin: 0;
 }

@@ -20,8 +20,9 @@ export function AuthProvider({ children }) {
     setUser({
       id: decoded.sub,
       email: decoded.email,
+      name: decoded.name,
       accountId: decoded.accountId,
-      roles: decoded.role ? [decoded.role] : [],
+      roles: decoded.roles ? [decoded.roles] : [],
       permissions: decoded.permissions ?? [],
       exp: decoded.exp,
     });
@@ -38,8 +39,8 @@ export function AuthProvider({ children }) {
     return res;
   };
 
-  const logout = () => {
-    authService.logout();
+  const logout = async () => {
+    await authService.logout();
     setUser(null);
   };
 

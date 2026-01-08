@@ -19,7 +19,12 @@ export default function Layout() {
 
         <Outlet />
 
-        <ToastContainer position="top-right" autoClose={4000} />
+        <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        newestOnTop
+        pauseOnHover
+      />
       </div>
     </div>
   );

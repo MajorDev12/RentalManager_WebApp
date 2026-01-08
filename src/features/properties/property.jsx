@@ -4,23 +4,24 @@ import { MdArrowCircleDown, MdArrowCircleUp } from "react-icons/md";
 import BreadCrumb from '../../components/ui/BreadCrumb';
 import PrimaryButton from '../../components/ui/PrimaryButton';
 import Table from '../../components/ui/Table';
-import { getPropertyColumns } from "../../columns/propertyColumns";
+import { getPropertyColumns } from "./propertyColumns";
 import Modal from '../../components/ui/Modal'; 
 import DeleteModal from '../../components/ui/DeleteModal'; 
 import Input from '../../components/ui/Input';
 import { getData } from '../../helpers/getData'; 
-import { addData } from '../../helpers/addData';
-import { updateData } from '../../helpers/updateData';
 import { handleDelete } from '../../helpers/deleteData';
 import { validateTextInput } from '../../helpers/validateTextInput'; 
 import { validateEmail } from '../../helpers/validateEmail';
 import Textarea from '../../components/ui/Textarea';
 import Select from '../../components/ui/Select';
 import { propertyService } from "./propertyService";
+import { useApiRequest } from '../../hooks/useApiRequest';
+import { handleFormSubmit } from '../../helpers/handleFormSubmit';
 import '../../css/property.css';
 
 const Property = () => {
   const navigate = useNavigate();
+  const { execute, apiLoading } = useApiRequest();
   const [activeRow, setActiveRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [properties, setProperties] = useState([]);
@@ -34,71 +35,90 @@ const Property = () => {
   const [formError, setFormError] = useState('');
   const [select, setSelect] = useState('');
   const [showMoreInputs, setshowMoreInputs] = useState(false);
-
-    const handleSelect = (e) => {
-    const { name, value } = e.target;
-      setSelect(value);
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    };
-
-    // Form state
-  const [formData, setFormData] = useState({
+  const EMPTY_FORM = {
     id: '',
     name: '',
     emailAddress: '',
     mobileNumber: '',
+    physicalAddress: '',
     country: '',
     county: '',
     area: '',
+    floor: '',
     notes: '',
-    floor: ''
-  });
-
-
-  const handleCloseModal = () => {
-    setFormError('');
-    setIsEditMode(false);
-    setFormData({});
-    setShowModal(false);
+    utility: '',
+    electricity: ''
   };
+  const [formData, setFormData] = useState(EMPTY_FORM);
 
 
 
-  useEffect( async () => {
-      execute({ request: () => propertyService.getAll() });
+
+  useEffect(() => {
+    fetchProperties();
   }, []);
 
 
+  const fetchProperties = async () => {
+      await getData({
+        execute,
+        request: () => propertyService.getAll(),
+        setData: setProperties,
+        setLoading,
+      });
+    };
+
+
+  const refreshTableData = () =>{
+    fetchProperties();
+    handleCloseModal();
+  }
+
+
   
-
-const columns = getPropertyColumns({
-  endpoint: "Properties",
-  activeRow,
-  setActiveRow,
-  setSelectedId,
-  setIsEditMode,
-  setDeleteModalOpen,
-  setFormData,
-  setOriginalData,
-  setShowModal,
-  properties,
-});
-
-
-
-  const handleInputChange = (field, value) => {
+  const handleSelect = (e) => {
+    const { name, value } = e.target;
+    setSelect(value);
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [name]: value
     }));
   };
 
 
 
- const validateForm = () => {
+  const handleCloseModal = () => {
+    setFormError('');
+    setIsEditMode(false);
+    setFormData(EMPTY_FORM);
+    setShowModal(false);
+  };
+
+
+  const columns = getPropertyColumns({
+    activeRow,
+    setActiveRow,
+    setSelectedId,
+    setIsEditMode,
+    setDeleteModalOpen,
+    setFormData,
+    setOriginalData,
+    setShowModal,
+    properties,
+  });
+
+
+
+const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+        ...prev,
+        [field]: value
+        }));
+    };
+
+
+
+ const validateModalForm = () => {
     const { name, emailAddress, mobileNumber, country, county, floor, area, notes} = formData;
     if (!name || !emailAddress || !mobileNumber || !country || !county || !floor || !area) {
       return "Please fill in all required fields.";
@@ -109,42 +129,51 @@ const columns = getPropertyColumns({
     if(!validateEmail(emailAddress)){
       return "Please enter a valid email";
     }
+
+    if(originalData != null && isEditMode){
+      return validateChange(originalData, formData);
+    }
+    return '';
+  };
+
+  const validateChange = (originalData, updatedData) => {
+    const isSame = JSON.stringify(updatedData) === JSON.stringify(originalData);
+    if (isSame) return "No Changes Made";
     return '';
   };
 
 
-  const handleFormSubmit = (e) => {
-     addData({
-    e,
-    validateForm,
-    formData,
-    endpoint: 'Property',
-    setFormError,
-    setLoadingBtn,
-    setFormData,
-    setShowModal,
-    setData: setProperties,
-    getdata: true,
-    setLoading,
-  });
+  const addPropertyHandler = async (e) => {
+
+    await handleFormSubmit({
+      e,
+      validateForm: validateModalForm,
+      execute,
+      request: () => propertyService.add(formData),
+      setFormError,
+      setLoadingBtn,
+      resetForm: () => setFormData(EMPTY_FORM),
+      onSuccess: () => refreshTableData(),
+    });
   };
 
-const handleUpdateSubmit = (e) => {
-  updateData({
-    e,
-    validateForm,
-    formData,
-    originalData,
-    endpoint: 'Property',
-    setFormError,
-    setLoadingBtn,
-    setFormData,
-    setShowModal,
-    setIsEditMode,
-    setData: setProperties,
-    setLoading,
-  });
-};
+
+
+
+
+  const updatePropertyHandler = async (e) => {
+
+    await handleFormSubmit({
+      e,
+      validateForm: validateModalForm,
+      execute,
+      request: () => propertyService.update(formData.id, formData),
+      setFormError,
+      setLoadingBtn,
+      resetForm: () => setFormData(EMPTY_FORM),
+      onSuccess: () => refreshTableData(),
+    });
+  };
 
 
 
@@ -207,7 +236,7 @@ const handleUpdateSubmit = (e) => {
          <Modal
           isOpen={showModal}
           onClose={handleCloseModal}
-          onSubmit={isEditMode ? handleUpdateSubmit : handleFormSubmit}
+          onSubmit={isEditMode ? updatePropertyHandler : addPropertyHandler}
           errorMessage={formError}
           title={isEditMode ? "Update Property" : "Add Property"}
           loadingBtn={loadingBtn}
@@ -324,63 +353,61 @@ const handleUpdateSubmit = (e) => {
           
 
 
-          {showMoreInputs && (
-            <>
+            {showMoreInputs && (
+              <>
 
-              <p className='headerTitle'>Utilitiy Bills <span>(Optional)</span></p>
-              
-              <div className="row">
-                <Input
-                  type="text"
-                  name="utility"
-                  placeholder="Enter Amount"
-                  value={formData.utility || 100}
-                  labelName="Water (per unit)"
-                  onChange={handleInputChange}
-                />
+                <p className='headerTitle'>Utilitiy Bills <span>(Optional)</span></p>
+                
+                <div className="row">
+                  <Input
+                    type="text"
+                    name="utility"
+                    placeholder="Enter Amount"
+                    value={formData.utility || 100}
+                    labelName="Water (per unit)"
+                    onChange={handleInputChange}
+                  />
 
-                <Input
-                  type="email"
-                  name="emailAddress"
-                  placeholder="Enter Electricity Bill"
-                  value={formData.emailAddress || 0}
-                  labelName="Electricity Bill"
-                  onChange={handleInputChange}
-                />
-              </div>
+                  <Input
+                    type="email"
+                    name="electricity"
+                    placeholder="Enter Electricity Bill"
+                    value={formData.electricity || 0}
+                    labelName="Electricity Bill"
+                    onChange={handleInputChange}
+                  />
+                </div>
 
-              {/* <div className="row">
-                <p className='headerTitle'>Payment For Mpesa <span>(Optional)</span></p>
-              </div>
-
-
-              <div className="row">
-                <Input
-                  type="radio"
-                  name="emailAddress"
-                  placeholder=""
-                  value={formData.emailAddress || ''}
-                  labelName="Paybill"
-                  onChange={handleInputChange}
-                />
-
-                <Input
-                  type="radio"
-                  name="emailAddress"
-                  placeholder=""
-                  value={formData.emailAddress || ''}
-                  labelName="Till Number"
-                  onChange={handleInputChange}
-                />
-              </div> */}
-            </>
-
-          )}
+                {/* <div className="row">
+                  <p className='headerTitle'>Payment For Mpesa <span>(Optional)</span></p>
+                </div>
 
 
-      </div>
+                <div className="row">
+                  <Input
+                    type="radio"
+                    name="emailAddress"
+                    placeholder=""
+                    value={formData.emailAddress || ''}
+                    labelName="Paybill"
+                    onChange={handleInputChange}
+                  />
+
+                  <Input
+                    type="radio"
+                    name="emailAddress"
+                    placeholder=""
+                    value={formData.emailAddress || ''}
+                    labelName="Till Number"
+                    onChange={handleInputChange}
+                  />
+                </div> */}
+              </>
+
+            )}
 
 
+          </div>
 
         </Modal>
       </div>

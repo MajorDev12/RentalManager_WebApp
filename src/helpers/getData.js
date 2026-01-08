@@ -1,15 +1,21 @@
 
 export const getData = async ({
-  endpoint,
+  execute,
+  request,
   setData,
   setLoading,
   setError
 }) => {
   try {
-    const response = await fetchData(endpoint, 'GET', formData);
 
-    if (response.success) {
-      setData(response.data);
+    const res = await execute({
+      request,
+    });
+
+    if (!res) return;
+
+    if (res.success) {
+      setData(res.data);
     } else {
       setError(true);
     }

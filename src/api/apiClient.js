@@ -1,9 +1,11 @@
 import { authService } from "../auth/authService";
+import { toast } from "react-toastify";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-async function request(endpoint, options = {}) {
+async function request(endpoint, options = {}, retry = true) {
   const token = authService.getAccessToken();
+  const isRefreshEndpoint = endpoint.includes("refresh");
 
   const headers = {
     "Content-Type": "application/json",
@@ -14,20 +16,34 @@ async function request(endpoint, options = {}) {
   const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
     ...options,
     headers,
-    credentials: "include", // 🔥 REQUIRED for refresh cookie
+    credentials: "include",
   });
 
-  // 🔁 Try refresh once
   if (response.status === 401) {
-    const refresh = await authService.refresh();
 
-    if (refresh.success) {
-      return request(endpoint, options);
+    if (isRefreshEndpoint) {
+      authService.logout();
+      // window.location.href = "/login";
+      return;
+    }
+
+    // Try refresh once
+    if (retry) {
+      const refresh = await authService.refresh();
+
+      if (refresh?.success) {
+        return request(endpoint, options, false);
+      }
     }
 
     authService.logout();
-    window.location.href = "/login";
+    // window.location.href = "/login";
     return;
+  }
+
+  if (response.status === 500) {
+    console.error("Server error");
+    toast.error("Server Error!!!");
   }
 
   return response.json();
