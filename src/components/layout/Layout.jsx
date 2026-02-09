@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import SideNav from "./Sidebar";
 import TopNav from "./TopNav";
-import { ToastContainer } from "react-toastify";
 
 export default function Layout() {
   const [width, setWidth] = useState(260);
@@ -18,13 +17,6 @@ export default function Layout() {
         {!hideLayout && <TopNav width={width} setWidth={setWidth} />}
 
         <Outlet />
-
-        <ToastContainer
-        position="top-right"
-        autoClose={4000}
-        newestOnTop
-        pauseOnHover
-      />
       </div>
     </div>
   );

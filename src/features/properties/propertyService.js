@@ -18,7 +18,7 @@ export const propertyService = {
   },
 
   archive(id) {
-    return apiClient.put(`property/${id}`);
+    return apiClient.delete(`property/${id}`);
   },
 
 };

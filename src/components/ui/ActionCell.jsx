@@ -4,51 +4,24 @@ import TableActionModal from './TableActionModal';
 import "../../css/actioncell.css";
 
 const ActionCell = ({
-  rowIndex,
-  endpoint,
+  rowId,
   activeRow,
   setActiveRow,
-  rowId,
-  setSelectedId,
-  setIsEditMode,
-  setDeleteModalOpen,
-  setFormData,
-  setOriginalData,
-  setShowModal,
-  items,
   actions
 }) => {
-  const isOpen = activeRow === rowIndex;
+  const isOpen = activeRow === rowId;
   const containerRef = useRef(null);
   const [openUpward, setOpenUpward] = useState(false);
 
-  const onDelete = () => {
-    setSelectedId(rowId);
-    setDeleteModalOpen(true);
-    setActiveRow(null);
-  };
-
-  const onEdit = () => {
-    setIsEditMode(true);
-    const item = items.find(i => i.id === rowId);
-    setFormData(item);
-    setOriginalData(item);
-    setShowModal(true);
-    setActiveRow(null);
-  };
-
-  // 🔽 Handle dynamic dropdown direction
   useEffect(() => {
     if (isOpen && containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
       const spaceAbove = rect.top;
-
       setOpenUpward(spaceBelow < 150 && spaceAbove > 150);
     }
   }, [isOpen]);
 
-  // 🔽 Handle click outside
   useEffect(() => {
     if (!isOpen) return;
 
@@ -67,17 +40,17 @@ const ActionCell = ({
       <BsThreeDotsVertical
         size={18}
         style={{ cursor: 'pointer' }}
-        onClick={() => setActiveRow(isOpen ? null : rowIndex)}
+        onClick={() => setActiveRow(isOpen ? null : rowId)}
       />
+
       {isOpen && (
         <div className={`actionContainer ${openUpward ? 'open-up' : ''}`}>
-          <TableActionModal>
-            {actions}
-          </TableActionModal>
+          <TableActionModal>{actions}</TableActionModal>
         </div>
       )}
     </div>
   );
 };
+
 
 export default ActionCell;

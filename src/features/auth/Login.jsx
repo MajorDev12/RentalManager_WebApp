@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from "../../components/ui/Input"
 import PrimaryButton from "../../components/ui/PrimaryButton"
-import PropertyImage from "../assets/property.jpg";
+import PropertyImage from "../../assets/property.jpg";
 import { validateMobileNumber } from '../../helpers/validateMobileNumber'; 
 import { validateEmail } from '../../helpers/validateEmail'; 
 import { handleFormSubmit } from "../../helpers/handleFormSubmit";
 import { useApiRequest } from '../../hooks/useApiRequest';
 import { useAuthContext } from '../../auth/AuthContext';
-import  "../css/login.css";
+import { Link } from 'react-router-dom';
+import  "../../css/login.css";
 
 
 
 
 const Login = () =>{
-    const { execute, loading } = useApiRequest();
+    const navigate = useNavigate();
+    const { execute, apiLoading } = useApiRequest();
     const { login } = useAuthContext();
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [formError, setFormError] = useState('');
@@ -31,24 +34,24 @@ const Login = () =>{
 
 
     const validateLoginForm = () => {
-    let { loginIdentifier, password } = formData;
+        let { loginIdentifier, password } = formData;
 
-    if (!loginIdentifier || !password) {
-        return "Please enter all fields.";
-    }
+        if (!loginIdentifier || !password) {
+            return "Please enter all fields.";
+        }
 
-    const isEmail = validateEmail(loginIdentifier);
-    const isMobile = validateMobileNumber(loginIdentifier, true);
+        const isEmail = validateEmail(loginIdentifier);
+        const isMobile = validateMobileNumber(loginIdentifier, true);
 
-    if (!isEmail && !isMobile) {
-        return "Please enter a valid Email or Mobile Number.";
-    }
+        if (!isEmail && !isMobile) {
+            return "Please enter a valid Email or Mobile Number.";
+        }
 
-    if (password.length < 8) {
-        return "Password must be at least 8 characters long.";
-    }
+        if (password.length < 8) {
+            return "Password must be at least 8 characters long.";
+        }
 
-    return ''; // All good!
+        return ''; // All good!
     };
 
   
@@ -108,6 +111,7 @@ const Login = () =>{
                                 value={formData.password || ''}
                                 labelName="Password"
                                 onChange={handleInputChange}
+                                passwordToggle
                             />
                         </div>
                         <div className="row options">
@@ -121,7 +125,9 @@ const Login = () =>{
                         disabled={loadingBtn}
                         loading={loadingBtn}
                     /> 
-                    <p className='loginText'>Dont have an Account Yet?  <span> Register Here</span></p>
+                    <p className='loginText'>Dont have an Account Yet? 
+                         <span> <Link to={"/Register"} className='link'>Register</Link></span>
+                    </p>
                 </form>
             </div>
         </div>

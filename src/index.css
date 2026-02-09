@@ -41,6 +41,8 @@ html {
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   --sideNavTextColor: #FCFEF5;
+
+  --trans-3: .3s ease-in-out;
 }
 
 /* Dark mode overrides */

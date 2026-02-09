@@ -57,14 +57,17 @@ const NavLink = ({
         } ${!isOpen ? "hoverMode" : ""}`}
       >
         <h3 className="headerName">{name}</h3>
-        {React.Children.map(children, (child) =>
-          React.cloneElement(child, {
+        {React.Children.map(children, (child) => {
+          if (!React.isValidElement(child)) return null;
+
+          return React.cloneElement(child, {
             onSelect: () => {
               setActiveIndex(null);
-              if (onItemClick) onItemClick(); // ✅ Close sidebar when dropdown clicked
+              if (onItemClick) onItemClick();
             },
-          })
-        )}
+          });
+        })}
+
       </div>
     </div>
   );

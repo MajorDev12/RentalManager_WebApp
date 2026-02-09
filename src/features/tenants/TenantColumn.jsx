@@ -1,31 +1,27 @@
 import ActionCell from "../../components/ui/ActionCell";
-import PropertyImage from "../assets/TenantDefaultProfile.png";
+import ProfileImg from "../../assets/profile.png";
+
 import { Link } from 'react-router-dom';
-import '../css/tenant.css';
+import '../../css/tenant.css';
+
+const endpoint = "Tenants";
 
 export const getColumns = ({
-  endpoint,
   activeRow,
   setActiveRow,
-  setSelectedId,
-  setIsEditMode,
-  setDeleteModalOpen,
-  setAssignUnitModal,
-  setFormData,
-  setOriginalData,
-  setShowModal,
-  setAddPaymentModal,
-  setAssignStatusModal,
-  setAddInvoiceModal,
-  data,
-  setActiveTenant,
+  onEdit,
+  onDelete,
+  addInvoice,
+  addPayment,
+  tenantStatus,
+  assignUnit
 }) => [
   {
     header: 'Img',
     accessorKey: 'profilePhotoUrl',
     cell: info => (
       <img
-        src={info.getValue() || PropertyImage}
+        src={info.getValue() || ProfileImg}
         alt="property"
         width="25"
         height="25"
@@ -71,61 +67,29 @@ export const getColumns = ({
 
       const actions = (
         <>
-          <li onClick={() => {
-            setIsEditMode(true);
-            setFormData(rowData);
-            setOriginalData(rowData);
-            setShowModal(true);
-            setActiveRow(null);
-          }} className="actionLink">Edit</li>
+          <li onClick={() => onEdit(rowId)} className="actionLink">Edit</li>
 
           <li className="actionLink">
             <Link to={`/${endpoint}/${rowId}`} className="view">View</Link>
           </li>
 
-          <li onClick={() => {
-            setAssignUnitModal(true);
-            setActiveRow(null);
-            setActiveTenant(rowData);
-            setSelectedId(rowId);
-          }} className="actionLink">Assign House</li>
+          <li onClick={() => assignUnit(rowId, rowData)} className="actionLink">Assign House</li>
 
-          <li onClick={() => {
-            setSelectedId(rowId);
-            setActiveTenant(rowData);
-            setActiveRow(null);
-            setAddInvoiceModal(true);
-          }} className="actionLink">Add Invoice</li>
+          <li onClick={() => addInvoice(rowId, rowData)} className="actionLink">Add Invoice</li>
 
-          <li onClick={() => {
-            setSelectedId(rowId);
-            setActiveRow(null);
-            setAddPaymentModal(true);
-          }} className="actionLink">Add Payment</li>
+          <li onClick={() => addPayment(rowId)} className="actionLink">Add Payment</li>
 
-          <li onClick={() => {
-            setSelectedId(rowId);
-            setActiveTenant(rowData);
-            setAssignStatusModal(true);
-            setActiveRow(null);
-          }} className="actionLink">Status</li>
+          <li onClick={() => tenantStatus(rowId, rowData)} className="actionLink">Status</li>
+
+          <li onClick={() => onDelete(rowId)} className="actionLink">Delete</li>
         </>
       );
 
       return (
         <ActionCell
-          endpoint={endpoint}
-          rowIndex={info.row.index}
           activeRow={activeRow}
           setActiveRow={setActiveRow}
           rowId={rowId}
-          setSelectedId={setSelectedId}
-          setIsEditMode={setIsEditMode}
-          setDeleteModalOpen={setDeleteModalOpen}
-          setFormData={setFormData}
-          setOriginalData={setOriginalData}
-          setShowModal={setShowModal}
-          items={data}
           actions={actions}
         />
       );

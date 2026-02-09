@@ -25,16 +25,16 @@
    padding: 5px;
 }
 .firstRow .cont .img{
-  width: 70px;
+  width: 40px;
   height: 70px;
-  margin: 5px;
+  margin: 10px;
 }
 .firstRow .cont .img img{
   width: 100%;
   height: 100%;
 }
 .firstRow .cont .content{
-  height: 70px;
+  height: 60px;
   font-family: var(--fontFamily);
   display: flex;
   flex-direction: column;

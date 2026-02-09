@@ -1,9 +1,9 @@
 .tabsFilter {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 1rem;
 }
+
 
 .customTabs {
   position: relative;
@@ -48,7 +48,6 @@
   bottom: 4px;
   left: 4px;
   width: calc(100% / 3 - 8px);
-  /* background-color: var(--highlightColor); */
   border-radius: 6px;
   z-index: 1;
   transition: all 0.3s ease-in-out;

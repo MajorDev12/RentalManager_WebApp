@@ -1,78 +1,93 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from "../../components/ui/Input"
+import Select from "../../components/ui/Select"
 import PrimaryButton from "../../components/ui/PrimaryButton"
-import  "../css/login.css";
-import PropertyImage from "../assets/property.jpg";
-import { validateTextInput } from '../../helpers/validateTextInput'; 
+import PropertyImage from "../../assets/property.jpg";
 import { validateMobileNumber } from '../../helpers/validateMobileNumber'; 
 import { validateEmail } from '../../helpers/validateEmail'; 
-import { addData } from '../../helpers/addData';
-
+import { Link } from 'react-router-dom';
+import { handleFormSubmit } from "../../helpers/handleFormSubmit";
+import { useApiRequest } from '../../hooks/useApiRequest';
+import { useAuthContext } from '../../auth/AuthContext';
+import  "../../css/login.css";
 
 
 
 const Register = () =>{
+    const navigate = useNavigate();
+    const { execute, apiLoading } = useApiRequest();
+    const { register } = useAuthContext();
     const [loadingBtn, setLoadingBtn] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [charges, setCharges] = useState([]);
     const [formError, setFormError] = useState('');
-    const [formData, setFormData] = useState({
-        loginIdentifier: '',
+    const [select, setSelect] = useState('');
+    const EMPTY_FORM = {
+        firstName: '',
+        lastName: '',
+        emailAddress: '',
+        mobileNumber: '',
         password: '',
-    });
-
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-
-    const validateForm = () => {
-    let { loginIdentifier, password } = formData;
-
-    if (!loginIdentifier || !password) {
-        return "Please enter all fields.";
+        role: '',
     }
+    const [formData, setFormData] = useState(EMPTY_FORM);
 
-    const isEmail = validateEmail(loginIdentifier);
-    const isMobile = validateMobileNumber(loginIdentifier, true);
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+        ...prev,
+        [field]: value
+        }));
+    };
 
-    if (!isEmail && !isMobile) {
-        return "Please enter a valid Email or Mobile Number.";
-    }
 
-    if (password.length < 8) {
-        return "Password must be at least 8 characters long.";
-    }
+    const validateRegisterForm = () => {
+        let { firstName, lastName, emailAddress, mobileNumber, password, role } = formData;
+        
+        
+        if (!firstName || !lastName || !emailAddress || !mobileNumber || !password || !role) {
+            return "Please fill in all fields.";
+        }
 
-    return ''; // All good!
+        const isEmail = validateEmail(emailAddress);
+        const isMobile = validateMobileNumber(mobileNumber, true);
+
+        if (!isEmail) {
+            return "Please enter a valid Email.";
+        }
+
+        if (!isMobile) {
+            return "Please enter a valid Mobile Number.";
+        }
+
+        if (password.length < 8) {
+            return "Password must be at least 8 characters long.";
+        }
+
+        return ''; // All good!
     };
 
   
+    const handleSelect = (e) => {
+        const { name, value } = e.target;
+        setSelect(value);
+        setFormData(prev => ({
+        ...prev,
+        [name]: value
+        }));
+    };
   
   
   
-  
-  const handleFormSubmit = (e) => {
-    const isEmail = validateEmail(formData.loginIdentifier);
-    const payload = isEmail
-    ? { emailAddress: formData.loginIdentifier, password: formData.password }
-    : { mobileNumber: formData.loginIdentifier, password: formData.password };
-
-
-    addData({
-    e,
-    validateForm,
-    formData: payload,
-    endpoint: 'Login',
-    setFormError,
-    setLoadingBtn,
-    setFormData,
-    setData: setCharges,
-    setLoading,
-    });
+    const registerHandler = (e) => {
+        handleFormSubmit({
+            e,
+            validateForm: validateRegisterForm,
+            execute,
+            request: () => register(formData),
+            setFormError,
+            setLoadingBtn,
+            resetForm: () => setFormData(EMPTY_FORM),
+            onSuccess: () => navigate("/login"),
+        });
     };
 
 
@@ -84,22 +99,22 @@ const Register = () =>{
             </div>
             <div className="right">
                 <h1 className="header">Property Management System</h1>
-                <form onSubmit={handleFormSubmit}>
+                <form onSubmit={registerHandler}>
                     <div className="col">
                         <div className="row">
                             <Input
                                 type="text"
-                                name={"loginIdentifier" }
+                                name={"firstName" }
                                 placeholder="First Name"
-                                value={formData.loginIdentifier || ''}
+                                value={formData.firstName || ''}
                                 labelName="First Name"
                                 onChange={handleInputChange}
                             />
                             <Input
                                 type="text"
-                                name={"loginIdentifier" }
+                                name={"lastName" }
                                 placeholder="Last Name"
-                                value={formData.loginIdentifier || ''}
+                                value={formData.lastName || ''}
                                 labelName="Last Name"
                                 onChange={handleInputChange}
                             />
@@ -107,40 +122,44 @@ const Register = () =>{
                         <div className="row">
                             <Input
                                 type="text"
-                                name={"loginIdentifier" }
+                                name={"emailAddress" }
                                 placeholder="Email Address"
-                                value={formData.loginIdentifier || ''}
+                                value={formData.emailAddress || ''}
                                 labelName="Email Address"
                                 onChange={handleInputChange}
                             />
                             <Input
                                 type="text"
-                                name="password"
+                                name="mobileNumber"
                                 placeholder="Enter Your Mobile Number"
-                                value={formData.password || ''}
+                                value={formData.mobileNumber || ''}
                                 labelName="Mobile Number"
                                 onChange={handleInputChange}
                             />
                         </div>
                         <div className="row">
                             <Input
-                            type="password"
-                            name="password"
-                            placeholder="Enter Your Password"
-                            value={formData.password || ''}
-                            labelName="Password"
-                            onChange={handleInputChange}
-                        />
+                                type="password"
+                                name="password"
+                                placeholder="Enter Your Password"
+                                value={formData.password || ''}
+                                labelName="Password"
+                                onChange={handleInputChange}
+                                passwordToggle
+                            />
 
-                        <Input
-                            type="password"
-                            name="password"
-                            placeholder="Confirm Your Password"
-                            value={formData.password || ''}
-                            labelName="Confirm Password"
-                            onChange={handleInputChange}
-                        />
+                            <Select
+                                name="role"
+                                labelName="Category"
+                                value={formData.role || ''}
+                                onChange={handleSelect}
+                                options={[
+                                    { value: 'Owner', label: 'Owner' },
+                                    { value: 'Manager', label: 'Property Manager' },
+                                ]}
+                            />
                         </div>
+
                         <div className="row options">
                             <p>Forgot password ?</p>
                             <p>Remember Me</p>
@@ -148,12 +167,14 @@ const Register = () =>{
                     </div>
                     {formError && <p className='errorMessage'>{formError}</p>}
                     <PrimaryButton 
-                        name="Login" 
+                        name="Register" 
                         type="submit" 
                         disabled={loadingBtn}
                         loading={loadingBtn}
                     /> 
-                    <p className='loginText'>Already Registered?  <span> Login Here</span></p>
+                    <p className='loginText'>Already have an Account? 
+                        <span> <Link to={"/login"} className='link'>Login</Link></span>
+                    </p>
                 </form>
             </div>
         </div>

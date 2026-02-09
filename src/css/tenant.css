@@ -57,3 +57,21 @@
   font-size: var(--normalFontSize);
   padding-right: 5px;
 }
+#InvoiceItemsCont{
+  margin-left: 50px;
+}
+#invoiceMonth{
+  width: 100px;
+}
+
+#invoiceYear{
+  width: 100px;
+}
+#utillityBillName{
+  width: 170px;
+  margin-left: 0px;
+}
+
+#invoiceAmount{
+  width: 100px;
+}

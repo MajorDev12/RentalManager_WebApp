@@ -3,6 +3,17 @@ import apiClient from "../api/apiClient";
 const ACCESS_TOKEN_KEY = "access_token";
 
 export const authService = {
+  async register(credentials) {
+    const res = await apiClient.post("register", credentials);
+
+    if (res.success && res.data.true) {
+      window.location.href = "/login";
+    }
+
+    return res;
+  },
+
+
   async login(credentials) {
     const res = await apiClient.post("login", credentials);
 

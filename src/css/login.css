@@ -25,9 +25,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: -40px;
 }
 #login .right .header{
-    margin-bottom: 10%;
+    margin-bottom: 5%;
     font-size: 25px;
     color: var(--highlightColor);
 }
@@ -50,15 +51,25 @@
     color: var(--lightTextColor);
     font-size: var(--smallFontSize);
 }
-#login .right form .loginText span{
+#login .right form .loginText .link{
     color: var(--highlightColor);
     cursor: pointer;
+    text-decoration: none;
+    font-weight: 700;
+}
+#login .right form .loginText .link:hover{
+    font-weight: 500;
 }
 #login .right form .inputContainer{
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     
 }
-#login .right form .Input{
+#login .right form .Input,
+#login .right form .select{
+    width: 230px;
+}
+
+#login .right form .select{
     width: 230px;
 }
 #login .right form .errorMessage{
@@ -66,7 +77,7 @@
     color: var(--red);
 }
 #login .right form #primaryBtn{
-    margin: 5px;
+    margin-top: 20px;
 }
 
 /* When sidebar is open */

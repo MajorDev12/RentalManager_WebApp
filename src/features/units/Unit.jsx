@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import BreadCrumb from '../../components/ui/BreadCrumb';
 import PrimaryButton from '../../components/ui/PrimaryButton';
 import Table from '../../components/ui/Table';
@@ -9,104 +9,118 @@ import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import { validateTextInput } from '../../helpers/validateTextInput'; 
 import { getData } from '../../helpers/getData';
-import { addData } from '../../helpers/addData';
-import { updateData } from '../../helpers/updateData';
 import { handleDelete } from '../../helpers/deleteData';
+import { handleFormSubmit } from '../../helpers/handleFormSubmit';
+import { propertyService } from "../properties/propertyService";
+import { unitTypeService } from "../unitTypes/unitTypeService";
+import { unitService } from "./unitService";
+import { useApiRequest } from '../../hooks/useApiRequest';
 
 
 const Unit = () => {
-    const [activeRow, setActiveRow] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [charges, setCharges] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [loadingBtn, setLoadingBtn] = useState(false);
-    const [selectedId, setSelectedId] = useState(null);
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [isEditMode, setIsEditMode] = useState(false);
-    const [originalData, setOriginalData] = useState(null);
-    const [formError, setFormError] = useState('');
-    const [select, setSelect] = useState('');
-    const [properties, setProperties] = useState([]);
-    const [propertySet, isPropertySet] = useState(false);
-    const [unitTypes, setUnitTypes] = useState([]);
-    const [unitStatus, setUnitStatus] = useState([]);
-    const [formData, setFormData] = useState({
-      propertyId: '',
-      name: '',
-      unitTypeId: '',
-      unitType: '',
-      amount: 0
+  const { execute, apiLoading } = useApiRequest();  
+  const [activeRow, setActiveRow] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [loadingBtn, setLoadingBtn] = useState(false);
+  const [selectedPropertyId, setPropertySelectedId] = useState(null);
+  const [selectedUnitTypeId, setSelectedUnitTypeId] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [originalData, setOriginalData] = useState(null);
+  const [formError, setFormError] = useState('');
+  const [properties, setProperties] = useState([]);
+  const [propertyLoader, isPropertiesLoader] = useState(false);
+  const [units, setUnits] = useState([]);
+  const [unitTypes, setUnitTypes] = useState([]);
+  const EMPTY_FORM = {
+    propertyId: '',
+    name: '',
+    unitTypeId: '',
+    amount: 0
+  }
+  const [formData, setFormData] = useState(EMPTY_FORM);
+
+  const tableData = useMemo(() => units ?? [], [units]);
+
+
+
+  useEffect(() => {
+    fetchUnits();
+    fetchProperties();
+
+    if (!formData.propertyId) {
+      setUnitTypes([]);
+      return;
+    }
+
+    fetchUnitTypesByProperty();
+
+  }, [formData.propertyId]);
+
+
+  const fetchProperties = async () => {
+    await getData({
+    execute,
+    request: () => propertyService.getAll(),
+    setData: setProperties,
+    setLoading: isPropertiesLoader,
     });
+  };
+  
+  const fetchUnits = async () => {
+      await getData({
+      execute,
+      request: () => unitService.getAll(),
+      setData: setUnits,
+      setLoading,
+      });
+  };
 
+  const fetchUnitTypesByProperty = async () => {
+      await getData({
+      execute,
+      request: () => unitTypeService.byProperty(selectedPropertyId),
+      setData: setUnitTypes,
+      setLoading,
+      });
+  };
 
-   const handleSelect = (e) => {
-    const { name, value } = e.target;
-      setSelect(value);
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    };
- 
-
-
-
-    const handleCloseModal = () => {
-      setFormError('');
-      setIsEditMode(false);
-      setFormData({});
-      setShowModal(false);
-    };
-
-
-
-    useEffect(() => {
-        getData({
-            endpoint: 'Unit',
-            setData: setCharges,
-            setLoading,
-            setError
-        });
-
-        
-
-        getData({
-          endpoint: 'Properties',
-          setData: setProperties,
-          setLoading,
-          setError
-        });
-
-
-        if (!formData.propertyId) {
-          setUnitTypes([]);
-          return;
-        }
-
-
-        getData({
-          endpoint: `UnitType/By-Property/${formData.propertyId}`,
-          setData: setUnitTypes,
-          setLoading,
-          setError
-        });
-      }, [formData.propertyId]);
+  const refreshTableData = () =>{
+    fetchUnits();
+    handleCloseModal();
+  }
 
 
 
-  const columns = getColumns({
-    endpoint: "Unit",
-    activeRow,
-    setActiveRow,
-    setSelectedId,
-    setIsEditMode,
-    setDeleteModalOpen,
-    setFormData,
-    setOriginalData,
-    setShowModal,
-    charges,
-  });
+  const handleEdit = (rowId) => {
+    const item = units.find(p => p.id === rowId);
+    if (!item) return;
+    setFormData(item);
+    setSelectedId(item.id);
+    setPropertySelectedId(item.propertyId);
+    setOriginalData(item);
+    setIsEditMode(true);
+    setShowModal(true);
+    setActiveRow(null);
+  };
+  
+  const handleDeleteClick = (rowId) => {
+    setSelectedId(rowId);
+    setDeleteModalOpen(true);
+    setActiveRow(null);
+  };
+
+  const columns = useMemo(() => 
+    getColumns({
+      activeRow,
+      setActiveRow,
+      onEdit: handleEdit,
+      onDelete: handleDeleteClick,
+    }),
+  [ activeRow ]);
 
 
 
@@ -118,14 +132,36 @@ const Unit = () => {
   };
 
 
+  const handlePropertySelect = (e) => {
+    const { name, value } = e.target;
+    setPropertySelectedId(value);
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+
+  const handleUnitTypeSelect = (e) => {
+    const { name, value } = e.target;
+    setSelectedUnitTypeId(value);
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleCloseModal = () => {
+    setFormError('');
+    setIsEditMode(false);
+    setFormData(EMPTY_FORM);
+    setShowModal(false);
+  };
 
 
 
 
-
-
-
- const validateForm = () => {
+  const validateModalForm = () => {
     const { name, unitTypeId, propertyId, amount} = formData;
     if (!name || !unitTypeId || !amount || !propertyId) {
       return "Please fill in all required fields.";
@@ -136,46 +172,52 @@ const Unit = () => {
     if(amount == isNaN){
       return "Please enter a valid Amount";
     }
+
+    if(originalData != null && isEditMode){
+      return validateChange(originalData, formData);
+    }
+
     return '';
   };
 
 
+  const validateChange = (originalData, updatedData) => {
+        const isSame = JSON.stringify(updatedData) === JSON.stringify(originalData);
+        if (isSame) return "No Changes Made";
+        return '';
+      };
+  
+  
+  const addUtilityHandler = async (e) => {
 
-
-const handleFormSubmit = (e) => {
-     addData({
-    e,
-    validateForm,
-    formData,
-    endpoint: 'Unit',
-    setFormError,
-    setLoadingBtn,
-    setFormData,
-    setShowModal,
-    setData: setCharges,
-    getdata: true,
-    setLoading,
-  });
-  };
-
-
-
-  const handleUpdateSubmit = (e) => {
-    updateData({
+    await handleFormSubmit({
       e,
-      validateForm,
-      formData,
-      originalData,
-      endpoint: 'Unit',
+      validateForm: validateModalForm,
+      execute,
+      request: () => unitService.add(formData),
       setFormError,
       setLoadingBtn,
-      setFormData,
-      setShowModal,
-      setIsEditMode,
-      setData: setCharges,
-      setLoading,
+      resetForm: () => setFormData(EMPTY_FORM),
+      onSuccess: () => refreshTableData(),
     });
   };
+
+
+  const updateUtilityHandler = async (e) => {
+
+    await handleFormSubmit({
+      e,
+      validateForm: validateModalForm,
+      execute,
+      request: () => unitService.update(selectedId, formData),
+      setFormError,
+      setLoadingBtn,
+      resetForm: () => setFormData(EMPTY_FORM),
+      onSuccess: () => refreshTableData(),
+    });
+  };
+
+
 
   return (
     <>
@@ -190,7 +232,7 @@ const handleFormSubmit = (e) => {
         </div>
 
       <div className="TableContainer">
-          <Table data={charges} columns={columns} loading={loading}  error={error}/>
+          <Table data={tableData} columns={columns} loading={loading}  error={error}/>
         </div>
 
 
@@ -216,55 +258,62 @@ const handleFormSubmit = (e) => {
 
 
       <Modal
-          isOpen={showModal}
-          onClose={handleCloseModal}
-          onSubmit={isEditMode ? handleUpdateSubmit : handleFormSubmit}
-          errorMessage={formError}
-          title={isEditMode ? "Update Unit" : "Add Unit"}
-          loadingBtn={loadingBtn}
-          isEditMode={isEditMode}
-        >
-          <Select
-            name="propertyId"
-            labelName="Property Name"
-            value={formData.propertyId || ''}
-            onChange={handleSelect}
-            options={properties.map(p => ({ value: p.id, label: p.name }))}
-          />
-          <Input
-            type="text"
-            name="name"
-            placeholder="Enter House Name"
-            value={formData.name || ''}
-            labelName="House Name"
-            onChange={handleInputChange}
-          />
-          <Select
-            name="unitTypeId"
-            labelName="Unit Type"
-            value={formData.unitTypeId || ''}
-            onChange={handleSelect}
-            disabled={!formData.propertyId}
-            options={
-              formData.propertyId
-              ? unitTypes && unitTypes.length > 0
-                ? unitTypes.map(p => ({ value: p.id, label: p.name }))
-                : [{ value: '', label: 'No Available UnitTypes', disabled: true }]
-              : []
-            }
-            text={formData.propertyId ? "Select Unit Types" : "Choose Property First"}
-            placeholder=""
-          />
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        onSubmit={isEditMode ? updateUtilityHandler : addUtilityHandler}
+        errorMessage={formError}
+        title={isEditMode ? "Update Unit" : "Add Unit"}
+        loadingBtn={loadingBtn}
+        isEditMode={isEditMode}
+      >
+        <Select
+          name="propertyId"
+          labelName="Property Name"
+          value={formData.propertyId || ''}
+          onChange={handlePropertySelect}
+          options={
+            properties
+            ? properties && properties.length > 0
+              ? properties.map(p => ({ value: p.id, label: p.name }))
+              : [{ value: '', label: 'No Available Properties', disabled: true }]
+            : []
+          }
+        />
+        <Input
+          type="text"
+          name="name"
+          placeholder="Enter House Name"
+          value={formData.name || ''}
+          labelName="House Name"
+          onChange={handleInputChange}
+        />
 
-          <Input
-            type="text"
-            name="amount"
-            placeholder="Enter Rent Amount"
-            value={formData.amount || ''}
-            labelName="Rent Amount"
-            onChange={handleInputChange}
-          />
-          </Modal>
+        <Select
+          name="unitTypeId"
+          labelName="Unit Type"
+          value={formData.unitTypeId || ''}
+          onChange={handleUnitTypeSelect}
+          disabled={!formData.propertyId}
+          options={
+            formData.propertyId
+            ? unitTypes && unitTypes.length > 0
+              ? unitTypes.map(p => ({ value: p.id, label: p.name }))
+              : [{ value: '', label: 'No Available UnitTypes', disabled: true }]
+            : []
+          }
+          text={formData.propertyId ? "Select Unit Types" : "Choose Property First"}
+          placeholder=""
+        />
+
+        <Input
+          type="text"
+          name="amount"
+          placeholder="Enter Rent Amount"
+          value={formData.amount || ''}
+          labelName="Rent Amount"
+          onChange={handleInputChange}
+        />
+      </Modal>
     </div>
   </>
   )

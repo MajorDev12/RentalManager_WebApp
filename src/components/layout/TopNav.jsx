@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toggleSidebar } from '../../helpers/toggleSidebar';
 import ThemeMode from '../../components/ui/ThemeToggle';
 import "../../css/topbar.css";
@@ -15,21 +15,61 @@ import MenuItem from '@mui/joy/MenuItem';
 import MenuButton from '@mui/joy/MenuButton';
 
 import { useAuthContext } from "../../auth/AuthContext";
-
+import { getData } from '../../helpers/getData';
+import { formatDate } from '../../helpers/formatDate';
+import { notificationService } from "../../features/notifications/notificationService";
+import { useApiRequest } from '../../hooks/useApiRequest';
 
 const TopNav = ({ width, setWidth }) => {
   const { isAuthenticated, logout, user} = useAuthContext();
+  const { execute, apiLoading } = useApiRequest(); 
+  const [notifications, setNotifications] = useState([]);
+  const [notificationLoading, setNotificationLoading] = useState(false);
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
+  useEffect(() => {
+      fetchNotifications();
+  }, []);
+
+  const fetchNotifications = async () => {
+    await getData({
+    execute,
+    request: () => notificationService.getUnRead(user.id),
+    setData: setNotifications,
+    setLoading: setNotificationLoading,
+    });
+  };
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
   }
+
+  const handleNotificationClick = async (notification) => {
+    await markAsRead(notification.id);
+
+    if (notification.actionUrl) {
+      navigate(notification.actionUrl);
+    }
+  };
+
 
   return (
     <div id="topBar">
       <GiHamburgerMenu className="icon Hamburger" onClick={() => toggleSidebar(setWidth)} />
 
       <div className="center">
+        <ThemeMode />
+        
+
+
+
+        
+      </div>
+
+
+
+
+      <div className="rightSide">
         {/* Notification Dropdown */}
         <Dropdown anchorOrigin={{
             vertical: 'bottom',
@@ -51,7 +91,7 @@ const TopNav = ({ width, setWidth }) => {
             }}
           >
             <Badge
-              badgeContent={3}
+              badgeContent={unreadCount}
               anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
               className="badge"
             >
@@ -66,15 +106,25 @@ const TopNav = ({ width, setWidth }) => {
             border: 'none',
             minWidth: '280px',
           }} className='menu'>
-            <MenuItem className='menuItem'>New tenant added</MenuItem>
-            <MenuItem className='menuItem'>Payment received</MenuItem>
-            <MenuItem className='menuItem'>Unit marked vacant</MenuItem>
+              {notifications.length === 0 && (
+                <MenuItem className="menuItem empty">
+                  No notifications
+                </MenuItem>
+              )}
+
+              {notifications.map(n => (
+                <MenuItem
+                  key={n.id}
+                  className={`menuItem ${!n.isRead ? 'unread' : ''}`}
+                  onClick={() => handleNotificationClick(n)}
+                >
+                  <div className="title">{n.title}</div>
+                  <div className="message">{n.message}</div>
+                  <small>{formatDate(n.createdAt)}</small>
+                </MenuItem>
+              ))}
           </Menu>
         </Dropdown>
-
-
-
-
 
         {/* Message Dropdown */}
         <Dropdown className="dropdown">
@@ -87,7 +137,7 @@ const TopNav = ({ width, setWidth }) => {
               },
             }}>
             <Badge
-              badgeContent={5}
+              badgeContent={unreadCount}
               anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
               className="badge"
             >
@@ -107,13 +157,7 @@ const TopNav = ({ width, setWidth }) => {
             <MenuItem className='menuItem'>Support follow-up</MenuItem>
           </Menu>
         </Dropdown>
-      </div>
-
-
-
-
-      <div className="rightSide">
-        <ThemeMode />
+        
         {/* Profile Dropdown */}
         <Dropdown className="dropdown">
           <MenuButton sx={{

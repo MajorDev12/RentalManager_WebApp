@@ -1,41 +1,28 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
 
 export function useApiRequest() {
   const [apiLoading, setApiLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const execute = async ({
-    request,
-    onSuccess,
-    onError,
-    successMessage,
-    errorMessage,
-  }) => {
+  const execute = async ({ request }) => {
     setApiLoading(true);
     setError(null);
 
     try {
       const res = await request();
 
-      if (!res?.success) {
-        const msg = res?.message || errorMessage || "Request failed";
-        setError(msg);
-        toast.error(msg);
-        onError?.(res);
+      if (!res) {
         return null;
       }
 
-      if (successMessage) toast.success(successMessage);
-      onSuccess?.(res);
+      if (!res.success) {
+        setError(res.message || "Request failed");
+      }
 
       return res;
     } catch (err) {
-      const msg = err?.message || "Unexpected error";
-      setError(msg);
-      toast.error(msg);
-      onError?.(err);
-      return null;
+      setError(err?.message || "Unexpected error");
+      throw err;
     } finally {
       setApiLoading(false);
     }
@@ -43,3 +30,4 @@ export function useApiRequest() {
 
   return { execute, apiLoading, error };
 }
+

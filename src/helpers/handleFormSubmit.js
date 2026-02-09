@@ -4,7 +4,7 @@ export const handleFormSubmit = async ({
   e,
   validateForm,
   execute,
-  request,          // () => apiCall(payload)
+  request,
   onSuccess,
   setFormError,
   setLoadingBtn,
@@ -12,7 +12,7 @@ export const handleFormSubmit = async ({
 }) => {
   e.preventDefault();
 
-   // 🔒 1. Validate
+  // 1️⃣ Validate
   const error = validateForm();
   if (error) {
     setFormError?.(error);
@@ -23,14 +23,17 @@ export const handleFormSubmit = async ({
   setFormError?.("");
   setLoadingBtn?.(true);
 
-
   try {
-    const res = await execute({
-      request,
-    });
+    const res = await execute({ request });
 
-    if (!res) return; // execute already handled errors
+    if (!res?.success) {
+      const message =  res?.message || "Request failed";
 
+      toast.error(message);
+      return;
+    }
+
+    // 3️⃣ Success
     toast.success(res.message || "Success");
 
     resetForm?.();
@@ -38,8 +41,9 @@ export const handleFormSubmit = async ({
 
   } catch (err) {
     console.error(err);
-    toast.error("Something went wrong");
+    toast.error(err.message || "Network error");
   } finally {
     setLoadingBtn?.(false);
   }
 };
+

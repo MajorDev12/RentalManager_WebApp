@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DoughnutChart from '../../components/ui/DoughnutChart';
-import { getColumns } from '../../columns/BalanceHomeColumn';
+import { getColumns } from './BalanceHomeColumn';
 import { getData } from '../../helpers/getData';
 import Table from '../../components/ui/Table';
 import Select from '../../components/ui/Select';
@@ -10,12 +10,15 @@ import HomeIcon2 from "../../assets/HomeIcon2.svg";
 import HomeIcon3 from "../../assets/HomeIcon3.svg";
 import HomeIcon4 from "../../assets/HomeIcon4.svg";
 import BarChart from '../../components/ui/BarChart';
+import { transactionService } from "../transactions/transactionService";
+import { useApiRequest } from '../../hooks/useApiRequest';
 import "../../css/center.css";
 
 
 const CenterPage = () => {
+  const { execute, apiLoading } = useApiRequest();  
   const [balances, setBalances] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isTenantsBalanceLoader, setTenantsBalanceLoader] = useState(true);
   const [error, setError] = useState(null);
   
       
@@ -68,18 +71,21 @@ const CenterPage = () => {
         },
     };
 
+    useEffect(() => {
+      fetchTenantsBalances();
+    }, []);
+
+    const fetchTenantsBalances = async () => {
+      await getData({
+        execute,
+        request: () => transactionService.unPaidTenants(),
+        setData: setBalances,
+        setLoading: setTenantsBalanceLoader,
+      });
+    };
 
 
 
-    // useEffect(() => {
-    //   getData({
-    //       endpoint: 'Transaction/UnpaidTenants',
-    //       setData: setBalances,
-    //       setLoading,
-    //       setError
-    //   });
-  
-    // }, []);
 
 
 
@@ -141,7 +147,7 @@ const CenterPage = () => {
           </div>
           <div className="content">
             <h3>Sh. 6, 200</h3>
-            <p>Total UnPaid</p>
+            <p>Total Overdue Rent</p>
           </div>
         </div>
         <div className="cont">
@@ -173,7 +179,7 @@ const CenterPage = () => {
 
             </div>
             <div className="TableContainer">
-              <Table data={balances} columns={unpaidTenantColumn} loading={loading}  error={error}/>
+              <Table data={balances} columns={unpaidTenantColumn} loading={isTenantsBalanceLoader}  error={error}/>
             </div>
           </div>
         </div>

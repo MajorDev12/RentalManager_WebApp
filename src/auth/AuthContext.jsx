@@ -33,6 +33,11 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
+  const register = async (credentials) => {
+    const res = await authService.register(credentials);
+    return res;
+  };
+
   const login = async (credentials) => {
     const res = await authService.login(credentials);
     if (res.success) loadUserFromToken();
@@ -53,6 +58,7 @@ export function AuthProvider({ children }) {
         user,
         isAuthenticated: !!user,
         isLoading,
+        register,
         login,
         logout,
         hasRole,

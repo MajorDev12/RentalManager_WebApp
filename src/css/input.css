@@ -45,3 +45,23 @@
     transition: .3s ease-in-out;
     background-color: var(--backgroundColor);
 }
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  color: #777;
+  transition: var(--trans-3);
+}
+
+.eyeIcon:hover {
+  color: #000;
+}
+.errorMessage{
+    color: red;
+}

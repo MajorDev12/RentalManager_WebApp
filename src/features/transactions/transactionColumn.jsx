@@ -2,19 +2,15 @@ import ActionCell from "../../components/ui/ActionCell";
 import { TiArrowDown } from "react-icons/ti";
 import { TiArrowUp } from "react-icons/ti";
 import { Link } from 'react-router-dom';
-import '../css/tenant.css';
+import '../../css/tenant.css';
+
+const endpoint = "Transactions";
 
 export const getColumns = ({
-  endpoint,
   activeRow,
   setActiveRow,
-  setSelectedId,
-  setIsEditMode,
-  setDeleteModalOpen,
-  setFormData,
-  setOriginalData,
-  setShowModal,
-  data
+  onEdit,
+  onDelete
 }) => [
   { header: 'Tenant Names', accessorKey: 'userName' },
   { 
@@ -60,40 +56,21 @@ export const getColumns = ({
 
       const actions = (
         <>
-          <li onClick={() => {
-            setIsEditMode(true);
-            setFormData(rowData);
-            setOriginalData(rowData);
-            setShowModal(true);
-            setActiveRow(null);
-          }} className="actionLink">Edit</li>
+          <li onClick={() => {onEdit(rowId)}} className="actionLink">Edit</li>
 
           <li className="actionLink">
             <Link to={`/${endpoint}/${rowId}`} className="view">Print</Link>
           </li>
 
-          <li onClick={() => {
-            setSelectedId(rowId);
-            setDeleteModalOpen(true);
-            setActiveRow(null);
-          }} className="actionLink">Delete</li>
+          <li onClick={() => {onDelete(rowId)}} className="actionLink">Delete</li>
         </>
       );
 
       return (
         <ActionCell
-          endpoint={endpoint}
-          rowIndex={info.row.index}
+          rowId={rowId}
           activeRow={activeRow}
           setActiveRow={setActiveRow}
-          rowId={rowId}
-          setSelectedId={setSelectedId}
-          setIsEditMode={setIsEditMode}
-          setDeleteModalOpen={setDeleteModalOpen}
-          setFormData={setFormData}
-          setOriginalData={setOriginalData}
-          setShowModal={setShowModal}
-          items={data}
           actions={actions}
         />
       );

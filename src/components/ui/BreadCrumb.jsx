@@ -18,7 +18,7 @@ const BreadCrumb = () => {
   };
 
   const greetingText = isAuthenticated && user
-  ? `${getGreeting()}, ${user.roles?.[0] ?? "User"}`
+  ? `${getGreeting()}, ${user.name ?? "User"}`
   : getGreeting();
 
 

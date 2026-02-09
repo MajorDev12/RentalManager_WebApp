@@ -5,8 +5,8 @@ import CustomTabs from "../../components/ui/Tab";
 import Table from "../../components/ui/Table";
 import { getData } from "../../helpers/getData";
 import { getColumns } from "./TenantInvoiceColumns";
-import defaultProfilePic from "../assets/TenantDefaultProfile.png";
-import "../css/viewTenant.css";
+import defaultProfilePic from "../../assets/TenantDefaultProfile.png";
+import "../../css/viewTenant.css";
 
 const ViewTenant = () => {
   const { id } = useParams();

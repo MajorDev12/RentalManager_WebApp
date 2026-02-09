@@ -70,3 +70,16 @@
   list-style: none;
   text-decoration: none;
 }
+.menuItem.unread {
+  background-color: rgba(40, 167, 69, 0.08);
+  font-weight: 600;
+}
+
+.menuItem .title {
+  font-size: 0.9rem;
+}
+
+.menuItem .message {
+  font-size: 0.8rem;
+  color: var(--lightTextColor);
+}

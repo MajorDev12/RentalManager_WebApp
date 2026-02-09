@@ -1,0 +1,39 @@
+.CheckBoxContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    padding: 5px;
+    /* background-color: aqua; */
+}
+.CheckBoxContainer label{
+    font-size: var(--normalFontSize);
+    color: var(--textColor);
+    font-weight: 600;
+    padding-left: 10px;
+}
+.Checkbox{
+    font-family: var(--fontFamily);
+    color: var(--HeaderColor);
+    font-size: var(--smallFontSize);
+    padding: 5px;
+    margin: 10px 0;
+    width: 60px;
+    height: 15px;
+    outline: none;
+    transition: .3s ease-in-out;
+    background-color: var(--backgroundColor);
+}
+.Checkbox:checked{
+    background-color: var(--highlightColor);
+    height: 20px;
+}
+.Checkbox:focus{
+    border: 1px solid var(--highlightColor);
+    background-color: var(--containerColor);
+}
+.Checkbox::placeholder{
+    color: var(--lightTextColor);
+    font-size: var(--smallFontSize);
+    font-family: var(--fontFamily);
+}

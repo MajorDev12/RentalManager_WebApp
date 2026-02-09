@@ -1,5 +1,5 @@
 import { authService } from "../auth/authService";
-import { toast } from "react-toastify";
+import { navigateTo } from "../helpers/navigation";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -20,34 +20,32 @@ async function request(endpoint, options = {}, retry = true) {
   });
 
   if (response.status === 401) {
-
     if (isRefreshEndpoint) {
       authService.logout();
-      // window.location.href = "/login";
-      return;
+      throw new Error("Unauthorized");
     }
 
-    // Try refresh once
     if (retry) {
       const refresh = await authService.refresh();
-
       if (refresh?.success) {
         return request(endpoint, options, false);
       }
     }
 
     authService.logout();
-    // window.location.href = "/login";
-    return;
+    throw new Error("Session expired");
   }
 
-  if (response.status === 500) {
-    console.error("Server error");
-    toast.error("Server Error!!!");
+  if (response.status === 402) {
+    navigateTo("/402");
+    throw new Error("Subscription required");
   }
+  
+  const data = await response.json();
 
-  return response.json();
+  return data;
 }
+
 
 export default {
   get: (url) => request(url, { method: "GET" }),

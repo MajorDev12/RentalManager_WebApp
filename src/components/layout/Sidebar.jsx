@@ -71,24 +71,24 @@ const Sidebar = ({ width, setWidth }) => {
             setActiveIndex={setActiveIndex}
             onItemClick={handleCloseSidebar}
           />
-            {hasRole("Owner", "Manager") && (
-              <NavLink
-                icon={<BsBuildingFill className="navLinkIcon" />}
-                name="Properties"
-                arrow={true}
-                isOpen={width === initialWidth}
-                index={1}
-                activeIndex={activeIndex}
-                setActiveIndex={setActiveIndex}
-                onItemClick={handleCloseSidebar}
-              >
-                <DropDownList itemName="All Properties" route={"/Properties"} />
-                <DropDownList itemName="Utility Bills" route={"/UtilityBill"} />
-                <DropDownList itemName="Add Unit Type" route={"/UnitType"} />
-              </NavLink>
-            )}
+          {hasRole("Owner", "Manager") && (
+            <NavLink
+              icon={<BsBuildingFill className="navLinkIcon" />}
+              name="Properties"
+              arrow={true}
+              isOpen={width === initialWidth}
+              index={1}
+              activeIndex={activeIndex}
+              setActiveIndex={setActiveIndex}
+              onItemClick={handleCloseSidebar}
+            >
+              <DropDownList itemName="All Properties" route={"/Properties"} />
+              <DropDownList itemName="Utility Bills" route={"/UtilityBill"} />
+              <DropDownList itemName="Add Unit Type" route={"/UnitTypes"} />
+            </NavLink>
+          )}
 
-
+        {hasRole("Owner", "Manager", "Landlord") && (
           <NavLink
             icon={<FaHouse className="navLinkIcon" />}
             name="Houses"
@@ -99,13 +99,16 @@ const Sidebar = ({ width, setWidth }) => {
             setActiveIndex={setActiveIndex}
             onItemClick={handleCloseSidebar}
           >
-            <DropDownList itemName="All Houses" route={"/units"} />
-            <DropDownList itemName="Vacants" route={"/units"} />
+            <DropDownList itemName="All Houses" route={"/Units"} />
+            <DropDownList itemName="Vacants" route={"/Units"} />
             {hasRole("Owner", "Manager") && (
               <DropDownList itemName="Maintenance" route={"/Maintenance"} />
             )}
           </NavLink>
+        )}
 
+
+        {hasRole("Owner", "Manager", "Landlord") && (
           <NavLink
             icon={<FaUsers className="navLinkIcon" />}
             name="Tenants"
@@ -116,15 +119,32 @@ const Sidebar = ({ width, setWidth }) => {
             setActiveIndex={setActiveIndex}
             onItemClick={handleCloseSidebar}
           >
+            {hasRole("Tenant") && (
+              <DropDownList itemName="Profile" route={"/Profile"} />
+            )}
             <DropDownList itemName="All Tenants" route={"/Tenants"} />
             <DropDownList itemName="Assign House" route={"/AssignUnit"} />
             <DropDownList itemName="Vacated" route={"/units"} />
           </NavLink>
+        )}
 
+        {hasRole("Tenant") && (
+          <NavLink
+            icon={<FaUsers className="navLinkIcon" />}
+            name="Profile"
+            arrow={false}
+            isOpen={width === initialWidth}
+            index={3}
+            activeIndex={activeIndex}
+            setActiveIndex={setActiveIndex}
+            onItemClick={handleCloseSidebar}
+          ></NavLink>
+        )}
 
+        {hasRole("Owner", "Manager", "Landlord") && (
           <NavLink
             icon={<FaMoneyCheckDollar className="navLinkIcon" />}
-            name="Payments"
+            name="Transactions"
             arrow={true}
             isOpen={width === initialWidth}
             index={5}
@@ -136,7 +156,22 @@ const Sidebar = ({ width, setWidth }) => {
             <DropDownList itemName="Unpaid Tenants" route={"/UnpaidTenants"} />
             <DropDownList itemName="Expense" route={"/Expenses"} />
           </NavLink>
+        )}
 
+        {hasRole("Tenant") && (
+          <NavLink
+            icon={<FaUsers className="navLinkIcon" />}
+            name="Transactions"
+            arrow={false}
+            isOpen={width === initialWidth}
+            index={3}
+            activeIndex={activeIndex}
+            setActiveIndex={setActiveIndex}
+            onItemClick={handleCloseSidebar}
+          ></NavLink>
+        )}
+
+        {hasRole("Owner", "Manager", "Landlord", "Tenant") && (
           <NavLink
             route={"/Reports"}
             icon={<BiSolidReport className="navLinkIcon" />}
@@ -147,7 +182,29 @@ const Sidebar = ({ width, setWidth }) => {
             setActiveIndex={setActiveIndex}
             onItemClick={handleCloseSidebar}
           />
+        )}
 
+
+
+        {hasRole("Owner", "Manager", "Landlord") && (
+          <NavLink
+            icon={<IoIosNotifications className="navLinkIcon" />}
+            name="Notifications"
+            arrow={true}
+            isOpen={width === initialWidth}
+            index={7}
+            activeIndex={activeIndex}
+            setActiveIndex={setActiveIndex}
+            onItemClick={handleCloseSidebar}
+          >
+            <DropDownList itemName="System" route={"/Notifications"} />
+            <DropDownList itemName="Sms" route={"/Sms"} />
+            <DropDownList itemName="Email" route={"/Email"} />
+            <DropDownList itemName="WhatsApp" route={"/WhatsApp"} />
+          </NavLink>
+        )}
+
+        {hasRole("Tenant") && (
           <NavLink
             icon={<IoIosNotifications className="navLinkIcon" />}
             name="Notifications"
@@ -158,8 +215,12 @@ const Sidebar = ({ width, setWidth }) => {
             setActiveIndex={setActiveIndex}
             onItemClick={handleCloseSidebar}
           >
+            <DropDownList itemName="System" route={"/Notifications"} />
           </NavLink>
+        )}
 
+
+        {hasRole("Owner", "Manager", "Landlord") && (
           <NavLink
             icon={<IoMdSettings className="navLinkIcon" />}
             name="Management"
@@ -170,10 +231,11 @@ const Sidebar = ({ width, setWidth }) => {
             setActiveIndex={setActiveIndex}
             onItemClick={handleCloseSidebar}
           >
-            <DropDownList itemName="Profile" route={"/units"} />
-            <DropDownList itemName="Settings" route={"/units"} />
+            <DropDownList itemName="Profile" route={"/Profile"} />
+            <DropDownList itemName="Settings" route={"/Settings"} />
             <DropDownList itemName="System Logs" route={"/units"} />
           </NavLink>
+        )}
         </ul>
       </div>
     </>

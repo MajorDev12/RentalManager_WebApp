@@ -2,14 +2,17 @@
   margin-bottom: 1.5rem;
 }
 
-.reportSection .header {
+
+.reportSection .summaryHeader{
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
 
-.reportSection .header .filter {
+.reportSection .summaryHeader .filter {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 0.5rem;
 }
@@ -108,6 +111,12 @@
   border-radius: 50%;
   background-color: var(--successColor, #28a745);
 }
+#totalSummaryYear{
+  width: 100px;
+}
+#totalSummaryMonth{
+  width: 120px;
+}
 
 
                     /*  INCOME REPORT  */
@@ -115,6 +124,7 @@
   box-shadow: var(--shadow);
   margin-top: 5rem;
   border-radius: 8px;
+  overflow: auto;
 }
 .reportSection .incomeReport .title {
   font-size: var(--headerFontSize);
@@ -132,16 +142,32 @@
 .reportSection .incomeChartContainer .header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap; /* makes it responsive */
+  align-items: center;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
 }
 .reportSection .incomeChartContainer .filterSelects {
   display: flex;
+  justify-content: start;
   align-items: center;
   flex-wrap: nowrap;
   flex: 1;
+  gap: 1em;
+}
+.reportSection .incomeChartContainer .filterButtons{
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  flex: 1;
+  min-width: 250px;
+}
+.reportSection .incomeChartContainer .filterSelects #selectedEntity{
+  width: 150px;
+  margin-right: 20px;
+}
+.reportSection .incomeChartContainer .filterSelects #incomeReportYear{
+  width: 100px;
 }
 .reportSection .incomeChartContainer .filterSelects .selects{
   display: flex;
@@ -158,16 +184,12 @@
   font-weight: 500;
   color: var(--lightTextColor);
 }
-.reportSection .incomeChartContainer .filterButtons {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex: 1;
-  min-width: 250px;
-}
 .reportSection .incomeReport .customTabs {
   width: 100%;
+  height: 100%;
+  justify-content: center;
 }
+
 .reportSection .incomeReport .customTabs .nav-link {
   border: none;
   color: var(--lightTextColor);
@@ -198,12 +220,34 @@
 
 
 @media (max-width: 768px) {
+
   .reportSection .incomeChartContainer .header {
-    flex-direction: column;
+    flex-direction: row;
     align-items: stretch;
   }
 
+  .reportSection .incomeChartContainer .filterSelects,
   .reportSection .incomeChartContainer .filterButtons {
-    justify-content: flex-start;
+    justify-content: center;
+    width: 100%;
   }
+}
+
+
+@media (max-width: 578px) {
+  .reportSection .summaryHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 0.5rem;
+  }
+
+  .reportSection .summaryHeader .filter {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    margin-left: 10px;
+  }
+
+
 }

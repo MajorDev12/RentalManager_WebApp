@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowCircleDown, MdArrowCircleUp } from "react-icons/md";
 import BreadCrumb from '../../components/ui/BreadCrumb';
@@ -33,7 +33,6 @@ const Property = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalData, setOriginalData] = useState(null);
   const [formError, setFormError] = useState('');
-  const [select, setSelect] = useState('');
   const [showMoreInputs, setshowMoreInputs] = useState(false);
   const EMPTY_FORM = {
     id: '',
@@ -50,6 +49,7 @@ const Property = () => {
     electricity: ''
   };
   const [formData, setFormData] = useState(EMPTY_FORM);
+  const tableData = useMemo(() => properties ?? [], [properties]);
 
 
 
@@ -78,13 +78,18 @@ const Property = () => {
   
   const handleSelect = (e) => {
     const { name, value } = e.target;
-    setSelect(value);
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
+  const handleAddNew = () => {
+    setFormData(EMPTY_FORM);
+    setOriginalData(null);
+    setIsEditMode(false);
+    setShowModal(true);
+  };
 
 
   const handleCloseModal = () => {
@@ -95,17 +100,7 @@ const Property = () => {
   };
 
 
-  const columns = getPropertyColumns({
-    activeRow,
-    setActiveRow,
-    setSelectedId,
-    setIsEditMode,
-    setDeleteModalOpen,
-    setFormData,
-    setOriginalData,
-    setShowModal,
-    properties,
-  });
+
 
 
 
@@ -194,7 +189,33 @@ const handleInputChange = (field, value) => {
   };
 
 
+  const handleEdit = (rowId) => {
+    const item = properties.find(p => p.id === rowId);
 
+    if (!item) return;
+    
+    setFormData(item);
+    setOriginalData(item);
+    setIsEditMode(true);
+    setShowModal(true);
+    setActiveRow(null);
+  };
+
+  const handleDeleteClick = (rowId) => {
+    setSelectedId(rowId);
+    setDeleteModalOpen(true);
+    setActiveRow(null);
+  };
+
+
+  const columns = useMemo(() => 
+    getPropertyColumns({
+      activeRow,
+      setActiveRow,
+      onEdit: handleEdit,
+      onDelete: handleDeleteClick,
+    }),
+  [ activeRow ]);
 
 
   return (
@@ -205,12 +226,12 @@ const handleInputChange = (field, value) => {
           <h3>List of all Properties</h3>
           <PrimaryButton
             name="Add New"
-            onClick={() => setShowModal(true)}
+            onClick={handleAddNew}
           />
         </div>
 
         <div className="TableContainer">
-          <Table data={properties} onclickItem={handleRowClick} columns={columns} loading={loading}  error={error}/>
+          <Table data={tableData} onclickItem={handleRowClick} columns={columns} loading={loading}  error={error}/>
         </div>
 
 

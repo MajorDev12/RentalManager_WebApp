@@ -1,0 +1,81 @@
+.profileSection {
+  position: relative;
+  display: flex;
+  margin: auto;
+  width: 100%;
+}
+.profileSection .topMenu{
+  margin-top: 20px;
+  width: 100%;
+}
+
+.profileForm,
+.passwordSection{
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+  box-shadow: var(--shadow);
+}
+.profileForm .col,
+.passwordSection .col{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+.profileForm .col .row,
+.passwordSection .col .row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+
+.profileForm .col .row .profileAvatar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.profileAvatar img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: aqua;
+}
+#currentPassword,
+#newPassword,
+#confirmPassword{
+  width: 220px;
+}
+
+
+@media (max-width: 768px) {
+  #currentPassword,
+  #newPassword,
+  #confirmPassword{
+    width: 200px;
+  }
+
+}
+
+@media (max-width: 578px) {
+  .profileForm .col .row,
+  .passwordSection .col .row{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+    margin: 10px 0;
+  }
+
+}
