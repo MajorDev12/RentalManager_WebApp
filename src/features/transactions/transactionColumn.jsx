@@ -31,6 +31,10 @@ export const getColumns = ({
           Icon = TiArrowUp;
           iconColor = 'green';
           break;
+        case 'expense':
+          Icon = TiArrowDown;
+          iconColor = 'red';
+          break;
         default:
           Icon = null;
       }
@@ -43,7 +47,29 @@ export const getColumns = ({
       );
     }
   },
-  { header: 'Category', accessorKey: 'transactionCategory' },
+  { 
+    header: 'Category',
+    accessorKey: 'transactionCategory',
+    // cell: info => {
+    //   const rowData = info.row.original; 
+    //   var category = info.getValue();
+
+    //   switch (category?.toLowerCase()) {
+    //     case 'expense':
+    //       category = "category";
+    //       break;
+    //     case 'payment':
+    //       category = "category";
+    //       break;
+    //     case 'expense':
+    //       category = "category";
+    //       break;
+    //     default:
+    //       category = "category";
+    //   }
+  
+    // }
+  },
   { header: 'Amount', accessorKey: 'amount' },
   { header: 'Month For', accessorKey: 'monthFor' },
   { header: 'Year For', accessorKey: 'yearFor' },

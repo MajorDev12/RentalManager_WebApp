@@ -928,7 +928,7 @@ const Tenant = () => {
               .map(p => ({ 
                 value: p.id,
                 label: p.item,
-                disabled: p.item === activeTenant?.tenantStatus || p.item.toLowerCase() == "active",
+                disabled: p.item === activeTenant?.tenantStatus,
               }))
             }
           />
@@ -974,9 +974,7 @@ const Tenant = () => {
                       ? [{ value: '', label: 'Loading Units...', disabled: true }]
                       : (units || [])
                           .filter(
-                            u =>
-                              u.propertyId === parseInt(activeTenant?.user?.propertyId) &&
-                              u.status?.toLowerCase() !== "active"
+                            u => u.status?.toLowerCase() !== "occupied"
                           )
                           .map(p => ({ value: p.id, label: p.name }))
               }
