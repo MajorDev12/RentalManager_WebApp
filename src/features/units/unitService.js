@@ -9,6 +9,14 @@ export const unitService = {
     return apiClient.get(`Units/${id}`);
   },
 
+  getByPropertyId(propertyId) {
+    return apiClient.get(`Units/By-Property/${propertyId}`);
+  },
+
+  getVacants() {
+    return apiClient.get(`Units/Vacants`);
+  },
+
   add(data) {
     return apiClient.post(`Units`, data);
   },

@@ -11,6 +11,7 @@ import MainPage from "../features/home/MainPage";
 import Property from "../features/properties/property";
 import ViewProperty from "../features/properties/ViewProperty";
 import Unit from "../features/units/Unit";
+import Vacants from "../features/units/Vacants";
 import UnitType from "../features/unitTypes/UnitType";
 import UnitCharge from "../features/utilities/UnitCharge";
 import Tenant from "../features/tenants/Tenant";
@@ -78,6 +79,15 @@ export default function Router() {
             </PageWrapper>
           
           } />
+
+
+          <Route path="/Vacants" element={
+            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+              <Vacants />
+            </PageWrapper>
+          
+          } />
+
 
           <Route path="/tenants" element={
             <PageWrapper roles={["Owner", "Manager", "Landlord"]}>

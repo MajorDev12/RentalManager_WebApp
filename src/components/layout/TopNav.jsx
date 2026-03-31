@@ -44,12 +44,9 @@ const TopNav = ({ width, setWidth }) => {
     logout();
   }
 
-  const handleNotificationClick = async (notification) => {
-    await markAsRead(notification.id);
-
-    if (notification.actionUrl) {
-      navigate(notification.actionUrl);
-    }
+  const handleNotificationClick = async () => {
+    navigate("/Notifications");
+  
   };
 
 
@@ -116,11 +113,11 @@ const TopNav = ({ width, setWidth }) => {
                 <MenuItem
                   key={n.id}
                   className={`menuItem ${!n.isRead ? 'unread' : ''}`}
-                  onClick={() => handleNotificationClick(n)}
+                  onClick={() => handleNotificationClick()}
                 >
                   <div className="title">{n.title}</div>
                   <div className="message">{n.message}</div>
-                  <small>{formatDate(n.createdAt)}</small>
+                  <small className='time'>{formatDate(n.createdAt)}</small>
                 </MenuItem>
               ))}
           </Menu>
@@ -137,7 +134,7 @@ const TopNav = ({ width, setWidth }) => {
               },
             }}>
             <Badge
-              badgeContent={unreadCount}
+              badgeContent={0}
               anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
               className="badge"
             >

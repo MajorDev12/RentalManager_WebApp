@@ -5,23 +5,35 @@ import NotFound from '../../sections/NotFound';
 import PropertyImage from "../../assets/property.jpg";
 import { getData } from '../../helpers/getData'; 
 import { propertyService } from "./propertyService";
+import { unitService } from "../units/unitService";
+import { unitTypeService } from "../unitTypes/unitTypeService";
+import { utilityService } from "../utilities/utilityService";
 import { useApiRequest } from '../../hooks/useApiRequest';
 import "../../css/viewproperty.css";
+import { FaEthereum } from 'react-icons/fa';
 
 const ViewProperty = () => {
     const { id } = useParams();
     const { execute, apiLoading } = useApiRequest();
     const [property, setProperty] = useState(null);
+    const [propertyLoading, setPropertyLoading] = useState(true);
+    const [propertyError, setPropertyError] = useState(false);
     const [units, setUnits] = useState(null);
+    const [unitLoading, setUnitLoading] = useState(true);
+    const [unitError, setUnitError] = useState(false);
     const [unitTypes, setUnitTypes] = useState(null);
+    const [unitTypeLoading, setunitTypeLoading] = useState(true);
+    const [unitTypesError, setunitTypeError] = useState(false);
     const [utilityBills, setUtilityBills] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const [utilityLoading, setutilityLoading] = useState(true);
+    const [utilityError, setutilityError] = useState(false);
 
 
     useEffect(() => {
         fetchProperty();
-
+        fetchUnits();
+        fetchUnitTypes();
+        fetchUtilities();
     }, [id]);
 
 
@@ -30,45 +42,89 @@ const ViewProperty = () => {
         execute,
         request: () => propertyService.getById(id),
         setData: setProperty,
-        setLoading,
+        setLoading: setPropertyLoading,
+        setError: setPropertyError
         });
     };
 
     const fetchUnits = async () => {
         await getData({
         execute,
-        request: () => propertyService.getByPropertyId(id),
+        request: () => unitService.getByPropertyId(id),
         setData: setUnits,
-        setLoading,
+        setLoading: setUnitLoading,
+        setError: setUnitError
         });
     };
 
     const fetchUnitTypes = async () => {
         await getData({
         execute,
-        request: () => propertyService.getByPropertyId(id),
+        request: () => unitTypeService.byProperty(id),
         setData: setUnitTypes,
-        setLoading,
+        setLoading: setunitTypeLoading,
+        setError: setunitTypeError
         });
     };
 
     const fetchUtilities = async () => {
         await getData({
-        execute,
-        request: () => propertyService.getByPropertyId(id),
-        setData: setUtilityBills,
-        setLoading,
+            execute,
+            request: () => utilityService.getByPropertyId(id),
+            setData: setUtilityBills,
+            setLoading: setutilityLoading,
+            setError: setutilityError
         });
     };
 
-    const totalUnits = units ? units.length : 0;
-    const vacantUnits = units ? units.filter(unit => unit.status === "Vacant").length : 0;
-    const UnitTypesDisplay = unitTypes?.length
-    ? unitTypes.map(type => type.name).join(", ")
-    : "No Unit Types Available";
-    const billsDisplay = utilityBills?.length
-    ? utilityBills.map(bill => bill.name).join(", ")
-    : "No Utility Bills Available";
+    const resolveData = (loading, error, data, formatter) => {
+        if (loading) return "Loading...";
+        if (error) return "Something went wrong";
+        if (!data) return "No data available";
+        return formatter ? formatter(data) : data;
+    };
+
+    const propertyState = propertyLoading
+        ? "loading"
+        : propertyError
+        ? "error"
+        : property
+        ? "success"
+        : "empty";
+
+
+    const totalUnits = resolveData(
+    unitLoading,
+    unitError,
+    units,
+    (data) => data.length
+    );
+
+    const vacantUnits = resolveData(
+    unitLoading,
+    unitError,
+    units,
+    (data) => data.filter(u => u.status === "Vacant").length
+    );
+
+    const UnitTypesDisplay = resolveData(
+    unitTypeLoading,
+    unitTypesError,
+    unitTypes,
+    (data) => data.length
+        ? data.map(type => type.name).join(", ")
+        : "No Unit Types Available"
+    );
+
+    const billsDisplay = resolveData(
+    utilityLoading,
+    utilityError,
+    utilityBills,
+    (data) => data.length
+        ? data.map(bill => bill.name).join(", ")
+        : "No Utility Bills Available"
+    );
+
 
 
 
@@ -85,39 +141,56 @@ const ViewProperty = () => {
                     <img src={PropertyImage} alt="" />
                 </div>
                 <div className="details">
-                    <div className="detail">
-                        <label htmlFor="">Property Name :</label>
-                        <p>{property ? property.name : "--"}</p>
+
+                    {propertyState === "loading" && <p>Loading property details...</p>}
+                    {propertyState === "error" && <p>Something went wrong loading property.</p>}
+
+                    {propertyState === "success" && (
+                        <>
+                        <div className="detail">
+                            <label>Property Name :</label>
+                            <p>{property.name || "--"}</p>
+                        </div>
+
+                        <div className="detail">
+                            <label>Email Address :</label>
+                            <p>{property.emailAddress || "--"}</p>
+                        </div>
+
+                        <div className="detail">
+                            <label>Mobile Number :</label>
+                            <p>{property.mobileNumber || "--"}</p>
+                        </div>
+
+                        <div className="detail">
+                            <label>Country :</label>
+                            <p>{property.country || "--"}</p>
+                        </div>
+
+                        <div className="detail">
+                            <label>County :</label>
+                            <p>{property.county || "--"}</p>
+                        </div>
+
+                        <div className="detail">
+                            <label>Area :</label>
+                            <p>{property.area || "--"}</p>
+                        </div>
+
+                        <div className="detail">
+                            <label>Physical Address :</label>
+                            <p>{property.physicalAddress || "--"}</p>
+                        </div>
+
+                        <div className="detail">
+                            <label>Total Floors :</label>
+                            <p>{property.floor ?? "--"}</p>
+                        </div>
+                        </>
+                    )}
+
                     </div>
-                    <div className="detail">
-                        <label htmlFor="">Email Address :</label>
-                        <p>{property ? property.emailAddress : ""}</p>
-                    </div>
-                    <div className="detail">
-                        <label htmlFor="">Mobile Number :</label>
-                        <p>{property ? property.mobileNumber : ""}</p>
-                    </div>
-                    <div className="detail">
-                        <label htmlFor="">Country :</label>
-                        <p>{property ? property.country : ""}</p>
-                    </div>
-                    <div className="detail">
-                        <label htmlFor="">County :</label>
-                        <p>{property ? property.county : ""}</p>
-                    </div>
-                    <div className="detail">
-                        <label htmlFor="">Area :</label>
-                        <p>{property ? property.area : ""}</p>
-                    </div>
-                    <div className="detail">
-                        <label htmlFor="">Physical Address :</label>
-                        <p>{property ? property.physicalAddress : ""}</p>
-                    </div>
-                       <div className="detail">
-                        <label htmlFor="">Total Floors :</label>
-                        <p>{property ? property.floor : ""}</p>
-                    </div>
-                </div>
+
             </div>
 
            

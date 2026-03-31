@@ -100,7 +100,7 @@ const Sidebar = ({ width, setWidth }) => {
             onItemClick={handleCloseSidebar}
           >
             <DropDownList itemName="All Houses" route={"/Units"} />
-            <DropDownList itemName="Vacants" route={"/Units"} />
+            <DropDownList itemName="Vacants" route={"/Vacants"} />
             {hasRole("Owner", "Manager") && (
               <DropDownList itemName="Maintenance" route={"/Maintenance"} />
             )}

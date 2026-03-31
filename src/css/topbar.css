@@ -17,12 +17,12 @@
 #topBar .Hamburger{
     font-size: var(--headerFontSize);
 }
-#topBar .center .badge .MuiBadge-badge{
+#topBar .rightSide .badge .MuiBadge-badge{
     color: var(--textColor);
     background-color: var(--highlightColor);
     font-size: 10px;
 }
-#topBar .center{
+#topBar .rightSide{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -65,21 +65,17 @@
   box-shadow: var(--shadow);
   border: none;
   min-width: 180px;
+  margin-bottom: 2px;
 }
 .menu .login {
   list-style: none;
   text-decoration: none;
 }
-.menuItem.unread {
-  background-color: rgba(40, 167, 69, 0.08);
-  font-weight: 600;
-}
-
-.menuItem .title {
-  font-size: 0.9rem;
-}
-
-.menuItem .message {
-  font-size: 0.8rem;
+.menuItem .time{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 10px;
+  padding: 5px;
   color: var(--lightTextColor);
 }

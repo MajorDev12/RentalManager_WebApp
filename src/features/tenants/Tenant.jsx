@@ -481,6 +481,18 @@ const Tenant = () => {
     return false;
   };
 
+  const validateDeleteForm = () => {
+
+    if (!selectedId) {
+      return "User Id Is not selected.";
+    }
+
+    
+
+
+    // Valid ✓
+    return false;
+  };
 
 
   const validateTenantForm = () => {
@@ -698,6 +710,21 @@ const Tenant = () => {
   };
 
 
+  const handleTenantDelete = async (e) => {
+
+    await handleFormSubmit({
+      e,
+      validateForm: validateDeleteForm,
+      execute,
+      request: () => tenantService.archive(selectedId),
+      setFormError,
+      setLoadingBtn,
+      resetForm: () => setFormData(TENANTEMPTY_FORM),
+      onSuccess: () => refreshTableData(),
+    });
+  };
+
+
 
   const handleAddItem = () => {
     setInvoiceItems(prev => [
@@ -746,15 +773,7 @@ const Tenant = () => {
         isOpen={deleteModalOpen}i
         title="Delete Tenant"
         onClose={() => setDeleteModalOpen(false)}
-        onSubmit={(e) => handleDelete({
-          e,
-          id: selectedId,
-          endpoint: 'Tenant',
-          setLoadingBtn,
-          setDeleteModalOpen,
-          setData: setTenants,
-          setLoading,
-        })}
+        onSubmit={handleTenantDelete}
 
         loadingBtn={loadingBtn}
       />

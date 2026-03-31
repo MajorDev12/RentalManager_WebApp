@@ -224,7 +224,7 @@ const Unit = () => {
     <BreadCrumb  greetings="" />
     <div id="Section">
       <div className="header">
-          <h3>List of all Houses</h3>
+          <h3>List of all Units</h3>
           <PrimaryButton
             name="Add New"
             onClick={() => setShowModal(true) }
@@ -257,63 +257,63 @@ const Unit = () => {
 
 
 
-      <Modal
-        isOpen={showModal}
-        onClose={handleCloseModal}
-        onSubmit={isEditMode ? updateUtilityHandler : addUtilityHandler}
-        errorMessage={formError}
-        title={isEditMode ? "Update Unit" : "Add Unit"}
-        loadingBtn={loadingBtn}
-        isEditMode={isEditMode}
-      >
-        <Select
-          name="propertyId"
-          labelName="Property Name"
-          value={formData.propertyId || ''}
-          onChange={handlePropertySelect}
-          options={
-            properties
-            ? properties && properties.length > 0
-              ? properties.map(p => ({ value: p.id, label: p.name }))
-              : [{ value: '', label: 'No Available Properties', disabled: true }]
-            : []
-          }
-        />
-        <Input
-          type="text"
-          name="name"
-          placeholder="Enter House Name"
-          value={formData.name || ''}
-          labelName="House Name"
-          onChange={handleInputChange}
-        />
+        <Modal
+          isOpen={showModal}
+          onClose={handleCloseModal}
+          onSubmit={isEditMode ? updateUtilityHandler : addUtilityHandler}
+          errorMessage={formError}
+          title={isEditMode ? "Update Unit" : "Add Unit"}
+          loadingBtn={loadingBtn}
+          isEditMode={isEditMode}
+        >
+          <Select
+            name="propertyId"
+            labelName="Property Name"
+            value={formData.propertyId || ''}
+            onChange={handlePropertySelect}
+            options={
+              properties
+              ? properties && properties.length > 0
+                ? properties.map(p => ({ value: p.id, label: p.name }))
+                : [{ value: '', label: 'No Available Properties', disabled: true }]
+              : []
+            }
+          />
+          <Input
+            type="text"
+            name="name"
+            placeholder="Enter House Name"
+            value={formData.name || ''}
+            labelName="House Name"
+            onChange={handleInputChange}
+          />
 
-        <Select
-          name="unitTypeId"
-          labelName="Unit Type"
-          value={formData.unitTypeId || ''}
-          onChange={handleUnitTypeSelect}
-          disabled={!formData.propertyId}
-          options={
-            formData.propertyId
-            ? unitTypes && unitTypes.length > 0
-              ? unitTypes.map(p => ({ value: p.id, label: p.name }))
-              : [{ value: '', label: 'No Available UnitTypes', disabled: true }]
-            : []
-          }
-          text={formData.propertyId ? "Select Unit Types" : "Choose Property First"}
-          placeholder=""
-        />
+          <Select
+            name="unitTypeId"
+            labelName="Unit Type"
+            value={formData.unitTypeId || ''}
+            onChange={handleUnitTypeSelect}
+            disabled={!formData.propertyId}
+            options={
+              formData.propertyId
+              ? unitTypes && unitTypes.length > 0
+                ? unitTypes.map(p => ({ value: p.id, label: p.name }))
+                : [{ value: '', label: 'No Available UnitTypes', disabled: true }]
+              : []
+            }
+            text={formData.propertyId ? "Select Unit Types" : "Choose Property First"}
+            placeholder=""
+          />
 
-        <Input
-          type="text"
-          name="amount"
-          placeholder="Enter Rent Amount"
-          value={formData.amount || ''}
-          labelName="Rent Amount"
-          onChange={handleInputChange}
-        />
-      </Modal>
+          <Input
+            type="text"
+            name="amount"
+            placeholder="Enter Rent Amount"
+            value={formData.amount || ''}
+            labelName="Rent Amount"
+            onChange={handleInputChange}
+          />
+        </Modal>
     </div>
   </>
   )
