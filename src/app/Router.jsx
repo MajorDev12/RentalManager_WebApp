@@ -104,7 +104,7 @@ export default function Router() {
           } />
 
 
-          <Route path="/assign-unit" element={
+          <Route path="/AssignUnit" element={
             <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
               <AssignUnit />
             </PageWrapper>

@@ -12,11 +12,16 @@ export const handleFormSubmit = async ({
 }) => {
   e.preventDefault();
 
-  // 1️⃣ Validate
-  const error = validateForm();
+  // Validate form
+  const error = validateForm?.();
+
   if (error) {
     setFormError?.(error);
-    setTimeout(() => setFormError(""), 4000);
+
+    setTimeout(() => {
+      setFormError?.("");
+    }, 4000);
+
     return;
   }
 
@@ -24,26 +29,32 @@ export const handleFormSubmit = async ({
   setLoadingBtn?.(true);
 
   try {
-    const res = await execute({ request });
+    // ✅ Updated execute usage
+    const res = await execute(request);
 
     if (!res?.success) {
-      const message =  res?.message || "Request failed";
+      const message = res?.message || "Request failed";
 
+      setFormError?.(message);
       toast.error(message);
+
       return;
     }
 
-    // 3️⃣ Success
-    toast.success(res.message || "Success");
+    // Success
+    toast.success(res?.message || "Success");
 
     resetForm?.();
-    onSuccess?.(res.data);
 
+    onSuccess?.(res?.data);
   } catch (err) {
     console.error(err);
-    toast.error(err.message || "Network error");
+
+    const message = err?.message || "Network error";
+
+    setFormError?.(message);
+    toast.error(message);
   } finally {
     setLoadingBtn?.(false);
   }
 };
-

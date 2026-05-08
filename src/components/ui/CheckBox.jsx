@@ -6,7 +6,7 @@ const CheckBox = ({
     labelName,
     onChange,
     name,
-    value
+    checked
 }) =>{
 
     return(
@@ -16,8 +16,8 @@ const CheckBox = ({
                 type={type}
                 name={name}
                 id={name}
-                value={value}
-                onChange={(e) => onChange(name, e.target.value)}
+                checked={checked}
+                onChange={(e) => onChange(name, e.target.checked)}
                 className="Checkbox"
             />
         </div>

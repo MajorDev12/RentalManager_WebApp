@@ -28,7 +28,7 @@ export const getColumns = ({
 
       return (
         <ActionCell
-          rowIndex={info.row.index}
+          rowId={rowId}
           activeRow={activeRow}
           setActiveRow={setActiveRow}
           actions={actions}

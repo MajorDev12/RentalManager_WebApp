@@ -4,18 +4,31 @@ import BreadCrumb from "../../components/ui/BreadCrumb";
 import CustomTabs from "../../components/ui/Tab";
 import Table from "../../components/ui/Table";
 import { getData } from "../../helpers/getData";
+import { formatDate } from "../../helpers/formatDate";
 import { getColumns } from "./TenantInvoiceColumns";
+import { getBalancesColumns } from "./TenantBalanceColumns";
+import { tenantService } from "./tenantService";
+import { transactionService } from "../transactions/transactionService";
+import { useApiRequest } from '../../hooks/useApiRequest';
 import defaultProfilePic from "../../assets/TenantDefaultProfile.png";
 import "../../css/viewTenant.css";
 
 const ViewTenant = () => {
   const { id } = useParams();
+  const { execute, apiLoading } = useApiRequest(); 
 
   const [tenant, setTenant] = useState(null);
+  const [tenantLoading, setTenantLoading] = useState(false);
+  const [tenantError, setTenantError] = useState(false);
+
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [transactionsLoading, setTransactionsLoading] = useState(false);
   const [transactionsError, setTransactionsError] = useState(false);
+
+  const [balances, setBalances] = useState([]);
+  const [balancesLoading, setBalancesLoading] = useState(false);
+  const [balancesError, setBalancesError] = useState(false);
+
   const [error, setError] = useState("");
 
   const [activeRow, setActiveRow] = useState(null);
@@ -25,7 +38,6 @@ const ViewTenant = () => {
   const [showModal, setShowModal] = useState(false);
 
   const columns = getColumns({
-    endpoint: "Transaction",
     activeRow,
     setActiveRow,
     setSelectedId,
@@ -35,38 +47,70 @@ const ViewTenant = () => {
     tenant,
   });
 
+  
+  const balancecolumns = getBalancesColumns();
+
 
   useEffect(() => {
-    setLoading(true);
-    getData({
-      endpoint: `Tenants/${id}`,
-      setData: setTenant,
-      setLoading,
-      setError,
-    });
+    fetchTenant();
+    fetchTransactions();
+    fetchBalances();
   }, [id]);
 
 
-  useEffect(() => {
-    if (!tenant?.user?.id) return;
 
-    setLoading(true);
-    getData({
-      endpoint: `Transaction/By-Tenant/${tenant.user.id}`,
+  const fetchTenant = async () => {
+    await getData({
+      execute,
+      request: () => tenantService.getById(id),
+      setData: setTenant,
+      setLoading: setTenantLoading,
+      setError: setTenantError,
+    });
+  };
+
+  const fetchTransactions = async () => {
+    await getData({
+      execute,
+      request: () => transactionService.getByTenantId(id),
       setData: setTransactions,
       setLoading: setTransactionsLoading,
       setError: setTransactionsError,
     });
-  }, [tenant]);
+  };
+
+  const fetchBalances = async () => {
+    await getData({
+      execute,
+      request: () => transactionService.getTenantBalances(id),
+      setData: setBalances,
+      setLoading: setBalancesLoading,
+      setError: setBalancesError,
+    });
+  };
 
 
+  const invoices = useMemo(() => { 
+    if(!transactions) return;
 
-  const invoices = useMemo(() => {
-    return transactions.filter((t) => t.transactionType === "Charge");
+
+    return transactions
+      .filter((t) => t.transactionType === "Charge")
+      .map((t) => ({
+        ...t,
+        transactionDate: formatDate(t.transactionDate),
+      }));
   }, [transactions]);
 
-  const payments = useMemo(() => {
-    return transactions.filter((t) => t.transactionType === "Payment");
+  const payments = useMemo(() => { 
+    if(!transactions) return;
+
+    return transactions
+      .filter((t) => t.transactionType === "Payment")
+      .map((t) => ({
+        ...t,
+        transactionDate: formatDate(t.transactionDate),
+      }));
   }, [transactions]);
 
 
@@ -95,10 +139,20 @@ const ViewTenant = () => {
           />
         ),
       },
-      { label: "Balances", content: <div>Document uploads here</div> },
+      { 
+        label: "Balances",
+        content: (
+          <Table
+            data={balances}
+            columns={balancecolumns}
+            loading={balancesLoading}
+            error={balancesError}
+          />
+        ),
+      },
       { label: "Messages", content: <div>Document uploads here</div> },
     ],
-    [invoices, payments, transactionsLoading, transactionsError, columns]
+    [invoices, payments, balances, transactionsLoading, transactionsError, columns]
   );
 
 
@@ -116,11 +170,37 @@ const ViewTenant = () => {
               <img src={defaultProfilePic} alt="Tenant" />
             </div>
 
-            <h3 className="tenant-name">{tenant?.fullName ?? "Loading..."}</h3>
+            <h3 className="tenant-name">
+              {
+                tenantLoading
+                  ? "Loading.."
+                  : tenantError
+                    ? "Something went wrong"
+                    : tenant?.fullName ?? "No Name"
+              }
+            </h3>
             <p className="tenant-property">
-              {tenant?.user?.propertyName ?? "--"}
+              {
+                tenantLoading
+                  ? "Loading.."
+                  : tenantError
+                    ? "Something went wrong"
+                    : tenant?.user?.propertyName
+                      ? tenant.user.propertyName
+                      : "No Property Name Available"
+              }
             </p>
-            <p className="tenant-house">{tenant?.unit ?? "--"}</p>
+            <p className="tenant-house">
+              {
+                tenantLoading
+                  ? "Loading.."
+                  : tenantError
+                    ? "Something went wrong"
+                    : tenant?.unit
+                      ? tenant.unit
+                      : "No Unit Name Available"
+              }
+              </p>
           </div>
 
           {/* RIGHT SIDE */}

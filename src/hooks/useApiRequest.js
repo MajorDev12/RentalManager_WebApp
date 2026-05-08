@@ -4,24 +4,24 @@ export function useApiRequest() {
   const [apiLoading, setApiLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const execute = async ({ request }) => {
+  const execute = async (request) => {
     setApiLoading(true);
     setError(null);
 
     try {
       const res = await request();
 
-      if (!res) {
-        return null;
-      }
+      if (!res) return null;
 
       if (!res.success) {
         setError(res.message || "Request failed");
+        return res;
       }
 
       return res;
     } catch (err) {
-      setError(err?.message || "Unexpected error");
+      const message = err?.message || "Unexpected error";
+      setError(message);
       throw err;
     } finally {
       setApiLoading(false);
@@ -30,4 +30,3 @@ export function useApiRequest() {
 
   return { execute, apiLoading, error };
 }
-

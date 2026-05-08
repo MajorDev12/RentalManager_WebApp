@@ -12,7 +12,7 @@ import { useAuthContext } from "../../auth/AuthContext";
 
 
 const Sidebar = ({ width, setWidth }) => {
-  const { user } = useAuthContext();
+  const { user, hasPermission } = useAuthContext();
   const roles = user?.roles ?? [];
   const [activeIndex, setActiveIndex] = useState(null);
   const initialWidth = 260;
@@ -71,7 +71,7 @@ const Sidebar = ({ width, setWidth }) => {
             setActiveIndex={setActiveIndex}
             onItemClick={handleCloseSidebar}
           />
-          {hasRole("Owner", "Manager") && (
+          {hasPermission("Property.Read") && (
             <NavLink
               icon={<BsBuildingFill className="navLinkIcon" />}
               name="Properties"

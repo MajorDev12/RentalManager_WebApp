@@ -3,6 +3,7 @@ import BreadCrumb from '../../components/ui/BreadCrumb';
 import PrimaryButton from '../../components/ui/PrimaryButton';
 import Table from '../../components/ui/Table';
 import { getColumns } from "./UnitChargeColumn";
+import CheckBox from '../../components/ui/CheckBox';
 import Modal from '../../components/ui/Modal';
 import DeleteModal from '../../components/ui/DeleteModal';  
 import Input from '../../components/ui/Input';
@@ -146,6 +147,7 @@ const UnitCharge = () => {
         resetForm: () => setFormData(EMPTY_FORM),
         onSuccess: () => refreshTableData(),
       });
+      
     };
 
 
@@ -166,7 +168,7 @@ const UnitCharge = () => {
     const handleEdit = (rowId) => {
       const item = charges.find(p => p.id === rowId);
       if (!item) return;
-      
+      console.log(item);
       setFormData(item);
       setSelectedId(item.id);
       setOriginalData(item);
@@ -272,6 +274,13 @@ const UnitCharge = () => {
             value={formData.amount || ''}
             labelName="Amount"
             onChange={handleInputChange}
+          />
+
+          <CheckBox
+            name="isReccurring"
+            labelName="Reccurring"
+            onChange={handleInputChange}
+            checked={formData.isReccurring}
           />
         </Modal>
     </div>

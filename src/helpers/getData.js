@@ -1,21 +1,19 @@
-
 export const getData = async ({
   execute,
   request,
   setData,
   setLoading,
-  setError
+  setError,
 }) => {
   try {
-
-    const res = await execute({
-      request,
-    });
+    const res = await execute(request);
 
     if (!res) return;
 
     if (res.success) {
-      setData(res.data);
+      const data = Array.isArray(res.data) ? res.data : (res.data?.items ?? []);
+
+      setData(data);
     } else {
       setError(true);
     }

@@ -1,86 +1,117 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSearch } from "../../context/SearchContext";
 import { MdArrowCircleDown, MdArrowCircleUp } from "react-icons/md";
-import BreadCrumb from '../../components/ui/BreadCrumb';
-import PrimaryButton from '../../components/ui/PrimaryButton';
-import Table from '../../components/ui/Table';
+import BreadCrumb from "../../components/ui/BreadCrumb";
+import PrimaryButton from "../../components/ui/PrimaryButton";
+import Table from "../../components/ui/Table";
 import { getPropertyColumns } from "./propertyColumns";
-import Modal from '../../components/ui/Modal'; 
-import DeleteModal from '../../components/ui/DeleteModal'; 
-import Input from '../../components/ui/Input';
-import { getData } from '../../helpers/getData'; 
-import { handleDelete } from '../../helpers/deleteData';
-import { validateTextInput } from '../../helpers/validateTextInput'; 
-import { validateEmail } from '../../helpers/validateEmail';
-import Textarea from '../../components/ui/Textarea';
-import Select from '../../components/ui/Select';
+import Modal from "../../components/ui/Modal";
+import DeleteModal from "../../components/ui/DeleteModal";
+import Input from "../../components/ui/Input";
+import { getData } from "../../helpers/getData";
+import { handleDelete } from "../../helpers/deleteData";
+import { validateTextInput } from "../../helpers/validateTextInput";
+import { validateEmail } from "../../helpers/validateEmail";
+import Textarea from "../../components/ui/Textarea";
+import Select from "../../components/ui/Select";
+import Pagination from "../../components/ui/Pagination";
 import { propertyService } from "./propertyService";
-import { useApiRequest } from '../../hooks/useApiRequest';
-import { handleFormSubmit } from '../../helpers/handleFormSubmit';
-import '../../css/property.css';
+import { systemCodeItemService } from "../systemCodeItems/systemCodeItemService";
+import { useApiRequest } from "../../hooks/useApiRequest";
+import { useApiQuery } from "../../hooks/useApiQuery";
+import { useDataTable } from "../../hooks/useDataTable";
+import { useUrlSync } from "../../hooks/useUrlSync";
+import { handleFormSubmit } from "../../helpers/handleFormSubmit";
+import "../../css/property.css";
 
 const Property = () => {
   const navigate = useNavigate();
-  const { execute, apiLoading } = useApiRequest();
+  const { execute } = useApiRequest();
+  const { search } = useSearch();
   const [activeRow, setActiveRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingTypes, setLoadingTypes] = useState(false);
+  const [propertyTypes, setPropertyTypes] = useState([]);
   const [loadingBtn, setLoadingBtn] = useState(false);
-  const [error, setError] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalData, setOriginalData] = useState(null);
-  const [formError, setFormError] = useState('');
+  const [formError, setFormError] = useState("");
+  const [propertyTypeError, setPropertyTyperror] = useState("");
   const [showMoreInputs, setshowMoreInputs] = useState(false);
   const EMPTY_FORM = {
-    id: '',
-    name: '',
-    emailAddress: '',
-    mobileNumber: '',
-    physicalAddress: '',
-    country: '',
-    county: '',
-    area: '',
-    floor: '',
-    notes: '',
-    utility: '',
-    electricity: ''
+    id: "",
+    name: "",
+    emailAddress: "",
+    mobileNumber: "",
+    physicalAddress: "",
+    country: "",
+    county: "",
+    area: "",
+    floor: "",
+    notes: "",
+    utility: "",
+    electricity: "",
+    propertyTypeId: "",
   };
+  const {
+    data: properties,
+    loading,
+    error,
+    query,
+    setQuery,
+    setSearch,
+    setSort,
+    setPage,
+    totalPages,
+    pageNumber,
+  } = useDataTable(propertyService.getFiltered, {
+    pageNumber: 1,
+    pageSize: 10,
+    searchTerm: "",
+    sortBy: "",
+    isDescending: false,
+  });
+
+  useEffect(() => {
+    setQuery((prev) => ({
+      ...prev,
+      searchTerm: search,
+      pageNumber: 1,
+    }));
+  }, [search]);
+
+  useUrlSync(query, setQuery);
+
   const [formData, setFormData] = useState(EMPTY_FORM);
   const tableData = useMemo(() => properties ?? [], [properties]);
 
+  // useEffect(() => {
+  //   fetchPropertyTypes();
+  // }, [showModal]);
 
+  const fetchPropertyTypes = async () => {
+    await getData({
+      execute,
+      request: () => systemCodeItemService.getByCodeName("PROPERTYTYPES"),
+      setData: setPropertyTypes,
+      setLoading: setLoadingTypes,
+      setError: setPropertyTyperror,
+    });
+  };
 
-
-  useEffect(() => {
-    fetchProperties();
-  }, []);
-
-
-  const fetchProperties = async () => {
-      await getData({
-        execute,
-        request: () => propertyService.getAll(),
-        setData: setProperties,
-        setLoading,
-      });
-    };
-
-
-  const refreshTableData = () =>{
-    fetchProperties();
+  const refreshTableData = () => {
+    setPage(1);
     handleCloseModal();
-  }
+  };
 
-
-  
   const handleSelect = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -91,55 +122,66 @@ const Property = () => {
     setShowModal(true);
   };
 
-
   const handleCloseModal = () => {
-    setFormError('');
+    setFormError("");
     setIsEditMode(false);
     setFormData(EMPTY_FORM);
     setShowModal(false);
   };
 
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
-
-
-
-
-const handleInputChange = (field, value) => {
-        setFormData(prev => ({
-        ...prev,
-        [field]: value
-        }));
-    };
-
-
-
- const validateModalForm = () => {
-    const { name, emailAddress, mobileNumber, country, county, floor, area, notes} = formData;
-    if (!name || !emailAddress || !mobileNumber || !country || !county || !floor || !area) {
+  const validateModalForm = () => {
+    const {
+      name,
+      emailAddress,
+      mobileNumber,
+      country,
+      county,
+      floor,
+      area,
+      notes,
+      propertyTypeId,
+    } = formData;
+    if (
+      !name ||
+      !emailAddress ||
+      !mobileNumber ||
+      !country ||
+      !county ||
+      !floor ||
+      !area
+    ) {
       return "Please fill in all required fields.";
     }
-    if(!validateTextInput(name, true)){
+    if (!validateTextInput(name, true)) {
       return "Property Name cannot be empty";
     }
-    if(!validateEmail(emailAddress)){
+    if (!validateEmail(emailAddress)) {
       return "Please enter a valid email";
     }
+    if (propertyTypeId <= 0) {
+      return "Invalid PropertyTypeId";
+    }
 
-    if(originalData != null && isEditMode){
+    if (originalData != null && isEditMode) {
       return validateChange(originalData, formData);
     }
-    return '';
+    return "";
   };
 
   const validateChange = (originalData, updatedData) => {
     const isSame = JSON.stringify(updatedData) === JSON.stringify(originalData);
     if (isSame) return "No Changes Made";
-    return '';
+    return "";
   };
 
-
   const addPropertyHandler = async (e) => {
-
     await handleFormSubmit({
       e,
       validateForm: validateModalForm,
@@ -152,12 +194,7 @@ const handleInputChange = (field, value) => {
     });
   };
 
-
-
-
-
   const updatePropertyHandler = async (e) => {
-
     await handleFormSubmit({
       e,
       validateForm: validateModalForm,
@@ -170,30 +207,26 @@ const handleInputChange = (field, value) => {
     });
   };
 
-
-
- const toggleShowMoreButton = (e) => {
-  e.preventDefault();
-  if(showMoreInputs){
-    setshowMoreInputs(false);
-    return;
-  }
-  else{
-    setshowMoreInputs(true);
-    return;
-  }
- }
-
-  const handleRowClick = (row) => {
-      navigate(`/properties/${row.id}`);
+  const toggleShowMoreButton = (e) => {
+    e.preventDefault();
+    if (showMoreInputs) {
+      setshowMoreInputs(false);
+      return;
+    } else {
+      setshowMoreInputs(true);
+      return;
+    }
   };
 
+  const handleRowClick = (row) => {
+    navigate(`/properties/${row.id}`);
+  };
 
   const handleEdit = (rowId) => {
-    const item = properties.find(p => p.id === rowId);
+    const item = properties.find((p) => p.id === rowId);
 
     if (!item) return;
-    
+
     setFormData(item);
     setOriginalData(item);
     setIsEditMode(true);
@@ -207,16 +240,16 @@ const handleInputChange = (field, value) => {
     setActiveRow(null);
   };
 
-
-  const columns = useMemo(() => 
-    getPropertyColumns({
-      activeRow,
-      setActiveRow,
-      onEdit: handleEdit,
-      onDelete: handleDeleteClick,
-    }),
-  [ activeRow ]);
-
+  const columns = useMemo(
+    () =>
+      getPropertyColumns({
+        activeRow,
+        setActiveRow,
+        onEdit: handleEdit,
+        onDelete: handleDeleteClick,
+      }),
+    [activeRow],
+  );
 
   return (
     <>
@@ -224,37 +257,45 @@ const handleInputChange = (field, value) => {
       <div id="Section">
         <div className="header">
           <h3>List of all Properties</h3>
-          <PrimaryButton
-            name="Add New"
-            onClick={handleAddNew}
+
+          <PrimaryButton name="Add New" onClick={handleAddNew} />
+        </div>
+        <div className="TableContainer">
+          <Table
+            data={properties}
+            columns={columns}
+            loading={loading}
+            error={error}
+            onSort={setSort}
+            sortBy={query.sortBy}
+            isDescending={query.isDescending}
+          />
+          <Pagination
+            pageNumber={pageNumber}
+            totalPages={totalPages}
+            onPageChange={setPage}
           />
         </div>
-
-        <div className="TableContainer">
-          <Table data={tableData} onclickItem={handleRowClick} columns={columns} loading={loading}  error={error}/>
-        </div>
-
-
 
         <DeleteModal
           isOpen={deleteModalOpen}
           title="Delete Property"
           onClose={() => setDeleteModalOpen(false)}
-          onSubmit={(e) => handleDelete({
-            e,
-            id: selectedId,
-            endpoint: 'Property',
-            setLoadingBtn,
-            setDeleteModalOpen,
-            setData: setProperties,
-            setLoading,
-          })}
-
+          onSubmit={(e) =>
+            handleDelete({
+              e,
+              id: selectedId,
+              endpoint: "Property",
+              setLoadingBtn,
+              setDeleteModalOpen,
+              setData: setProperties,
+              setLoading,
+            })
+          }
           loadingBtn={loadingBtn}
         />
 
-
-         <Modal
+        <Modal
           isOpen={showModal}
           onClose={handleCloseModal}
           onSubmit={isEditMode ? updatePropertyHandler : addPropertyHandler}
@@ -269,7 +310,7 @@ const handleInputChange = (field, value) => {
                 type="text"
                 name="name"
                 placeholder="Enter Property Name"
-                value={formData.name || ''}
+                value={formData.name || ""}
                 labelName="Property Name"
                 onChange={handleInputChange}
               />
@@ -278,7 +319,7 @@ const handleInputChange = (field, value) => {
                 type="email"
                 name="emailAddress"
                 placeholder="Enter Email Address"
-                value={formData.emailAddress || ''}
+                value={formData.emailAddress || ""}
                 labelName="Email"
                 onChange={handleInputChange}
               />
@@ -287,7 +328,7 @@ const handleInputChange = (field, value) => {
                 type="tel"
                 name="mobileNumber"
                 placeholder="Enter Mobile Number"
-                value={formData.mobileNumber || ''}
+                value={formData.mobileNumber || ""}
                 labelName="Mobile"
                 onChange={handleInputChange}
               />
@@ -296,7 +337,7 @@ const handleInputChange = (field, value) => {
                 type="text"
                 name="physicalAddress"
                 placeholder="Enter physical Address"
-                value={formData.physicalAddress || ''}
+                value={formData.physicalAddress || ""}
                 labelName="physical Address"
                 onChange={handleInputChange}
               />
@@ -305,7 +346,7 @@ const handleInputChange = (field, value) => {
                 type="text"
                 name="country"
                 placeholder="Enter Country"
-                value={formData.country || ''}
+                value={formData.country || ""}
                 labelName="Country"
                 onChange={handleInputChange}
               />
@@ -314,7 +355,7 @@ const handleInputChange = (field, value) => {
                 type="text"
                 name="county"
                 placeholder="Enter County"
-                value={formData.county || ''}
+                value={formData.county || ""}
                 labelName="County"
                 onChange={handleInputChange}
               />
@@ -323,7 +364,7 @@ const handleInputChange = (field, value) => {
                 type="text"
                 name="area"
                 placeholder="Enter Area"
-                value={formData.area || ''}
+                value={formData.area || ""}
                 labelName="Area"
                 onChange={handleInputChange}
               />
@@ -334,51 +375,83 @@ const handleInputChange = (field, value) => {
                 value={formData.floor}
                 onChange={handleSelect}
                 options={[
-                  { value: '0', label: 'Ground Floor' },
-                  { value: '1', label: '1' },
-                  { value: '2', label: '2' },
-                  { value: '3', label: '3' },
-                  { value: '4', label: '4' },
-                  { value: '5', label: '5' },
-                  { value: '6', label: '6' },
-                  { value: '7', label: '7' },
-                  { value: '8', label: '8' },
-                  { value: '9', label: '9' },
-                  { value: '10', label: '10' },
-                  { value: '11', label: '11' },
-                  { value: '12', label: '12' },
-                  { value: '13', label: '13' },
-                  { value: '14', label: '14' },
-                  { value: '15', label: '15' },
-                  { value: '16', label: '16' },
-                  { value: '17', label: '17' },
-                  { value: '18', label: '18' },
-                  { value: '19', label: '19' },
-                  { value: '20', label: '20' },
+                  { value: "0", label: "Ground Floor" },
+                  { value: "1", label: "1" },
+                  { value: "2", label: "2" },
+                  { value: "3", label: "3" },
+                  { value: "4", label: "4" },
+                  { value: "5", label: "5" },
+                  { value: "6", label: "6" },
+                  { value: "7", label: "7" },
+                  { value: "8", label: "8" },
+                  { value: "9", label: "9" },
+                  { value: "10", label: "10" },
+                  { value: "11", label: "11" },
+                  { value: "12", label: "12" },
+                  { value: "13", label: "13" },
+                  { value: "14", label: "14" },
+                  { value: "15", label: "15" },
+                  { value: "16", label: "16" },
+                  { value: "17", label: "17" },
+                  { value: "18", label: "18" },
+                  { value: "19", label: "19" },
+                  { value: "20", label: "20" },
                 ]}
               />
 
+              <Select
+                name="propertyTypeId"
+                labelName="property Type"
+                value={formData.propertyTypeId}
+                onChange={handleSelect}
+                options={
+                  error
+                    ? [
+                        {
+                          value: 0,
+                          label: "Error Fetching property Types",
+                          disabled: true,
+                        },
+                      ]
+                    : loading
+                      ? [
+                          {
+                            value: 0,
+                            label: "Loading property Types...",
+                            disabled: true,
+                          },
+                        ]
+                      : propertyTypes.map((p) => ({
+                          value: p.id,
+                          label: p.item,
+                        }))
+                }
+              />
 
               <Textarea
                 type="text"
                 name="notes"
                 placeholder="Enter description"
-                value={formData.notes || ''}
+                value={formData.notes || ""}
                 labelName="Notes"
                 onChange={handleInputChange}
               />
-
             </div>
-            <button className='showMoreBtn' onClick={toggleShowMoreButton}>Show more {showMoreInputs ? <MdArrowCircleUp className='downIcon' /> : <MdArrowCircleDown className='topIcon' />}</button>
-          
-          
-
+            <button className="showMoreBtn" onClick={toggleShowMoreButton}>
+              Show more{" "}
+              {showMoreInputs ? (
+                <MdArrowCircleUp className="downIcon" />
+              ) : (
+                <MdArrowCircleDown className="topIcon" />
+              )}
+            </button>
 
             {showMoreInputs && (
               <>
+                <p className="headerTitle">
+                  Utilitiy Bills <span>(Optional)</span>
+                </p>
 
-                <p className='headerTitle'>Utilitiy Bills <span>(Optional)</span></p>
-                
                 <div className="row">
                   <Input
                     type="text"
@@ -424,12 +497,8 @@ const handleInputChange = (field, value) => {
                   />
                 </div> */}
               </>
-
             )}
-
-
           </div>
-
         </Modal>
       </div>
     </>

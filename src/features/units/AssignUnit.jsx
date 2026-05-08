@@ -3,54 +3,63 @@ import BreadCrumb from '../../components/ui/BreadCrumb';
 import PrimaryButton from '../../components/ui/PrimaryButton';
 import Select from '../../components/ui/Select';
 import Input from '../../components/ui/Input';
+import { handleFormSubmit } from '../../helpers/handleFormSubmit';
 import { addData } from '../../helpers/addData';
 import { getData } from '../../helpers/getData';
-import "../../css/assignUnit.css"
+import { tenantService } from "../tenants/tenantService";
+import { unitService } from "./unitService";
+import { systemCodeItemService } from "../systemCodeItems/systemCodeItemService";
+import { useApiRequest } from '../../hooks/useApiRequest';
+import "../../css/assignUnit.css";
+import "../../css/App.css";
 
 
 const AssignUnit = () => {
+    const { execute, apiLoading } = useApiRequest();  
     const [select, setSelect] = useState('');
-    const [units, setUnits] = useState([]);
+    
     const [tenants, setTenants] = useState([]);
-    const [showPaymentInputs, setShowPaymentInputs] = useState(false);
-    const [paymentMethods, setPaymentMethods] = useState([]);
+    const [tenantLoading, setTenantLoading] = useState(true);
+    const [tenantError, setTenantError] = useState(null);
+    
     const [tenantStatus, setTenantStatus] = useState([]);
+    const [tenantStatusLoading, setTenantStatusLoading] = useState(true);
+    const [tenantStatusError, setTenantStatusError] = useState(null);
+    
+    const [units, setUnits] = useState([]);
+    const [unitLoading, setUnitLoading] = useState(true);
+    const [unitError, setUnitError] = useState(null);
+
+    const [paymentMethods, setPaymentMethods] = useState([]);
+    const [paymentMethodLoading, setPaymentMethodLoading] = useState(true);
+    const [paymentMethodError, setPaymentMethodError] = useState(null);
+
+    const [showPaymentInputs, setShowPaymentInputs] = useState(false);
+
     const [loading, setLoading] = useState(true);
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [error, setError] = useState(null);
+
     const [showModal, setShowModal] = useState(false);
     const [formError, setFormError] = useState(null);
-    const [formData, setFormData] = useState({
+    const EMPTY_FORM = {
         tenantId: 0,
         unitId: 0,
-        status: 0,
+        statusId: 0,
         paymentMethodId: 0,
         depositAmount: 0,
         amountPaid: 0,
-        paymentDate: ''
-    });
+        paymentDate: null
+    };
+    const [formData, setFormData] = useState(EMPTY_FORM);
 
 
 
     useEffect(() => {
-        getData({
-            endpoint: 'Tenants',
-            setData: setTenants,
-            setLoading,
-            setError
-        });
-
-        getData({
-            endpoint: 'systemCodeItem/BY-NAME/TENANTSTATUS',
-            setData: setTenantStatus,
-            setLoading,
-            setError
-        });
-
-
+        fetchTenants();
+        fetchTenantStatus();
     }, []);
 
-    
 
     useEffect(() => {
         if (!formData.tenantId) {
@@ -67,39 +76,74 @@ const AssignUnit = () => {
             return;
         }
 
-        getData({
-            endpoint: `Unit/By-Property/${propertyId}`,
-            setData: setUnits,
-            setLoading,
-            setError
-        });
+        fetchUnitsByPropertyId(propertyId);
 
     }, [formData.tenantId]);
 
 
-
     useEffect(() => {
-        if (!formData.status || !tenantStatus.length === 0) {
+        if (!formData.statusId || !tenantStatus.length === 0) {
             setShowPaymentInputs(false);
             return;
         }
 
         // Find the selected status object
-        const selectedStatus = tenantStatus.find(t => t.id === parseInt(formData.status));
+        const selectedStatus = tenantStatus.find(t => t.id === parseInt(formData.statusId));
 
         if (selectedStatus?.item.toLowerCase() === "active") {
             setShowPaymentInputs(true);
-            getData({
-                endpoint: 'systemCodeItem/BY-NAME/PAYMENTMETHOD',
-                setData: setPaymentMethods,
-                setLoading,
-                setError
-            });
+            fetchPaymentMethods();
         } else {
             setShowPaymentInputs(false);
         }
 
-    }, [formData.status, tenantStatus]);
+    }, [formData.statusId, tenantStatus]);
+
+
+    const fetchTenants = async () => {
+        await getData({
+        execute,
+        request: () => tenantService.getAll(),
+        setData: setTenants,
+        setLoading: setTenantLoading,
+        setError: setTenantError
+        });
+    };
+
+    const fetchTenantStatus = async () => {
+        await getData({
+        execute,
+        request: () => systemCodeItemService.getTenantStatus(),
+        setData: setTenantStatus,
+        setLoading: setTenantStatusLoading,
+        setError: setTenantStatusError
+        });
+    };
+
+    const fetchUnitsByPropertyId = async (propertyId) => {
+        await getData({
+        execute,
+        request: () => unitService.getByPropertyId(propertyId),
+        setData: setUnits,
+        setLoading: setUnitLoading,
+        setError: setUnitError
+        });
+    };
+
+    const fetchPaymentMethods = async () => {
+        await getData({
+        execute,
+        request: () => systemCodeItemService.getPaymentMethods(),
+        setData: setPaymentMethods,
+        setLoading: setPaymentMethodLoading,
+        setError: setPaymentMethodError
+        });
+    };
+    
+
+
+
+
 
 
     const handleInputChange = (name, value) => {
@@ -108,8 +152,6 @@ const AssignUnit = () => {
             [name]: value
         }));
     };
-
-    
 
     const handleSelect = (e) => {
         const { name, value } = e.target;
@@ -122,36 +164,41 @@ const AssignUnit = () => {
     };
 
 
+    const validateAssignForm = () => {  
+        let { tenantId, unitId, statusId } = formData;
 
-    const validateForm = () => {
-      var {tenantId, unitId } = formData;
-    
-      if (!tenantId || !unitId || tenantId <= 0 || unitId <= 0) {
-        return "Please fill in all required fields.";
-      }
+        // Convert to integers
+        tenantId = parseInt(tenantId, 10);
+        unitId = parseInt(unitId, 10);
+        statusId = parseInt(statusId, 10);
 
-    
-      return '';
+        // Validate
+        if (
+            !tenantId || !unitId || !statusId ||
+            tenantId <= 0 || unitId <= 0 || statusId <= 0
+        ) {
+            return "Please fill in all required fields.";
+        }
+
+        return '';
     };
 
 
 
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
-         addData({
-        e,
-        validateForm,
-        formData,
-        endpoint: 'Tenant/AssignUnit',
-        setFormError,
-        setLoadingBtn,
-        setFormData,
-        setShowModal,
-        setData: setTenants,
-        getdata: false,
-        setLoading,
-      });
-    };
+
+      const assignUnitHandler = async (e) => {
+
+        await handleFormSubmit({
+          e,
+          validateForm: validateAssignForm,
+          execute,
+          request: () => tenantService.assignUnit(formData),
+          setFormError,
+          setLoadingBtn,
+          resetForm: () => setFormData(EMPTY_FORM),
+          onSuccess: () => setLoadingBtn(false),
+        });
+      };
 
 
 
@@ -164,7 +211,7 @@ const AssignUnit = () => {
         </div>
 
         <div className="AssignContainer">
-            <form onSubmit={handleFormSubmit}>
+            <form onSubmit={assignUnitHandler}>
 
                 <div className="row">
                     <Select
@@ -173,10 +220,10 @@ const AssignUnit = () => {
                         value={formData.tenantId || 0}
                         onChange={handleSelect}
                         options={
-                        error
-                            ? [{ value: '', label: 'Error Fetching Tenants', disabled: true }]
-                            : loading
-                            ? [{ value: '', label: 'Loading Tenants...', disabled: true }]
+                        tenantError
+                            ? [{ value: 0, label: 'Error Fetching Tenants', disabled: true }]
+                            : tenantLoading
+                            ? [{ value: 0, label: 'Loading Tenants...', disabled: true }]
                             : tenants.map(p => ({ value: p.id, label: p.fullName }))
                         }
                     />
@@ -199,14 +246,14 @@ const AssignUnit = () => {
                     />
 
                     <Select
-                        name="status"
+                        name="statusId"
                         labelName="Status"
-                        value={formData.status || 0}
+                        value={formData.statusId || 0}
                         onChange={handleSelect}
                         options={
-                        error
+                        tenantStatusError
                             ? [{ value: 0, label: "Error Fetching Status", disabled: true }]
-                            : loading
+                            : tenantStatusLoading
                             ? [{ value: 0, label: "Loading Status...", disabled: true }]
                             : tenantStatus.map(p => ({ value: p.id, label: p.item }))
                         }
@@ -224,9 +271,9 @@ const AssignUnit = () => {
                                 value={formData.paymentMethodId || 0}
                                 onChange={handleSelect}
                                 options={
-                                error
+                                paymentMethodError
                                     ? [{ value: 0, label: "Error Fetching Payment Methods", disabled: true }]
-                                    : loading
+                                    : paymentMethodLoading
                                     ? [{ value: 0, label: "Loading Payment Methods...", disabled: true }]
                                     : paymentMethods.map(p => ({ value: p.id, label: p.item }))
                                 }
@@ -272,6 +319,7 @@ const AssignUnit = () => {
                     name="Assign"
                     type="submit"
                     loading={loadingBtn}
+                    disabled={loadingBtn}
                 />
 
             </form>

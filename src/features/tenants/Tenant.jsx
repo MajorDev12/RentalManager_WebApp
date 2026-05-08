@@ -596,11 +596,22 @@ const Tenant = () => {
   }
   
   const handleAssignUnitFormSubmit = async (e) => {
+
+    const payload = {
+      tenantId: assignUnitFormData.tenantId,
+      unitId: assignUnitFormData.unitId,
+      statusId: assignUnitFormData.status,
+      paymentMethodId: assignUnitFormData.paymentMethodId,
+      depositAmount: assignUnitFormData.depositAmount,
+      amountPaid: assignUnitFormData.amountPaid,
+      paymentDate: assignUnitFormData.paymentDate,
+    };
+
     await handleFormSubmit({
       e,
       validateForm: validateAssignForm,
       execute,
-      request: () => tenantService.assignUnit(assignUnitFormData),
+      request: () => tenantService.assignUnit(payload),
       setFormError,
       setLoadingBtn,
       resetForm: () => setAssignUnitModal(ASSIGNTENANTEMPTY_FORM),

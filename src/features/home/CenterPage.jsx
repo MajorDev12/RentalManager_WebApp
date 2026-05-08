@@ -72,7 +72,7 @@ const CenterPage = () => {
     };
 
     useEffect(() => {
-      fetchTenantsBalances();
+      // fetchTenantsBalances();
     }, []);
 
     const fetchTenantsBalances = async () => {

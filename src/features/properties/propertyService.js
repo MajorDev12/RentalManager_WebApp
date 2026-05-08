@@ -5,6 +5,10 @@ export const propertyService = {
     return apiClient.get("properties");
   },
 
+  getFiltered(query) {
+    return apiClient.get("properties", query);
+  },
+
   getById(id) {
     return apiClient.get(`properties/${id}`);
   },
@@ -20,5 +24,4 @@ export const propertyService = {
   archive(id) {
     return apiClient.delete(`property/${id}`);
   },
-
 };

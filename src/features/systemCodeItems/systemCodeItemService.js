@@ -9,6 +9,10 @@ export const systemCodeItemService = {
     return apiClient.get(`SystemCodeItem/${id}`);
   },
 
+  getByCodeName(code) {
+    return apiClient.get(`SystemCodeItem/By-Name/${code}`);
+  },
+
   getTenantStatus() {
     return apiClient.get(`SystemCodeItem/By-Name/TENANTSTATUS`);
   },

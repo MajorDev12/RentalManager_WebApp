@@ -1,8 +1,9 @@
 import ActionCell from "../../components/ui/ActionCell";
 import { Link } from 'react-router-dom';
 
+var endpoint = "Transactions";
+
 export const getColumns = ({
-  endpoint,
   activeRow,
   setActiveRow,
   setSelectedId,

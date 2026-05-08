@@ -1,15 +1,24 @@
-import React from 'react';
+import React from "react";
 import {
   useReactTable,
   getCoreRowModel,
   flexRender,
-} from '@tanstack/react-table';
+} from "@tanstack/react-table";
+import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "react-icons/md";
 import "../../css/table.css";
-import Spinner from './Spinner';
+import Spinner from "./Spinner";
 import NoDataImage from "../../assets/NoData.png";
 
-const Table = ({ data, columns, loading, onclickItem, error }) => {
-  // ✅ normalize data safely
+const Table = ({
+  data,
+  columns,
+  loading,
+  onclickItem,
+  error,
+  onSort,
+  sortBy,
+  isDescending,
+}) => {
   const safeData = Array.isArray(data) ? data : [];
 
   const table = useReactTable({
@@ -22,16 +31,70 @@ const Table = ({ data, columns, loading, onclickItem, error }) => {
     <div className="TableContainer">
       <table>
         <thead>
-          {table.getHeaderGroups().map(headerGroup => (
+          {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <th key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </th>
-              ))}
+              {headerGroup.headers.map((header) => {
+                const columnId = header.column.id;
+                const enableSorting = header.column.columnDef.enableSorting;
+
+                const isActiveSort = sortBy === columnId;
+
+                return (
+                  <th
+                    key={header.id}
+                    onClick={() => onSort?.(columnId)}
+                    title="Click to sort"
+                    style={{
+                      cursor: onSort ? "pointer" : "default",
+                      userSelect: "none",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                      {enableSorting && (
+                        <span
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            lineHeight: 0.7,
+                            marginLeft: "4px",
+                          }}
+                        >
+                          <MdKeyboardArrowUp
+                            size={16}
+                            color={
+                              sortBy === columnId && !isDescending
+                                ? "var(--textColor)"
+                                : "var(--greyColor)"
+                            }
+                          />
+
+                          <MdKeyboardArrowDown
+                            size={16}
+                            color={
+                              sortBy === columnId && isDescending
+                                ? "var(--textColor)"
+                                : "var(--greyColor)"
+                            }
+                            style={{ marginTop: "-6px" }}
+                          />
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>
@@ -75,21 +138,21 @@ const Table = ({ data, columns, loading, onclickItem, error }) => {
                 key={row.id}
                 onClick={(e) => {
                   if (
-                    e.target.closest('svg') ||
-                    e.target.closest('a') ||
-                    e.target.closest('li')
-                  ) return;
+                    e.target.closest("svg") ||
+                    e.target.closest("a") ||
+                    e.target.closest("li")
+                  )
+                    return;
 
                   onclickItem?.(row.original);
                 }}
-                style={{ cursor: onclickItem ? "pointer" : "default" }}
+                style={{
+                  cursor: onclickItem ? "pointer" : "default",
+                }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>

@@ -5,8 +5,20 @@ export const transactionService = {
     return apiClient.get("Transactions");
   },
 
-  getById(id) {
-    return apiClient.get(`Transactions/${id}`);
+  getById(userId) {
+    return apiClient.get(`Transactions/${userId}`);
+  },
+
+    getByUserId(userId) {
+    return apiClient.get(`Transactions/By-User/${userId}`);
+  },
+
+  getByTenantId(tenantId) {
+    return apiClient.get(`Transactions/By-Tenant/${tenantId}`);
+  },
+
+  getTenantBalances(tenantId) {
+    return apiClient.get(`Transactions/TenantBalances/${tenantId}`);
   },
 
   addInvoice(data) {
