@@ -18,7 +18,7 @@ export const propertyService = {
   },
 
   update(id, data) {
-    return apiClient.put(`property/${id}`, data);
+    return apiClient.patch(`property/${id}`, data);
   },
 
   archive(id) {

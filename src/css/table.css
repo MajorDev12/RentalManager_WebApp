@@ -43,7 +43,7 @@
   padding: 12px 14px;
   border-bottom: 1px solid #f0f5ea;
   vertical-align: middle;
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
   white-space: nowrap;
 }

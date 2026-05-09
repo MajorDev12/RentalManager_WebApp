@@ -79,9 +79,9 @@ export default {
       body: JSON.stringify(body),
     }),
 
-  put: (url, body) =>
+  patch: (url, body) =>
     request(url, {
-      method: "PUT",
+      method: "PATCH",
       body: JSON.stringify(body),
     }),
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 
 const NavLink = ({
@@ -67,7 +67,6 @@ const NavLink = ({
             },
           });
         })}
-
       </div>
     </div>
   );

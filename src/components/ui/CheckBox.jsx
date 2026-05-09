@@ -1,27 +1,23 @@
 import React from "react";
 import "../../css/checkbox.css";
 
-const CheckBox = ({
-    type = "checkbox",
-    labelName,
-    onChange,
-    name,
-    checked
-}) =>{
+const CheckBox = ({ labelName, onChange, name, checked }) => {
+  return (
+    <div className="CheckBoxContainer">
+      <input
+        type="checkbox"
+        name={name}
+        id={name}
+        checked={checked}
+        onChange={(e) => onChange(name, e.target.checked)}
+        className="Checkbox"
+      />
 
-    return(
-        <div className="CheckBoxContainer">
-            <label htmlFor={name}>{labelName}</label>
-            <input
-                type={type}
-                name={name}
-                id={name}
-                checked={checked}
-                onChange={(e) => onChange(name, e.target.checked)}
-                className="Checkbox"
-            />
-        </div>
-    )
-}
+      <label htmlFor={name} className="CheckboxLabel">
+        {labelName}
+      </label>
+    </div>
+  );
+};
 
 export default CheckBox;

@@ -1,39 +1,61 @@
-.CheckBoxContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-    padding: 5px;
-    /* background-color: aqua; */
+.CheckBoxContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 6px 8px;
 }
-.CheckBoxContainer label{
-    font-size: var(--normalFontSize);
-    color: var(--textColor);
-    font-weight: 600;
-    padding-left: 10px;
+
+/* hide default checkbox */
+.Checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 18px;
+  height: 18px;
+
+  border: 2px solid var(--borderColor);
+  border-radius: 5px;
+
+  background-color: var(--backgroundColor);
+  cursor: pointer;
+
+  display: grid;
+  place-content: center;
+
+  transition: 0.2s ease-in-out;
 }
-.Checkbox{
-    font-family: var(--fontFamily);
-    color: var(--HeaderColor);
-    font-size: var(--smallFontSize);
-    padding: 5px;
-    margin: 10px 0;
-    width: 60px;
-    height: 15px;
-    outline: none;
-    transition: .3s ease-in-out;
-    background-color: var(--backgroundColor);
+
+/* hover effect */
+.Checkbox:hover {
+  border-color: var(--highlightColor);
 }
-.Checkbox:checked{
-    background-color: var(--highlightColor);
-    height: 20px;
+
+/* checked state */
+.Checkbox:checked {
+  background-color: var(--highlightColor);
+  border-color: var(--highlightColor);
 }
-.Checkbox:focus{
-    border: 1px solid var(--highlightColor);
-    background-color: var(--containerColor);
+
+/* checkmark */
+.Checkbox:checked::after {
+  content: "✓";
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
 }
-.Checkbox::placeholder{
-    color: var(--lightTextColor);
-    font-size: var(--smallFontSize);
-    font-family: var(--fontFamily);
+
+/* label */
+.CheckboxLabel {
+  font-size: var(--smallFontSize);
+  color: var(--textColor);
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* focus accessibility */
+.Checkbox:focus {
+  outline: 2px solid var(--highlightColor);
+  outline-offset: 2px;
 }

@@ -1,8 +1,7 @@
-// src/columns/propertyColumns.js
-
 import PropertyImage from "../../assets/PropertyImg.png";
 import ActionCell from "../../components/ui/ActionCell";
 import { Link } from "react-router-dom";
+import Can from "../../auth/Can";
 
 const endpoint = "Properties";
 
@@ -15,7 +14,7 @@ export const getPropertyColumns = ({
   {
     header: "Img",
     accessorKey: "image",
-    enableSorting: false,
+    enableSorting: true,
 
     cell: ({ row }) => {
       const { image } = row.original;
@@ -26,8 +25,6 @@ export const getPropertyColumns = ({
             width: "22px",
             height: "22px",
             borderRadius: "10px",
-            overflow: "hidden",
-            background: "rgba(0,0,0,0.05)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -56,12 +53,7 @@ export const getPropertyColumns = ({
       const { name, area } = row.original;
 
       return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <p
             style={{
               margin: 0,
@@ -96,12 +88,7 @@ export const getPropertyColumns = ({
       const { emailAddress, mobileNumber } = row.original;
 
       return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <p
             style={{
               margin: 0,
@@ -120,7 +107,7 @@ export const getPropertyColumns = ({
               marginTop: "2px",
             }}
           >
-            {"+254 " + "  " + mobileNumber}
+            {"+254 " + mobileNumber}
           </span>
         </div>
       );
@@ -171,25 +158,31 @@ export const getPropertyColumns = ({
 
       const actions = (
         <>
-          <li onClick={() => onEdit(rowId)} className="actionLink">
-            Edit
-          </li>
+          <Can permission="Property.Update">
+            <li onClick={() => onEdit(rowId)} className="actionLink">
+              Edit
+            </li>
+          </Can>
 
-          <li className="actionLink">
-            <Link to={`/${endpoint}/${rowId}`} className="view">
-              View
-            </Link>
-          </li>
+          <Can permission="Property.Read">
+            <li className="actionLink">
+              <Link to={`/${endpoint}/${rowId}`} className="view">
+                View
+              </Link>
+            </li>
+          </Can>
 
-          <li onClick={() => onDelete(rowId)} className="actionLink">
-            Delete
-          </li>
+          <Can permission="Property.Delete">
+            <li onClick={() => onDelete(rowId)} className="actionLink">
+              Delete
+            </li>
+          </Can>
         </>
       );
 
       return (
         <ActionCell
-          rowIndex={info.row.index}
+          rowId={info.row.original.id}
           activeRow={activeRow}
           setActiveRow={setActiveRow}
           actions={actions}

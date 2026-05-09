@@ -6,20 +6,18 @@ export const authService = {
   async register(credentials) {
     const res = await apiClient.post("register", credentials);
 
-    if (res.success && res.data.true) {
+    if (res.success && res.data?.success) {
       window.location.href = "/login";
     }
 
     return res;
   },
 
-
   async login(credentials) {
     const res = await apiClient.post("login", credentials);
 
     if (res.success && res.data?.accessToken) {
       localStorage.setItem(ACCESS_TOKEN_KEY, res.data.accessToken);
-      window.location.href = "/";
     }
 
     return res;
@@ -39,9 +37,8 @@ export const authService = {
     try {
       var res = await apiClient.post("logout");
 
-      if(res.success){
+      if (res.success) {
         localStorage.removeItem(ACCESS_TOKEN_KEY);
-
       }
     } finally {
       window.location.href = "/login";

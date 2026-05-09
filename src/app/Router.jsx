@@ -1,176 +1,281 @@
 // src/app/Router.jsx
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import { Routes, Route } from "react-router-dom";
+
 import Layout from "../components/layout/Layout";
+
 import ProtectedRoute from "../auth/ProtectedRoute";
-import PageWrapper from "../components/layout/PageWrapper";
+import PermissionRoute from "../auth/PermissionRoute";
+
+import { PERMISSIONS } from "../auth/permissions";
 
 // pages
 import Register from "../features/auth/Register";
 import Login from "../features/auth/Login";
+
 import MainPage from "../features/home/MainPage";
+
 import Property from "../features/properties/property";
 import ViewProperty from "../features/properties/ViewProperty";
+
 import Unit from "../features/units/Unit";
 import Vacants from "../features/units/Vacants";
+
 import UnitType from "../features/unitTypes/UnitType";
+
 import UnitCharge from "../features/utilities/UnitCharge";
+
 import Tenant from "../features/tenants/Tenant";
 import ViewTenant from "../features/tenants/ViewTenant";
+
 import AssignUnit from "../features/units/AssignUnit";
+
 import Transaction from "../features/transactions/Transaction";
 import UnpaidTenant from "../features/transactions/UnpaidTenant";
+
 import Expense from "../features/expense/Expense";
+
 import Report from "../features/reports/Report";
+
 import System from "../features/notifications/system";
+
 import Profile from "../features/settings/profile";
 import Settings from "../features/settings/Settings";
+
 import NotFound from "../sections/NotFound";
 import NotSubscribed from "../sections/402";
+import UnAuthorized from "../sections/403";
 
 export default function Router() {
   return (
-    
-      <Routes>
+    <Routes>
+      {/* =========================
+          PUBLIC ROUTES
+      ========================== */}
 
-        {/* PUBLIC */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
-        {/* PROTECTED */}
+      {/* =========================
+          PROTECTED APP
+      ========================== */}
+
+      <Route
+        element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
+        {/* DASHBOARD */}
+        <Route path="/" element={<MainPage />} />
+
+        {/* =========================
+            PROPERTIES
+        ========================== */}
+
         <Route
+          path="/properties"
           element={
-            <ProtectedRoute>
-              <Layout />
-            </ProtectedRoute>
-          }
-        >
-          <Route path="/" element={<MainPage />} />
-
-          <Route path="/properties" element={
-            <PageWrapper roles={["Owner", "Manager"]}>
+            <PermissionRoute permissions={[PERMISSIONS.PROPERTY_READ]}>
               <Property />
-            </PageWrapper>
-          } />
+            </PermissionRoute>
+          }
+        />
 
-
-          <Route path="/properties/:id" element={
-            <PageWrapper roles={["Owner", "Manager"]}>
+        <Route
+          path="/properties/:id"
+          element={
+            <PermissionRoute permissions={[PERMISSIONS.PROPERTY_READ]}>
               <ViewProperty />
-            </PageWrapper>
-          } />
+            </PermissionRoute>
+          }
+        />
 
+        {/* =========================
+            UTILITY BILLS
+        ========================== */}
 
-          <Route path="/UtilityBill" element={
-            <PageWrapper roles={["Owner", "Manager"]}>
+        <Route
+          path="/UtilityBill"
+          element={
+            <PermissionRoute permissions={["UtilityBill.Read"]}>
               <UnitCharge />
-            </PageWrapper>
-          } />
+            </PermissionRoute>
+          }
+        />
 
-          <Route path="/unitTypes" element={
-            <PageWrapper roles={["Owner", "Manager"]}>
+        {/* =========================
+            UNIT TYPES
+        ========================== */}
+
+        <Route
+          path="/unitTypes"
+          element={
+            <PermissionRoute permissions={["UnitType.Read"]}>
               <UnitType />
-            </PageWrapper>
-          
-          } />
+            </PermissionRoute>
+          }
+        />
 
-          <Route path="/Units" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        {/* =========================
+            UNITS
+        ========================== */}
+
+        <Route
+          path="/Units"
+          element={
+            <PermissionRoute permissions={["Unit.Read"]}>
               <Unit />
-            </PageWrapper>
-          
-          } />
+            </PermissionRoute>
+          }
+        />
 
-
-          <Route path="/Vacants" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        <Route
+          path="/Vacants"
+          element={
+            <PermissionRoute permissions={["Unit.Read"]}>
               <Vacants />
-            </PageWrapper>
-          
-          } />
+            </PermissionRoute>
+          }
+        />
 
+        {/* =========================
+            TENANTS
+        ========================== */}
 
-          <Route path="/tenants" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        <Route
+          path="/tenants"
+          element={
+            <PermissionRoute
+              permissions={["Tenant.Read.All", "Tenant.Read.Self"]}
+            >
               <Tenant />
-            </PageWrapper>
-          
-          } />
+            </PermissionRoute>
+          }
+        />
 
-          <Route path="/tenants/:id" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        <Route
+          path="/tenants/:id"
+          element={
+            <PermissionRoute
+              permissions={["Tenant.Read.All", "Tenant.Read.Self"]}
+            >
               <ViewTenant />
-            </PageWrapper>
-          
-          } />
+            </PermissionRoute>
+          }
+        />
 
-
-          <Route path="/AssignUnit" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        <Route
+          path="/AssignUnit"
+          element={
+            <PermissionRoute permissions={["Tenant.Assign"]}>
               <AssignUnit />
-            </PageWrapper>
-          
-          } />
+            </PermissionRoute>
+          }
+        />
 
+        {/* =========================
+            TRANSACTIONS
+        ========================== */}
 
-          <Route path="/transactions" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        <Route
+          path="/transactions"
+          element={
+            <PermissionRoute
+              permissions={["Transaction.Read.All", "Transaction.Read.Self"]}
+            >
               <Transaction />
-            </PageWrapper>
-          
-          } />
+            </PermissionRoute>
+          }
+        />
 
-          <Route path="/unpaidTenants" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        <Route
+          path="/unpaidTenants"
+          element={
+            <PermissionRoute permissions={["Transaction.Read.All"]}>
               <UnpaidTenant />
-            </PageWrapper>
-          
-          } />
+            </PermissionRoute>
+          }
+        />
 
+        {/* =========================
+            EXPENSES
+        ========================== */}
 
-          <Route path="/expenses" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        <Route
+          path="/expenses"
+          element={
+            <PermissionRoute permissions={["Expense.Read"]}>
               <Expense />
-            </PageWrapper>
-          
-          } />
+            </PermissionRoute>
+          }
+        />
 
+        {/* =========================
+            REPORTS
+        ========================== */}
 
-          <Route path="/reports" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        <Route
+          path="/reports"
+          element={
+            <PermissionRoute permissions={["Report.Read"]}>
               <Report />
-            </PageWrapper>
-          
-            } />
+            </PermissionRoute>
+          }
+        />
 
+        {/* =========================
+            NOTIFICATIONS
+        ========================== */}
 
-            <Route path="/Notifications" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord", "Tenant"]}>
+        <Route
+          path="/Notifications"
+          element={
+            <PermissionRoute permissions={["Notification.Read"]}>
               <System />
-            </PageWrapper>
-          
-            } />
+            </PermissionRoute>
+          }
+        />
 
-          
-          <Route path="/Profile" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        {/* =========================
+            PROFILE
+        ========================== */}
+
+        <Route
+          path="/Profile"
+          element={
+            <PermissionRoute
+              permissions={["Tenant.Read.Self", "Property.Update"]}
+            >
               <Profile />
-            </PageWrapper>
-          
-          } />
+            </PermissionRoute>
+          }
+        />
 
+        {/* =========================
+            SETTINGS
+        ========================== */}
 
-          <Route path="/Settings" element={
-            <PageWrapper roles={["Owner", "Manager", "Landlord"]}>
+        <Route
+          path="/Settings"
+          element={
+            <PermissionRoute permissions={["Property.Update"]}>
               <Settings />
-            </PageWrapper>
-          } />
-          
+            </PermissionRoute>
+          }
+        />
       </Route>
 
-        {/* 404 */}
-        <Route path="*" element={<NotFound />} />
-        <Route path="/402" element={<NotSubscribed />} />
+      {/* =========================
+          ERROR ROUTES
+      ========================== */}
 
-      </Routes>
+      <Route path="/402" element={<NotSubscribed />} />
+      <Route path="/403" element={<UnAuthorized />} />
+
+      {/* 404 */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }

@@ -1,36 +1,31 @@
 import { Navigate } from "react-router-dom";
 import { useAuthContext } from "../../auth/AuthContext";
 
-export default function PageWrapper({
-  children,
-  roles = [],
+export default function AccessControl({
   permissions = [],
+  requireAll = false,
+  fallback = null,
+  redirectTo = "/403",
+  children,
 }) {
-  const {
-    isAuthenticated,
-    isLoading,
-    user,
-    hasRole,
-    hasPermission,
-  } = useAuthContext();
+  const { user, hasPermission, isAuthenticated, isLoading } = useAuthContext();
 
-  // ⏳ Wait until auth is resolved
-  if (isLoading) return null; // or spinner
+  if (isLoading) return null;
 
-  // 🔐 Not logged in
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // 🧑 Role enforcement
-  if (roles.length > 0 && !roles.some(hasRole)) {
-    return <Navigate to="/403" replace />;
-  }
+  const allowed =
+    permissions.length === 0
+      ? true
+      : requireAll
+        ? permissions.every((p) => hasPermission(p))
+        : permissions.some((p) => hasPermission(p));
 
-  // 🔑 Permission enforcement
-  // if (permissions.length > 0 && !permissions.some(hasPermission)) {
-  //   return <Navigate to="/403" replace />;
-  // }
+  if (!allowed) {
+    return fallback || <Navigate to={redirectTo} replace />;
+  }
 
   return children;
 }

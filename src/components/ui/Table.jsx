@@ -37,15 +37,17 @@ const Table = ({
                 const columnId = header.column.id;
                 const enableSorting = header.column.columnDef.enableSorting;
 
-                const isActiveSort = sortBy === columnId;
-
                 return (
                   <th
                     key={header.id}
-                    onClick={() => onSort?.(columnId)}
-                    title="Click to sort"
+                    onClick={() => {
+                      if (enableSorting) {
+                        onSort?.(columnId);
+                      }
+                    }}
+                    title={enableSorting ? "Click to sort" : undefined}
                     style={{
-                      cursor: onSort ? "pointer" : "default",
+                      cursor: enableSorting ? "pointer" : "default",
                       userSelect: "none",
                     }}
                   >
@@ -60,6 +62,7 @@ const Table = ({
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
+
                       {enableSorting && (
                         <span
                           style={{
@@ -105,13 +108,20 @@ const Table = ({
               <td
                 className="errorRow"
                 colSpan={columns.length}
-                style={{ textAlign: "center", color: "red" }}
+                style={{
+                  textAlign: "center",
+                  color: "red",
+                }}
               >
                 <img
                   src={NoDataImage}
                   alt="No data"
-                  style={{ maxWidth: "350px", margin: "0 auto" }}
+                  style={{
+                    maxWidth: "350px",
+                    margin: "0 auto",
+                  }}
                 />
+
                 <p>{error}</p>
               </td>
             </tr>
@@ -127,8 +137,12 @@ const Table = ({
                 <img
                   src={NoDataImage}
                   alt="No data"
-                  style={{ maxWidth: "350px", margin: "0 auto" }}
+                  style={{
+                    maxWidth: "350px",
+                    margin: "0 auto",
+                  }}
                 />
+
                 <p>No records Available</p>
               </td>
             </tr>
@@ -136,14 +150,8 @@ const Table = ({
             table.getRowModel().rows.map((row) => (
               <tr
                 key={row.id}
-                onClick={(e) => {
-                  if (
-                    e.target.closest("svg") ||
-                    e.target.closest("a") ||
-                    e.target.closest("li")
-                  )
-                    return;
-
+                onDoubleClick={(e) => {
+                  if (e.target.closest(".actionCell")) return;
                   onclickItem?.(row.original);
                 }}
                 style={{
