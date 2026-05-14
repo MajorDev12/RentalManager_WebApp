@@ -21,17 +21,17 @@
   text-align: center;
 }
 .TableContainer thead tr {
-  background: #f9fcf5;
+  background: var(--backgroundColor);
 }
 .TableContainer th {
   font-size: 10.5px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #7fa37f;
+  color: var(--tableHeadColor);
   padding: 11px 14px;
   text-align: left;
-  border-bottom: 1px solid #e8eedf;
+  border-bottom: 1px solid var(--borderColor);
 }
 .TableContainer td {
   /* font-size: var(--smallFontSize);

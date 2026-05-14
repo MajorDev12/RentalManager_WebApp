@@ -63,7 +63,8 @@ const TopNav = ({ width, setWidth }) => {
           name="searchTerm"
           value={search}
           onChange={(f, value) => setSearch(value)}
-          placeholder="Search anything..."
+          placeholder="Search Anything Here..."
+          className="searchInput"
         />
       </div>
 
@@ -79,17 +80,7 @@ const TopNav = ({ width, setWidth }) => {
             horizontal: "left",
           }}
         >
-          <MenuButton
-            sx={{
-              backgroundColor: "transparent",
-              padding: "0px",
-              borderRadius: "8px",
-              border: "none",
-              "&:hover": {
-                backgroundColor: "transparent",
-              },
-            }}
-          >
+          <MenuButton className="menuButton">
             <Badge
               badgeContent={unreadCount}
               anchorOrigin={{ vertical: "top", horizontal: "left" }}

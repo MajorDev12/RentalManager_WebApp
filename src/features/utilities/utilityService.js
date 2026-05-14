@@ -2,7 +2,15 @@ import apiClient from "../../api/apiClient";
 
 export const utilityService = {
   getAll() {
-    return apiClient.get("UtilityBill");
+    return apiClient.get("UtilityBills");
+  },
+
+  getFiltered(query) {
+    return apiClient.get("UtilityBills", query);
+  },
+
+  getLookups() {
+    return apiClient.get("Lookups");
   },
 
   getById(id) {
@@ -14,7 +22,7 @@ export const utilityService = {
   },
 
   update(id, data) {
-    return apiClient.put(`UtilityBill/${id}`, data);
+    return apiClient.patch(`UtilityBill/${id}`, data);
   },
 
   archive(id) {
@@ -28,5 +36,4 @@ export const utilityService = {
   getByTenantId(id) {
     return apiClient.get(`UtilityBill/By-TenantId/${id}`);
   },
-
 };

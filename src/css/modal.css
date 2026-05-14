@@ -16,27 +16,19 @@
 .modalContent {
   background: var(--backgroundColor);
   border-radius: 12px;
-
-  width: 700px;
+  width: 600px;
   max-width: 100%;
-
   max-height: 95vh;
-
   padding: 20px;
-
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-
   display: flex;
   flex-direction: column;
-
   animation: modalFade 0.2s ease;
 }
 
 .modalContent .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-
   margin-bottom: 40px;
 }
 
@@ -53,26 +45,38 @@
 
 .modalContent .modalForm {
   overflow-y: auto;
-
-  display: flex;
-  flex-direction: column;
-
+}
+.modalContent .modalForm .row2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  place-items: center;
   gap: 14px;
+}
+.modalContent .modalForm .row3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  place-items: center;
+  gap: 14px;
+  /* background-color: aqua; */
+  margin: 0;
+  padding: 0;
+}
 
-  padding-right: 4px;
-}
-.modalContent .headerTitle {
+.modalContent .subHeaderTitle {
+  width: 100%;
   margin: 40px 0 20px 0;
+  padding-bottom: 10px;
   color: var(--highlightColor);
+  font-weight: 700;
+  border-bottom: 1px solid var(--borderColor);
 }
+
 /* actions */
 .modalForm .modalActions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   width: 100%;
-
   padding-top: 10px;
 }
 
@@ -96,17 +100,12 @@
 .cancelBtn {
   width: 120px;
   height: 40px;
-
   background-color: var(--cancelBtnColor);
-
   border: 1px solid var(--borderColor);
   border-radius: 10px;
-
   cursor: pointer;
-
   font-size: var(--smallFontSize);
   color: var(--textColor);
-
   transition: 0.15s ease-in-out;
 }
 
@@ -150,26 +149,9 @@
   font-size: var(--normalFontSize);
 }
 
-/* section title */
-.headerTitle {
-  width: 100%;
-  margin: 20px 0 20px 0;
-  padding-bottom: 10px;
-  color: var(--highlightColor);
-  font-weight: 700;
-  border-bottom: 1px solid var(--borderColor);
-}
-
-.headerTitle span {
-  color: var(--lightTextColor);
-  font-size: var(--smallFontSize);
-}
-
-/* responsive rows */
-.row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
+.CheckBoxContainer {
+  justify-content: start;
+  align-items: end;
 }
 
 /* tablet */
@@ -184,10 +166,6 @@
     max-width: 600px;
 
     padding: 18px;
-  }
-
-  .row {
-    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -207,18 +185,10 @@
     border-radius: 12px;
   }
 
-  .row {
-    grid-template-columns: 1fr;
-  }
-
-  .modalForm .modalActions {
+  /* .modalForm .modalActions {
     flex-direction: column-reverse;
     gap: 10px;
-  }
-
-  .cancelBtn {
-    width: 100%;
-  }
+  } */
 }
 
 /* animation */

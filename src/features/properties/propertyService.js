@@ -5,6 +5,10 @@ export const propertyService = {
     return apiClient.get("properties");
   },
 
+  getLookups() {
+    return apiClient.get("lookups/properties");
+  },
+
   getFiltered(query) {
     return apiClient.get("properties", query);
   },

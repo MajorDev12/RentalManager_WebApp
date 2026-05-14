@@ -1,4 +1,3 @@
-
 * {
   margin: 0;
   padding: 0;
@@ -16,33 +15,37 @@ html {
   --headerFontSize: 20px;
   --normalFontSize: 16px;
   --smallFontSize: 14px;
+  --littleFontSize: 12px;
   --fontFamily: "Mulish", sans-serif;
 
-  --highlightColor: #77DD77;
+  --highlightColor: #77dd77;
+  --lightHighlightColor: #abefc6;
   --darkHighlightColor: #61da61;
 
   /* Light mode colors */
-  --backgroundColor: #FCFEF5;
-  --containerColor: #FFFFFF;
-  --textColor: #343A40;
-  --lightTextColor: #6C757D;
+  --backgroundColor: #fcfef5;
+  --containerColor: #ffffff;
+  --textColor: #343a40;
+  --lightTextColor: #6c757d;
   --HeaderColor: #212529;
   --iconColor: #767680;
   --greyColor: #eeeeed;
-  --cancelBtnColor: #FCFEF5;
+  --cancelBtnColor: #fcfef5;
+  --tableHeadColor: #7fa37f;
 
   --shadow: 0 2px 2px #0000003b;
-  --blue: #77BBDD;
-  --yellow: #FFDD88;
-  --red: #FF8899;
+  --blue: #77bbdd;
+  --yellow: #ffdd88;
+  --red: #ff8899;
+  --lightRed: #fecdca;
 
-  --borderColor: #6c757d70;
+  --borderColor: #e8eedf;
   --borderLine: #76768050;
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-  --sideNavTextColor: #FCFEF5;
+  --sideNavTextColor: #fcfef5;
 
-  --trans-3: .3s ease-in-out;
+  --trans-3: 0.3s ease-in-out;
 }
 
 /* Dark mode overrides */
@@ -58,30 +61,30 @@ html {
   --borderLine: #3a3f4280;
   --iconColor: #b0b3b8;
   --greyColor: #3a3f4280;
-  --cancelBtnColor: #FF8899;
+  --cancelBtnColor: #181a1b;
 }
 
-
-
-body, .container, .sidebar {
-  transition: background-color 0.3s ease, color 0.3s ease;
+body,
+.container,
+.sidebar {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
-
-
 
 ::-webkit-scrollbar {
-    width: 0px;
+  width: 0px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--highlightColor);
+  background: var(--highlightColor);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--borderColor);
-    border-radius: 8px;
+  background: var(--borderColor);
+  border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--borderColor);
+  background: var(--borderColor);
 }

@@ -1,37 +1,34 @@
-import { fetchData } from './fetchData';
-import { toast } from 'react-toastify';
-import { getData } from './getData';
+import { toast } from "react-toastify";
 
 export const handleDelete = async ({
   e,
-  id,
-  endpoint,
+  execute,
+  request,
   setLoadingBtn,
   setDeleteModalOpen,
-  setData,
-  setLoading,
+  onSuccess,
 }) => {
   e.preventDefault();
-  setLoadingBtn(true);
+
+  setLoadingBtn?.(true);
 
   try {
-    const response = await fetchData(`${endpoint}/${id}`, 'DELETE');
+    const res = await execute(request);
 
-    if (response.success) {
-      toast.success(response.message || 'Item deleted successfully');
-      getData({
-        endpoint,
-        setData,
-        setLoading,
-      });
-    } else {
-      toast.error(response.message || 'Failed to delete item');
+    if (!res?.success) {
+      toast.error(res?.message || "Delete failed");
+      return;
     }
+
+    toast.success(res?.message || "Deleted successfully");
+
+    onSuccess?.();
   } catch (error) {
     console.error(error);
-    toast.error('An error occurred while deleting');
+
+    toast.error(error?.message || "Unexpected error occurred");
   } finally {
-    setLoadingBtn(false);
-    setDeleteModalOpen(false);
+    setLoadingBtn?.(false);
+    setDeleteModalOpen?.(false);
   }
 };

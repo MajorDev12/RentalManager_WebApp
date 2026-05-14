@@ -33,6 +33,7 @@ const Modal = ({
             </button>
 
             <PrimaryButton
+              className="primaryBtn"
               name={isEditMode ? "Update" : "Add New"}
               type="submit"
               disabled={loadingBtn}
