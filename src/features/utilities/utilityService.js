@@ -21,6 +21,10 @@ export const utilityService = {
     return apiClient.post(`UtilityBill`, data);
   },
 
+  addReading(data) {
+    return apiClient.post(`MeterReading`, data);
+  },
+
   update(id, data) {
     return apiClient.patch(`UtilityBill/${id}`, data);
   },
@@ -31,6 +35,24 @@ export const utilityService = {
 
   getByPropertyId(id) {
     return apiClient.get(`UtilityBill/By-Property/${id}`);
+  },
+
+  getLookupsByPropertyId(id) {
+    return apiClient.get(`MeterReadings/properties/${id}/utilities`);
+  },
+
+  bulkAddReadings(payload) {
+    return apiClient.post("MeterReading/bulk", payload);
+  },
+
+  getUtilitySheet(propertyId, utilityId) {
+    return apiClient.get(
+      `MeterReadings/properties/${propertyId}/utilities/${utilityId}/sheet`,
+    );
+  },
+
+  getByUnitId(id, isMetered) {
+    return apiClient.get(`UtilityBill/By-Unit/${id}`, isMetered);
   },
 
   getByTenantId(id) {

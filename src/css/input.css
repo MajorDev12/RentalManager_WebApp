@@ -2,14 +2,13 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  /* background-color: aqua; */
 }
 
 .inputContainer label {
   font-size: var(--normalFontSize);
-  color: var(--HeaderColor);
-  font-weight: 700;
-  padding-left: 4px;
+  color: var(--textColor);
+  font-weight: 600;
+  padding-left: 10px;
   margin-bottom: 6px;
 }
 

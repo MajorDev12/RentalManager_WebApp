@@ -44,8 +44,8 @@ export const sidebarConfig = [
       },
 
       {
-        label: "Unit Types",
-        route: "/UnitTypes",
+        label: "Record Utility",
+        route: "/UtilityReading",
         permission: "UnitType.Read",
       },
     ],

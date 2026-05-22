@@ -1,0 +1,38 @@
+.sectionActions #primaryBtn {
+  margin-left: 10px;
+  /* background-color: transparent; */
+}
+.ContentContainer {
+  width: 100%;
+  position: relative;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.ContentContainer .row2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  place-items: center;
+  gap: 20px;
+}
+
+.ContentContainer .row2 > div {
+  margin: 10px;
+}
+.SingleReadingSection {
+  margin-top: 10px;
+  width: 60%;
+}
+.SingleReadingSection .btnCont {
+  margin-top: 10px;
+}
+
+.BulkReadingSection {
+  margin-top: 40px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

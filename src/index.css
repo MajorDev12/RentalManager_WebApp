@@ -18,9 +18,9 @@ html {
   --littleFontSize: 12px;
   --fontFamily: "Mulish", sans-serif;
 
-  --highlightColor: #77dd77;
-  --lightHighlightColor: #abefc6;
-  --darkHighlightColor: #61da61;
+  --highlightColor: #22c55e;
+  --lightHighlightColor: #dcfce7;
+  --darkHighlightColor: #16a34a;
 
   /* Light mode colors */
   --backgroundColor: #fcfef5;
@@ -34,10 +34,12 @@ html {
   --tableHeadColor: #7fa37f;
 
   --shadow: 0 2px 2px #0000003b;
-  --blue: #77bbdd;
-  --yellow: #ffdd88;
-  --red: #ff8899;
-  --lightRed: #fecdca;
+  --purple: #6366f1;
+  --blue: #3b82f6;
+  --yellow: #f59e0b;
+  --red: #ef4444;
+  --grey: #76768050;
+  --lightRed: #fee2e2;
 
   --borderColor: #e8eedf;
   --borderLine: #76768050;

@@ -22,8 +22,8 @@ export const getPropertyColumns = ({
       return (
         <div
           style={{
-            width: "22px",
-            height: "22px",
+            width: "18px",
+            height: "18px",
             borderRadius: "10px",
             display: "flex",
             alignItems: "center",
@@ -57,8 +57,8 @@ export const getPropertyColumns = ({
           <p
             style={{
               margin: 0,
-              fontWeight: 600,
-              color: "#1a2e1a",
+              fontWeight: 700,
+              color: "var(--textColor)",
               fontSize: "12.5px",
             }}
           >
@@ -68,7 +68,7 @@ export const getPropertyColumns = ({
           <span
             style={{
               fontSize: "12px",
-              color: "#7fa37f",
+              color: "var(--lightTextColor)",
               marginTop: "2px",
             }}
           >
@@ -94,7 +94,7 @@ export const getPropertyColumns = ({
               margin: 0,
               fontSize: "11.5px",
               fontWeight: 500,
-              color: "#2277cc",
+              color: "var(--blue)",
             }}
           >
             {emailAddress}
@@ -103,7 +103,7 @@ export const getPropertyColumns = ({
           <span
             style={{
               fontSize: "12px",
-              color: "#7fa37f",
+              color: "var(--lightTextColor)",
               marginTop: "2px",
             }}
           >
@@ -134,13 +134,14 @@ export const getPropertyColumns = ({
     cell: (info) => (
       <div
         style={{
-          background: "rgba(0,0,0,0.06)",
+          background: "var(--backgroundColor)",
+          boxShadow: "var(--shadow)",
           padding: "6px 10px",
           borderRadius: "8px",
           width: "fit-content",
           fontSize: "13px",
           fontWeight: 600,
-          color: "1f5e1f",
+          color: "var(--lightTextColor)",
         }}
       >
         {info.getValue()}

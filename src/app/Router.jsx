@@ -21,7 +21,7 @@ import ViewProperty from "../features/properties/ViewProperty";
 import Unit from "../features/units/Unit";
 import Vacants from "../features/units/Vacants";
 
-import UnitType from "../features/unitTypes/UnitType";
+import UtilityReading from "../features/utilities/UtilityReading";
 
 import UnitCharge from "../features/utilities/UnitCharge";
 
@@ -110,10 +110,10 @@ export default function Router() {
         ========================== */}
 
         <Route
-          path="/unitTypes"
+          path="/UtilityReading"
           element={
             <PermissionRoute permissions={["UnitType.Read"]}>
-              <UnitType />
+              <UtilityReading />
             </PermissionRoute>
           }
         />

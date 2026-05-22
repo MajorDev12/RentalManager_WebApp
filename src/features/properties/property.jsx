@@ -38,18 +38,25 @@ const Property = () => {
   const { user } = useAuthContext();
   const [activeRow, setActiveRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
   const [loadingTypes, setLoadingTypes] = useState(false);
   const [propertyTypes, setPropertyTypes] = useState([]);
+  const [propertyTypeError, setPropertyTyperror] = useState(false);
+
   const [utilityBillTypes, setUtilityBillTypes] = useState([]);
   const [utilityBillTypeLoading, setUtilityBillLoading] = useState(true);
   const [utilityBillError, setUtilityBillTypeError] = useState(false);
+
+  const [billingCycles, setBillingCycles] = useState([]);
+  const [billingCycleLoading, setBillingCycleLoading] = useState(true);
+  const [billingCycleError, setBillingCycleError] = useState(false);
+
   const [loadingBtn, setLoadingBtn] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalData, setOriginalData] = useState(null);
   const [formError, setFormError] = useState("");
-  const [propertyTypeError, setPropertyTyperror] = useState("");
   const [showMoreInputs, setshowMoreInputs] = useState(false);
   const EMPTY_FORM = {
     name: "",
@@ -68,7 +75,8 @@ const Property = () => {
   const EMPTY_UTILITY_FORM = {
     utilityBillId: "",
     utilityAmount: "",
-    isReccurring: false,
+    billingCycleId: "",
+    isMetered: "",
   };
   const [utilityItems, setUtilityItems] = useState([EMPTY_UTILITY_FORM]);
 
@@ -99,6 +107,7 @@ const Property = () => {
       pageNumber: 1,
     }));
   }, [search]);
+
   useUrlSync(query, setQuery);
 
   const [formData, setFormData] = useState(EMPTY_FORM);
@@ -123,12 +132,23 @@ const Property = () => {
     });
   }, [execute]);
 
+  const fetchBillingCycles = useCallback(async () => {
+    await getData({
+      execute,
+      request: () => systemCodeItemService.getByCodeName("BILLINGCYCLE"),
+      setData: setBillingCycles,
+      setLoading: setBillingCycleLoading,
+      setError: setBillingCycleError,
+    });
+  }, [execute]);
+
   useEffect(() => {
     if (showModal) {
       fetchPropertyTypes();
       fetchUtilityTypes();
+      fetchBillingCycles();
     }
-  }, [showModal, fetchPropertyTypes, fetchUtilityTypes]);
+  }, [showModal, fetchPropertyTypes, fetchUtilityTypes, fetchBillingCycles]);
 
   const refreshTableData = () => {
     refetch();
@@ -217,22 +237,6 @@ const Property = () => {
       return "Invalid PropertyTypeId";
     }
 
-    if (!isEditMode) {
-      if (Array.isArray(utilityItems) || utilityItems.length > 0) {
-        for (let index = 0; index < utilityItems.length; index++) {
-          const item = utilityItems[index];
-
-          if (!item.utilityBillId) {
-            return `Please select a utility for item ${index + 1}`;
-          }
-
-          if (!item.utilityAmount || Number(item.utilityAmount) <= 0) {
-            return `Please enter a valid amount for item ${index + 1}`;
-          }
-        }
-      }
-    }
-
     if (originalData != null && isEditMode) {
       return validateChange(originalData, formData);
     }
@@ -251,14 +255,6 @@ const Property = () => {
       ...formData,
       longitude: formData.longitude ? Number(formData.longitude) : null,
       latitude: formData.latitude ? Number(formData.latitude) : null,
-
-      utilities: utilityItems
-        .filter((u) => u.utilityBillId)
-        .map((u) => ({
-          utilityId: Number(u.utilityBillId),
-          amount: Number(u.utilityAmount),
-          isReccurring: u.isReccurring,
-        })),
     };
 
     await handleFormSubmit({
@@ -353,18 +349,15 @@ const Property = () => {
       {
         propertyTypeId: "",
         amount: "",
-        isReccurring: false,
+        billingCycleId: "",
+        isMetered: "",
       },
     ]);
   };
 
-  // ================= REMOVE =================
-
   const handleRemoveItem = (index) => {
     setUtilityItems((prev) => prev.filter((_, i) => i !== index));
   };
-
-  // ================= CHANGE =================
 
   const handleItemChange = (index, field, value) => {
     setUtilityItems((prev) =>
@@ -640,11 +633,50 @@ const Property = () => {
                                 handleItemChange(index, name, value)
                               }
                             />
-
+                            <Select
+                              name="billingCycleId"
+                              labelName="billingCycle"
+                              value={item?.billingCycleId ?? ""}
+                              onChange={(e) =>
+                                handleItemChange(
+                                  index,
+                                  "billingCycleId",
+                                  e.target.value,
+                                )
+                              }
+                              options={
+                                billingCycleLoading
+                                  ? [
+                                      {
+                                        value: "",
+                                        label: "Loading billing cycles...",
+                                      },
+                                    ]
+                                  : billingCycleError
+                                    ? [
+                                        {
+                                          value: "",
+                                          label: "Error loading billing cycles",
+                                        },
+                                      ]
+                                    : !billingCycles ||
+                                        billingCycles.length === 0
+                                      ? [
+                                          {
+                                            value: "",
+                                            label: "No billing cycles found",
+                                          },
+                                        ]
+                                      : billingCycles.map((p) => ({
+                                          value: p.id,
+                                          label: p.item,
+                                        }))
+                              }
+                            />
                             <CheckBox
-                              name="isReccurring"
-                              labelName="Is Reccurring"
-                              checked={item?.isReccurring ?? false}
+                              name="isMetered"
+                              labelName="Is Metered"
+                              checked={item?.isMetered ?? false}
                               onChange={(name, value) =>
                                 handleItemChange(index, name, value)
                               }

@@ -1,20 +1,36 @@
-#primaryBtn{
-    position: relative;
-    width: 120px;
-    height: 40px;
-    background-color: var(--highlightColor);
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: var(--smallFontSize);
-    color: var(--sideNavTextColor);
-    transition: .1s ease-in-out;
+#primaryBtn {
+  font-family: var(--fontFamily);
+  font-weight: 600;
+  position: relative;
+  width: 120px;
+  height: 40px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: var(--smallFontSize);
+  transition: 0.1s ease-in-out;
 }
-#primaryBtn:hover{
-    background-color: var(--darkHighlightColor);
-    color: var(--containerColor);
-    box-shadow: var(--shadow);
-    font-weight: 600;
+.activeBtn {
+  border: none;
+  background-color: var(--highlightColor);
+  color: var(--textColor);
+}
+
+.inactiveBtn {
+  background-color: var(--backgroundColor);
+  color: var(--lightTextColor);
+  border: 1px solid var(--highlightColor);
+}
+.activeBtn:hover {
+  background-color: var(--darkHighlightColor);
+  color: var(--textColor);
+  box-shadow: var(--shadow);
+  font-weight: 600;
+}
+.inactiveBtn:hover {
+  background-color: var(--darkHighlightColor);
+  color: var(--textColor);
+  box-shadow: var(--shadow);
+  font-weight: 600;
 }
 #primaryBtn:disabled {
   cursor: not-allowed;
@@ -32,6 +48,10 @@
 
 /* Animation for the spinner */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

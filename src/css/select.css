@@ -8,8 +8,9 @@
 .selectLabel {
   font-size: var(--normalFontSize);
   color: var(--textColor);
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 6px;
+  padding-left: 10px;
 }
 
 .required {

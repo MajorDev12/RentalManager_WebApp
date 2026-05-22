@@ -8,6 +8,7 @@ import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "react-icons/md";
 import "../../css/table.css";
 import Spinner from "./Spinner";
 import NoDataImage from "../../assets/NoData.png";
+// import 500ErorImage from "../../assets/500Eror.png";
 
 const Table = ({
   data,
@@ -18,6 +19,7 @@ const Table = ({
   onSort,
   sortBy,
   isDescending,
+  getRowId,
 }) => {
   const safeData = Array.isArray(data) ? data : [];
 
@@ -25,6 +27,9 @@ const Table = ({
     data: safeData,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getRowId: getRowId
+      ? (row, index) => String(getRowId(row, index))
+      : undefined,
   });
 
   return (
@@ -110,12 +115,12 @@ const Table = ({
                 colSpan={columns.length}
                 style={{
                   textAlign: "center",
-                  color: "red",
+                  color: "var(--red)",
                 }}
               >
                 <img
                   src={NoDataImage}
-                  alt="No data"
+                  alt="Server Error"
                   style={{
                     maxWidth: "350px",
                     margin: "0 auto",

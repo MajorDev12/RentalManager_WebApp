@@ -62,18 +62,26 @@ body #app #rightSide {
   justify-content: space-between;
   align-items: center;
 }
-/* #Section h3 {
-  font-family: var(--fontFamily);
-  font-size: var(--headerFontSize);
-  font-weight: 700;
-  color: var(--textColor);
-  padding: 10px;
-} */
+#Section .row2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  place-items: center;
+  gap: 14px;
+}
+#Section .row3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  place-items: center;
+  gap: 14px;
+  /* background-color: aqua; */
+  margin: 0;
+  padding: 0;
+}
 #Section .sectionTitle {
   font-family: var(--fontFamily);
   font-size: var(--headerFontSize);
   font-weight: 600;
-  color: var(--textColor);
+  color: var(--HeaderColor);
   padding: 10px;
 }
 
