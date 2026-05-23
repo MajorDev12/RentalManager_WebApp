@@ -39,7 +39,16 @@ html {
   --yellow: #f59e0b;
   --red: #ef4444;
   --grey: #76768050;
-  --lightRed: #fee2e2;
+  --green: #22c55e;
+  --lightRed: #030303;
+
+  /* Light variants */
+  --purpleFade: #e0e7ff;
+  --blueFade: #dbeafe;
+  --yellowFade: #fef3c7;
+  --redFade: #fee2e2;
+  --greyFade: #f3f4f6;
+  --greenFade: #dcfce7;
 
   --borderColor: #e8eedf;
   --borderLine: #76768050;

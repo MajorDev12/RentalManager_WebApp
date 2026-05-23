@@ -1,99 +1,395 @@
-.headerContainer{
-    border-bottom: 1px solid var(--borderLine);
-    margin: 10px 0;
-    width: 30%;
-}
-.basicInfo,
-.moreInfo{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    margin: 20px 0;
-}
-.moreInfo{
-    flex-direction: column;
-}
-.basicInfo .propertyImg{
-    width: 250px;
-    height: 150px;
-    margin-right: 5%;
-}
-.basicInfo .propertyImg img{
-    width: 100%;
-    height: 100%;
+/* ─── PAGE ─────────────────────────────────────────── */
+#viewProperty {
+  width: 100%;
 }
 
-.basicInfo .details,
-.moreInfo .details{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 20px;
-    /* background-color: aquamarine; */
-}
-.moreInfo .details{
-    padding: 10px 0;
-}
-.basicInfo .details .detail,
-.moreInfo .details .detail{
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-}
-.basicInfo .details .detail label,
-.moreInfo .details .detail label{
-    font-size: var(--normalFontSize);
-    color: var(--HeaderColor);
-    font-weight: 700;
-    margin: 10px;
+.vpPage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
 }
 
-.basicInfo .details .detail p,
-.moreInfo .details .detail p{
-    font-size: var(--normalFontSize);
-    color: var(--lightTextColor);
-}
-.moreInfo .details .detail .red{
-    color: var(--red);
+/* ─── CARD BASE ─────────────────────────────────────── */
+.card {
+  background: var(--containerColor);
+  border: 1px solid var(--borderColor);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
 }
 
+/* ─── HERO ──────────────────────────────────────────── */
+.vpHero {
+  padding: 24px 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.vpHeroImg {
+  width: 220px;
+  height: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--greyFade);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--lightTextColor);
+  font-size: 36px;
+}
+
+.vpHeroImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vpHeroBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.vpHeroBadges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.vpHeroName {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--HeaderColor);
+  line-height: 1.1;
+}
+
+.vpHeroMeta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--lightTextColor);
+  flex-wrap: wrap;
+}
+
+.vpHeroMeta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.vpHeroMeta svg {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.vpHeroActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+/* ─── STAT STRIP ────────────────────────────────────── */
+.vpStatStrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.vpStatBox {
+  background: var(--containerColor);
+  border: 1px solid var(--borderColor);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statVal {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--HeaderColor);
+  line-height: 1;
+}
+
+.statLbl {
+  font-size: 11.5px;
+  color: var(--lightTextColor);
+  margin-top: 3px;
+}
+
+.statIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+/* ─── ICON COLORS ───────────────────────────────────── */
+.iconGreen {
+  background: var(--greenFade);
+  color: var(--green);
+}
+.iconBlue {
+  background: #e6f1fb;
+  color: #185fa5;
+}
+.iconAmber {
+  background: #faeeda;
+  color: #854f0b;
+}
+.iconTeal {
+  background: #e1f5ee;
+  color: #0f6e56;
+}
+.iconRed {
+  background: #fcebeb;
+  color: #791f1f;
+}
+
+/* ─── TWO-COLUMN LAYOUT ─────────────────────────────── */
+.vpTwoCol {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.vpRightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ─── SECTION CARD ──────────────────────────────────── */
+.sectionCard {
+  padding: 22px 24px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.sectionHeader h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--HeaderColor);
+}
+
+/* ─── DETAIL LIST ───────────────────────────────────── */
+.detailList {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--borderColor);
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.detailLbl {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--lightTextColor);
+}
+
+.detailLbl svg {
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.detailVal {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--textColor);
+  text-align: right;
+  max-width: 55%;
+}
+
+.detailBlue {
+  color: #185fa5;
+}
+
+/* ─── BADGES ────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge svg {
+  font-size: 13px;
+}
+
+.badgeGreen {
+  background: var(--greenFade);
+  color: var(--green);
+}
+.badgeGray {
+  background: var(--greyFade);
+  color: var(--lightTextColor);
+}
+.badgeAmber {
+  background: #faeeda;
+  color: #854f0b;
+}
+.badgeRed {
+  background: #fcebeb;
+  color: #791f1f;
+}
+
+/* ─── BUTTONS ───────────────────────────────────────── */
+.btnPrimary,
+.btnSecondary,
+.btnDanger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 9px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+
+.btnPrimary:hover,
+.btnSecondary:hover,
+.btnDanger:hover {
+  opacity: 0.85;
+}
+
+.btnPrimary svg,
+.btnSecondary svg,
+.btnDanger svg {
+  font-size: 15px;
+}
+
+.btnPrimary {
+  background: var(--green);
+  color: #fff;
+}
+
+.btnSecondary {
+  background: var(--greyFade);
+  color: var(--textColor);
+  border: 1px solid var(--borderColor);
+}
+
+.btnDanger {
+  background: #fcebeb;
+  color: #791f1f;
+  border: 1px solid #f09595;
+}
+
+/* ─── TAGS ──────────────────────────────────────────── */
+.tagWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vpTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  background: var(--greyFade);
+  border: 1px solid var(--borderColor);
+  border-radius: 20px;
+  padding: 5px 12px;
+  color: var(--textColor);
+}
+
+.vpTag svg {
+  font-size: 13px;
+  color: var(--lightTextColor);
+}
+
+/* ─── TEXT HELPERS ──────────────────────────────────── */
+.vpMuted {
+  font-size: 13px;
+  color: var(--lightTextColor);
+  padding: 4px 0;
+}
+
+.vpError {
+  color: var(--red);
+}
+
+.textAmber {
+  color: #854f0b;
+}
+
+/* ─── RESPONSIVE ────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .vpTwoCol {
+    grid-template-columns: 1fr;
+  }
+}
 
 @media (max-width: 768px) {
-    .headerContainer{
-        width: 50%;
-    }
-    .basicInfo,
-    .moreInfo{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        margin: 20px 0;
-    }
-    .basicInfo .propertyImg{
-        align-self: center;
-        width: 200px;
-        height: 150px;
-        margin: 5%;
-        text-align: center;
-    }
-    .basicInfo .details,
-    .moreInfo .details{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: start;
-        /* background-color: aquamarine; */
-    }
+  .vpHero {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .vpHeroImg {
+    width: 100%;
+    height: 180px;
+  }
+
+  .vpStatStrip {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
+@media (max-width: 480px) {
+  .vpPage {
+    padding: 14px;
+  }
 
+  .vpStatStrip {
+    grid-template-columns: 1fr 1fr;
+  }
 
+  .vpHeroActions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-
-@media (max-width: 500px) {
-    .headerContainer{
-        width: 70%;
-    }
-
-
+  .vpHeroActions button {
+    width: 100%;
+    justify-content: center;
+  }
 }

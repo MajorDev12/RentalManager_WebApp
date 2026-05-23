@@ -1,0 +1,597 @@
+/* ─── PAGE ─────────────────────────────────────────── */
+.unitPage {
+  width: 100%;
+  min-height: 80vh;
+  max-height: calc(100vh - 120px);
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+}
+
+/* ─── GLOBAL CARD ───────────────────────────────────── */
+.card {
+  background: var(--containerColor);
+  border: 1px solid var(--borderColor);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* ─── HERO ──────────────────────────────────────────── */
+.unitHero {
+  padding: 28px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.unitHeroLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.unitHeroBadges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.unitHeroLeft h1 {
+  font-size: 28px;
+  color: var(--HeaderColor);
+  line-height: 1;
+}
+
+.unitProperty {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--lightTextColor);
+  font-size: 14px;
+}
+
+.unitProperty svg {
+  font-size: 15px;
+}
+
+.unitHeroActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.unitHeroRight {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.unitHeroRight h2 {
+  font-size: 26px;
+  color: var(--highlightColor);
+}
+
+.rentLabel {
+  font-size: 12px;
+  color: var(--lightTextColor);
+}
+
+.paymentMeta {
+  font-size: 12px;
+  color: var(--lightTextColor);
+  margin-top: 6px;
+}
+
+/* ─── BADGES ────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge svg {
+  font-size: 13px;
+}
+
+.badgeSm {
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.badgeGreen {
+  background: var(--greenFade);
+  color: var(--green);
+}
+
+.badgeGray {
+  background: var(--greyFade);
+  color: var(--lightTextColor);
+}
+
+.badgeAmber {
+  background: #fff3d4;
+  color: #854f0b;
+}
+
+/* ─── BUTTONS ───────────────────────────────────────── */
+.btnPrimary,
+.btnSecondary,
+.btnDanger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 9px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+
+.btnPrimary:hover,
+.btnSecondary:hover,
+.btnDanger:hover {
+  opacity: 0.85;
+}
+
+.btnPrimary svg,
+.btnSecondary svg,
+.btnDanger svg {
+  font-size: 15px;
+}
+
+.btnPrimary {
+  background: var(--green);
+  color: #fff;
+}
+
+.btnSecondary {
+  background: var(--greyFade);
+  color: var(--textColor);
+  border: 1px solid var(--borderColor);
+}
+
+.btnDanger {
+  background: #fcebeb;
+  color: #791f1f;
+  border: 1px solid #f09595;
+}
+
+.btnSm {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.btnBlock {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+/* ─── ADD BUTTON ────────────────────────────────────── */
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--green);
+  background: var(--greenFade);
+  border: 1px solid #c0dd97;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.addBtn svg {
+  font-size: 13px;
+}
+
+/* ─── STAT STRIP ────────────────────────────────────── */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 14px;
+}
+
+.statCard {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.statCard h3 {
+  font-size: 18px;
+  color: var(--HeaderColor);
+  line-height: 1;
+}
+
+.statCard p {
+  font-size: 12px;
+  color: var(--lightTextColor);
+  margin-top: 3px;
+}
+
+.statIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+/* ─── ICON COLORS ───────────────────────────────────── */
+.iconGreen {
+  background: #eaf3de;
+  color: #3b6d11;
+}
+.iconBlue {
+  background: #e6f1fb;
+  color: #185fa5;
+}
+.iconAmber {
+  background: #faeeda;
+  color: #854f0b;
+}
+.iconTeal {
+  background: #e1f5ee;
+  color: #0f6e56;
+}
+.iconPurple {
+  background: #eeedfe;
+  color: #534ab7;
+}
+.iconRed {
+  background: #fcebeb;
+  color: #791f1f;
+}
+
+/* ─── MAIN GRID ─────────────────────────────────────── */
+.mainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.leftColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ─── SECTION CARD ──────────────────────────────────── */
+.sectionCard {
+  padding: 22px 24px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sectionHeader h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--HeaderColor);
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--lightTextColor);
+  margin-bottom: 14px;
+}
+
+/* ─── ABOUT ─────────────────────────────────────────── */
+.aboutText {
+  font-size: 13.5px;
+  color: var(--lightTextColor);
+  line-height: 1.7;
+}
+
+/* ─── UTILITIES ─────────────────────────────────────── */
+.utilityGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.utilityItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--greyFade);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.utilIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.utilName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--textColor);
+}
+
+.utilMeta {
+  font-size: 11px;
+  color: var(--lightTextColor);
+  margin-top: 2px;
+}
+
+/* ─── FEATURES ──────────────────────────────────────── */
+.featuresWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.featureTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  background: var(--greyFade);
+  border: 1px solid var(--borderColor);
+  border-radius: 20px;
+  padding: 6px 13px;
+  color: var(--textColor);
+}
+
+.featureTag svg {
+  font-size: 14px;
+  color: var(--lightTextColor);
+}
+
+/* ─── LEASE HISTORY ─────────────────────────────────── */
+.activeBanner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+
+.activeBanner svg {
+  font-size: 14px;
+}
+
+.leaseList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.leaseItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--borderColor);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.leaseActive {
+  border: 1.5px solid #97c459;
+  background: var(--greenFade);
+}
+
+.leaseLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.leaseTenantRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.leaseTenantName {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--HeaderColor);
+}
+
+.activeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+.leaseDates {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--lightTextColor);
+}
+
+.leaseDates svg {
+  font-size: 13px;
+}
+
+.leaseRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.leaseRent {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--HeaderColor);
+}
+
+.leaseActions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ─── TENANT CARD ───────────────────────────────────── */
+.tenantWrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.tenantAvatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--greenFade);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.tenantName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--HeaderColor);
+}
+
+.tenantSince {
+  font-size: 12px;
+  color: var(--lightTextColor);
+  margin-top: 2px;
+}
+
+/* ─── DETAIL LIST ───────────────────────────────────── */
+.detailList {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--borderColor);
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.detailLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--lightTextColor);
+}
+
+.detailLabel svg {
+  font-size: 15px;
+}
+
+.detailVal {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--HeaderColor);
+}
+
+.detailBlue {
+  color: #185fa5;
+}
+
+/* ─── TENANT ACTIONS ────────────────────────────────── */
+.tenantActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tenantActions .btnBlock {
+  flex: 1;
+  justify-content: center;
+}
+
+/* ─── QUICK ACTIONS ─────────────────────────────────── */
+.quickActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ─── TEXT HELPERS ──────────────────────────────────── */
+.textGreen {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.textAmber {
+  color: #854f0b;
+  font-weight: 600;
+}
+
+/* ─── RESPONSIVE ────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .unitHero {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .unitHeroRight {
+    text-align: left;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .utilityGrid {
+    grid-template-columns: 1fr;
+  }
+}

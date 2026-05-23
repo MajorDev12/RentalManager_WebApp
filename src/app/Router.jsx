@@ -19,6 +19,7 @@ import Property from "../features/properties/property";
 import ViewProperty from "../features/properties/ViewProperty";
 
 import Unit from "../features/units/Unit";
+import ViewUnit from "../features/units/ViewUnit";
 import Vacants from "../features/units/Vacants";
 
 import UtilityReading from "../features/utilities/UtilityReading";
@@ -127,6 +128,14 @@ export default function Router() {
           element={
             <PermissionRoute permissions={["Unit.Read"]}>
               <Unit />
+            </PermissionRoute>
+          }
+        />
+        <Route
+          path="/Units/:id"
+          element={
+            <PermissionRoute permissions={[PERMISSIONS.UNIT_READ]}>
+              <ViewUnit />
             </PermissionRoute>
           }
         />

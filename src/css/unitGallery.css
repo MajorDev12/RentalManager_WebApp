@@ -1,0 +1,207 @@
+/* ─── GALLERY GRID ──────────────────────────────────── */
+.galleryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ─── FEATURED IMAGE ────────────────────────────────── */
+.galleryFeatured {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 220px;
+  background: var(--greyFade);
+  cursor: pointer;
+}
+
+.galleryFeaturedImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.galleryFeatured:hover .galleryFeaturedImg {
+  transform: scale(1.02);
+}
+
+/* ─── THUMBNAILS COLUMN ─────────────────────────────── */
+.galleryThumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ─── SINGLE THUMBNAIL ──────────────────────────────── */
+.galleryThumb {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 63px;
+  background: var(--greyFade);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.galleryThumb:hover {
+  border-color: var(--borderColor);
+}
+
+.galleryThumbActive {
+  border-color: var(--green) !important;
+}
+
+.galleryThumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ─── UPLOAD SLOT ───────────────────────────────────── */
+.galleryUploadSlot {
+  height: 63px;
+  border-radius: 10px;
+  border: 1.5px dashed var(--borderColor);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  color: var(--lightTextColor);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.galleryUploadSlot:hover {
+  border-color: var(--green);
+  background: var(--greenFade);
+  color: var(--green);
+}
+
+.galleryUploadSlot svg {
+  font-size: 16px;
+}
+
+.galleryUploadSlot span {
+  font-size: 11px;
+}
+
+.moreCount {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+}
+
+/* ─── LABELS ────────────────────────────────────────── */
+.imgLabel {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--textColor);
+  padding: 3px 9px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.imgLabelSm {
+  position: absolute;
+  bottom: 6px;
+  left: 7px;
+  font-size: 10.5px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--textColor);
+  padding: 2px 6px;
+  border-radius: 5px;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 40px);
+}
+
+.imgCount {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/* ─── DELETE BUTTON ─────────────────────────────────── */
+.imgDelete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.88);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #791f1f;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.galleryFeatured:hover .imgDelete,
+.galleryThumb:hover .imgDelete {
+  opacity: 1;
+}
+
+.imgDeleteSm {
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  top: 5px;
+  right: 5px;
+}
+
+/* ─── EMPTY STATE ───────────────────────────────────── */
+.galleryEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 140px;
+  border: 1.5px dashed var(--borderColor);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--lightTextColor);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.galleryEmpty:hover {
+  border-color: var(--green);
+  background: var(--greenFade);
+  color: var(--green);
+}
+
+.galleryEmpty svg {
+  font-size: 26px;
+}
+
+.galleryEmpty p {
+  font-size: 13px;
+}

@@ -5,6 +5,10 @@ export const unitService = {
     return apiClient.get("Units");
   },
 
+  getFiltered(query) {
+    return apiClient.get("Units/Filtered", query);
+  },
+
   getById(id) {
     return apiClient.get(`Units/${id}`);
   },
@@ -28,5 +32,4 @@ export const unitService = {
   archive(id) {
     return apiClient.delete(`Units/${id}`);
   },
-
 };
