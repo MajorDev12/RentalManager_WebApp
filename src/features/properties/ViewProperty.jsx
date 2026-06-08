@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import BreadCrumb from "../../components/ui/BreadCrumb";
+import AddOrEditModal from "./components/AddOrEditModal";
+import AddUnitModal from "../units/components/AddOrEditModal";
+import PropertyDetailsCard from "./components/propertyDetailsCard";
+import DetailCard from "../../components/ui/DetailCard";
 import PropertyImage from "../../assets/property.jpg";
 import { getData } from "../../helpers/getData";
 import { propertyService } from "./propertyService";
@@ -46,6 +50,31 @@ const ViewProperty = () => {
   const [utilityBills, setUtilityBills] = useState(null);
   const [utilityLoading, setUtilityLoading] = useState(true);
   const [utilityError, setUtilityError] = useState(false);
+
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddUnitModal, setShowAddUnitModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const unitModalData = {
+    propertyId: id,
+    name: "",
+    unitTypeId: "",
+    rentAmount: "",
+    notes: "",
+  };
+  const paymentInformation = [
+    {
+      icon: <FiCreditCard />,
+      label: "Paybill number",
+      value: 12072025,
+    },
+    {
+      icon: <FiCalendar />,
+      label: "Payment deadline",
+      value: "10th of month",
+      className: "badgeAmber textAmber",
+    },
+  ];
 
   useEffect(() => {
     fetchProperty();
@@ -107,13 +136,13 @@ const ViewProperty = () => {
     unitLoading,
     unitError,
     units,
-    (d) => d.filter((u) => u.status !== "Vacant").length,
+    (d) => d.filter((u) => u.status.toLowerCase() === "occupied").length,
   );
   const vacantUnits = resolveData(
     unitLoading,
     unitError,
     units,
-    (d) => d.filter((u) => u.status === "Vacant").length,
+    (d) => d.filter((u) => u.status.toLowerCase() === "vacant").length,
   );
   const unitTypeList = resolveData(
     unitTypeLoading,
@@ -143,10 +172,38 @@ const ViewProperty = () => {
     Garbage: <FiDroplet />,
   };
 
+  const handleEdit = () => {
+    setShowEditModal(true);
+    setIsEditMode(true);
+  };
+
+  const handleAddUnit = () => {
+    setShowAddUnitModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowEditModal(false);
+    setShowAddUnitModal(false);
+  };
+
   return (
     <div id="viewProperty">
       <BreadCrumb greetings="" />
+      <AddOrEditModal
+        show={showEditModal}
+        isEdit={isEditMode}
+        originalData={property}
+        modalData={property}
+        onSuccess={handleCloseModal}
+        closeModal={handleCloseModal}
+      />
 
+      <AddUnitModal
+        show={showAddUnitModal}
+        modalData={unitModalData}
+        onSuccess={handleCloseModal}
+        closeModal={handleCloseModal}
+      />
       <div id="Section" className="vpPage">
         {/* ── HERO ── */}
         <div className="card vpHero">
@@ -200,10 +257,10 @@ const ViewProperty = () => {
                   )}
                 </div>
                 <div className="vpHeroActions">
-                  <button className="btnPrimary">
+                  <button className="btnPrimary" onClick={handleEdit}>
                     <FiEdit /> Edit property
                   </button>
-                  <button className="btnSecondary">
+                  <button className="btnSecondary" onClick={handleAddUnit}>
                     <FiPlus /> Add unit
                   </button>
                   <button className="btnSecondary">
@@ -271,99 +328,15 @@ const ViewProperty = () => {
         {/* ── MAIN TWO-COL ── */}
         <div className="vpTwoCol">
           {/* LEFT — property details */}
-          <div className="card sectionCard">
-            <div className="sectionHeader">
-              <h3>Property details</h3>
-            </div>
-            {propertyState === "loading" && <p className="vpMuted">Loading…</p>}
-            {propertyState === "error" && (
-              <p className="vpMuted vpError">Something went wrong.</p>
-            )}
-            {propertyState === "success" && (
-              <div className="detailList">
-                <div className="detailRow">
-                  <span className="detailLbl">
-                    <FiHome /> Property name
-                  </span>
-                  <span className="detailVal">{property.name || "—"}</span>
-                </div>
-                <div className="detailRow">
-                  <span className="detailLbl">
-                    <FiMapPin /> Physical address
-                  </span>
-                  <span className="detailVal">
-                    {property.physicalAddress || "—"}
-                  </span>
-                </div>
-                <div className="detailRow">
-                  <span className="detailLbl">
-                    <FiFlag /> Country
-                  </span>
-                  <span className="detailVal">{property.country || "—"}</span>
-                </div>
-                <div className="detailRow">
-                  <span className="detailLbl">
-                    <FiMap /> County
-                  </span>
-                  <span className="detailVal">{property.county || "—"}</span>
-                </div>
-                <div className="detailRow">
-                  <span className="detailLbl">
-                    <FiMapPin /> Area
-                  </span>
-                  <span className="detailVal">{property.area || "—"}</span>
-                </div>
-                <div className="detailRow">
-                  <span className="detailLbl">
-                    <FiMail /> Email address
-                  </span>
-                  <span className="detailVal detailBlue">
-                    {property.emailAddress || "—"}
-                  </span>
-                </div>
-                <div className="detailRow">
-                  <span className="detailLbl">
-                    <FiPhone /> Mobile number
-                  </span>
-                  <span className="detailVal">
-                    {property.mobileNumber || "—"}
-                  </span>
-                </div>
-                <div className="detailRow">
-                  <span className="detailLbl">
-                    <FiLayers /> Total floors
-                  </span>
-                  <span className="detailVal">{property.floor ?? "—"}</span>
-                </div>
-              </div>
-            )}
-          </div>
+          <PropertyDetailsCard state={propertyState} detail={property} />
 
           {/* RIGHT — payment + unit types + utilities */}
           <div className="vpRightCol">
             {/* PAYMENT */}
-            <div className="card sectionCard">
-              <div className="sectionHeader">
-                <h3>Payment information</h3>
-              </div>
-              <div className="detailList">
-                <div className="detailRow">
-                  <span className="detailLbl">
-                    <FiCreditCard /> Paybill number
-                  </span>
-                  <span className="detailVal">12072025</span>
-                </div>
-                <div className="detailRow">
-                  <span className="detailLbl">
-                    <FiCalendar /> Payment deadline
-                  </span>
-                  <span className="detailVal">
-                    <span className="badge badgeAmber">10th of month</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-
+            <DetailCard
+              title="Payment Information"
+              details={paymentInformation}
+            />
             {/* UNIT TYPES */}
             <div className="card sectionCard">
               <div className="sectionHeader">

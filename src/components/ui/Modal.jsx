@@ -1,6 +1,6 @@
 import React from "react";
 import { FaXmark } from "react-icons/fa6";
-import PrimaryButton from "./PrimaryButton"; // adjust path if needed
+import PrimaryButton from "./PrimaryButton";
 import "../../css/modal.css";
 
 const Modal = ({

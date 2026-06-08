@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useApiRequest } from "../../hooks/useApiRequest";
+
+import { getData } from "../../helpers/getData";
+import { unitService } from "./unitService";
 import BreadCrumb from "../../components/ui/BreadCrumb";
-import UnitGallery from "./components/UnitGallery"; // adjust path as needed
+import UnitGallery from "./components/UnitGallery";
+import UtilityCard from "../utilities/components/UtilityCard";
+import EditUnitModal from "./components/AddOrEditModal";
+import AddUtilityModal from "../utilities/components/AddOrEditModal";
 
 import {
   //   FiBed,
@@ -37,6 +45,8 @@ import {
 import "../../css/unitView.css";
 
 const ViewUnit = () => {
+  const { id } = useParams();
+  const { execute, apiLoading } = useApiRequest();
   const unit = {
     name: "A-203",
     property: "Greenwood Residency",
@@ -133,26 +143,141 @@ const ViewUnit = () => {
     },
   };
 
+  const [unitData, setUnitData] = useState([]);
+  const [unitDataLoading, setUnitDataLoading] = useState(true);
+  const [unitDataError, setUnitDataError] = useState([]);
+
+  const [showUnitModal, setShowUnitModal] = useState(false);
+  const [showUtilityModal, setShowUtilityModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [originalData, setOriginalData] = useState([]);
+  const [unitFormData, setUnitFormData] = useState([]);
+
+  const utilityModalData = {
+    propertyId: unitData.propertyId,
+    utilityId: "",
+    billingCycleId: "",
+    unitId: id,
+    amount: "",
+    IsMetered: false,
+  };
+
+  const unitModalData = {
+    propertyId: unitData.propertyId,
+    unitTypeId: unitData.unitTypeId,
+    rentalTypeId: "",
+    billingCycleId: "",
+    name: "",
+    amount: 0,
+    notes: "",
+  };
+  // FETCH DATA
+  useEffect(() => {
+    fetchUnit();
+  }, [id]);
+
+  const fetchUnit = async () => {
+    await getData({
+      execute,
+      request: () => unitService.getById(id),
+      setData: setUnitData,
+      setLoading: setUnitDataLoading,
+      setError: setUnitDataError,
+    });
+  };
+
+  // HELPER FUNCTIONS
+  const handleCloseModal = () => {
+    setShowUnitModal(false);
+    setShowUtilityModal(false);
+  };
+
+  const handleUtilityModal = () => {
+    setShowUtilityModal(true);
+  };
+
+  const handleUnitModal = () => {
+    setShowUnitModal(true);
+    setIsEditMode(true);
+  };
+
+  const resolveData = (loading, error, data, formatter) => {
+    if (loading) return null;
+    if (error || !data) return null;
+    return formatter ? formatter(data) : data;
+  };
+
+  const unitState = unitDataLoading
+    ? "loading"
+    : unitDataError
+      ? "error"
+      : unitData
+        ? "success"
+        : "empty";
+
   return (
     <>
       <BreadCrumb greetings="Unit Details" />
+      <EditUnitModal
+        show={showUnitModal}
+        isEdit={isEditMode}
+        originalData={unitData}
+        modalData={unitData}
+        onSuccess={handleCloseModal}
+        closeModal={handleCloseModal}
+      />
 
+      <AddUtilityModal
+        show={showUtilityModal}
+        modalData={utilityModalData}
+        onSuccess={handleCloseModal}
+        closeModal={handleCloseModal}
+      />
       <div className="unitPage">
         {/* HERO */}
         <div className="unitHero card">
           <div className="unitHeroLeft">
             <div className="unitHeroBadges">
               <span className="badge badgeGreen">
-                <FiCheckCircle /> {unit.status}
+                {unitState === "loading" && "..."}
+                {unitState === "error" && "."}
+                {unitState === "success" && (
+                  <>
+                    <FiCheckCircle /> {unitData.status.toLowerCase()}
+                  </>
+                )}
               </span>
-              <span className="badge badgeGray">Floor {unit.floor}</span>
+              <span className="badge badgeGray">
+                {unitState === "loading" && "..."}
+                {unitState === "error" && "."}
+                {unitState === "success" && (
+                  <>
+                    {unitData.floor <= 0 ? (
+                      "Ground Floor"
+                    ) : (
+                      <>Floor {unitData.floor}</>
+                    )}
+                  </>
+                )}
+              </span>
             </div>
-            <h1>{unit.name}</h1>
+            <h1>
+              {unitState === "loading" && "..."}
+              {unitState === "error" && "."}
+              {unitState === "success" && <>{unitData.name}</>}
+            </h1>
             <p className="unitProperty">
-              <FiMapPin /> {unit.property} &nbsp;·&nbsp; {unit.location}
+              {unitState === "loading" && "..."}
+              {unitState === "error" && "."}
+              {unitState === "success" && (
+                <>
+                  <FiMapPin /> {unitData.propertyName} &nbsp;·&nbsp;{" "}
+                  {unitData.unitType.toLowerCase()}
+                </>
+              )}
             </p>
             <div className="unitHeroActions">
-              <button className="btnPrimary">
+              <button className="btnPrimary" onClick={handleUnitModal}>
                 <FiEdit /> Edit unit
               </button>
               <button className="btnSecondary">
@@ -167,13 +292,25 @@ const ViewUnit = () => {
             </div>
           </div>
           <div className="unitHeroRight">
-            <h2>KES {unit.rent.toLocaleString()}</h2>
-            <span className="rentLabel">Monthly rent</span>
+            <h2>
+              {unitState === "loading" && "..."}
+              {unitState === "error" && "."}
+              {unitState === "success" && (
+                <>KES {unitData.amount.toLocaleString()}</>
+              )}
+            </h2>
+            <span className="rentLabel">
+              {unitState === "loading" && "..."}
+              {unitState === "error" && "."}
+              {unitState === "success" && (
+                <>{unitData.billingCycle.toLowerCase()} Rent</>
+              )}
+            </span>
             <div className="paymentMeta">
-              Last paid <strong className="textGreen">{unit.lastPaid}</strong>
+              Last paid <strong className="textGreen">No Record</strong>
             </div>
             <div className="paymentMeta">
-              Next due <strong className="textAmber">{unit.nextDue}</strong>
+              Next due <strong className="textAmber">No Record</strong>
             </div>
           </div>
         </div>
@@ -231,7 +368,7 @@ const ViewUnit = () => {
           <div className="leftColumn">
             <UnitGallery />
             {/* ABOUT */}
-            {/* <div className="card sectionCard">
+            <div className="card sectionCard">
               <div className="sectionHeader">
                 <h3>About this unit</h3>
               </div>
@@ -241,31 +378,12 @@ const ViewUnit = () => {
                 parking, and high-speed fibre internet. Ideal for a small family
                 or working professional.
               </p>
-            </div> */}
-            {/* UTILITIES */}
-            <div className="card sectionCard">
-              <div className="sectionHeader">
-                <h3>Utilities</h3>
-                <button className="addBtn">
-                  <FiPlus /> Add utility
-                </button>
-              </div>
-              <div className="utilityGrid">
-                {unit.utilities.map((util, i) => (
-                  <div key={i} className="utilityItem">
-                    <div
-                      className={`utilIcon icon${util.color.charAt(0).toUpperCase() + util.color.slice(1)}`}
-                    >
-                      {util.icon}
-                    </div>
-                    <div>
-                      <p className="utilName">{util.name}</p>
-                      <p className="utilMeta">{util.provider}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
+            {/* UTILITIES */}
+            <UtilityCard
+              utilities={unit.utilities}
+              showModal={handleUtilityModal}
+            />
             {/* FEATURES */}
             <div className="card sectionCard">
               <div className="sectionHeader">
@@ -348,12 +466,10 @@ const ViewUnit = () => {
                 </button>
               </div>
               <div className="tenantWrap">
-                <div className="tenantAvatar">{unit.tenant.initials}</div>
+                <div className="tenantAvatar">{"NT"}</div>
                 <div>
-                  <p className="tenantName">{unit.tenant.name}</p>
-                  <p className="tenantSince">
-                    Tenant since {unit.tenant.since}
-                  </p>
+                  <p className="tenantName">No Active Tenant</p>
+                  <p className="tenantSince">Tenant since ___</p>
                 </div>
               </div>
               <div className="detailList">
@@ -361,27 +477,25 @@ const ViewUnit = () => {
                   <span className="detailLabel">
                     <FiMail /> Email
                   </span>
-                  <span className="detailVal detailBlue">
-                    {unit.tenant.email}
-                  </span>
+                  <span className="detailVal detailBlue">___</span>
                 </div>
                 <div className="detailRow">
                   <span className="detailLabel">
                     <FiPhone /> Phone
                   </span>
-                  <span className="detailVal">{unit.tenant.phone}</span>
+                  <span className="detailVal">___</span>
                 </div>
                 <div className="detailRow">
                   <span className="detailLabel">
                     <FiUser /> ID / KRA
                   </span>
-                  <span className="detailVal">{unit.tenant.idNumber}</span>
+                  <span className="detailVal">___</span>
                 </div>
                 <div className="detailRow">
                   <span className="detailLabel">
                     <FiMapPin /> Nationality
                   </span>
-                  <span className="detailVal">{unit.tenant.nationality}</span>
+                  <span className="detailVal">___</span>
                 </div>
               </div>
               <div className="tenantActions">
@@ -402,45 +516,39 @@ const ViewUnit = () => {
                   <span className="detailLabel">
                     <FiCalendar /> Start date
                   </span>
-                  <span className="detailVal">{unit.activeLease.start}</span>
+                  <span className="detailVal">___</span>
                 </div>
                 <div className="detailRow">
                   <span className="detailLabel">
                     <FiCalendar /> End date
                   </span>
-                  <span className="detailVal">{unit.activeLease.end}</span>
+                  <span className="detailVal">___</span>
                 </div>
                 <div className="detailRow">
                   <span className="detailLabel">
                     <FiClock /> Duration
                   </span>
-                  <span className="detailVal">{unit.activeLease.duration}</span>
+                  <span className="detailVal">___</span>
                 </div>
                 <div className="detailRow">
                   <span className="detailLabel">
                     <FiDollarSign /> Deposit
                   </span>
-                  <span className="detailVal">
-                    KES {unit.activeLease.deposit.toLocaleString()}
-                  </span>
+                  <span className="detailVal">___</span>
                 </div>
                 <div className="detailRow">
                   <span className="detailLabel">
                     <FiFileText /> Status
                   </span>
                   <span className="detailVal">
-                    <span className="badge badgeGreen badgeSm">
-                      {unit.activeLease.status}
-                    </span>
+                    <span className="badge badgeGreen badgeSm">InActive</span>
                   </span>
                 </div>
                 <div className="detailRow">
                   <span className="detailLabel">
                     <FiAlertCircle /> Renewal
                   </span>
-                  <span className="detailVal textAmber">
-                    {unit.activeLease.renewal}
-                  </span>
+                  <span className="detailVal textAmber">___</span>
                 </div>
               </div>
             </div>

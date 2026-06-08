@@ -9,7 +9,7 @@ import CheckBox from "../../components/ui/CheckBox";
 import PrimaryButton from "../../components/ui/PrimaryButton";
 import Table from "../../components/ui/Table";
 import { getPropertyColumns } from "./propertyColumns";
-import Modal from "../../components/ui/Modal";
+import AddOrEditModal from "./components/AddOrEditModal";
 import DeleteModal from "../../components/ui/DeleteModal";
 import Input from "../../components/ui/Input";
 import Can from "../../auth/Can";
@@ -25,7 +25,6 @@ import { systemCodeItemService } from "../systemCodeItems/systemCodeItemService"
 import { useApiRequest } from "../../hooks/useApiRequest";
 import { useApiQuery } from "../../hooks/useApiQuery";
 import { useDataTable } from "../../hooks/useDataTable";
-import { useUrlSync } from "../../hooks/useUrlSync";
 import { handleFormSubmit } from "../../helpers/handleFormSubmit";
 import { useAuthContext } from "../../auth/AuthContext";
 import { can, canAny } from "../../auth/rbac";
@@ -39,25 +38,14 @@ const Property = () => {
   const [activeRow, setActiveRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const [loadingTypes, setLoadingTypes] = useState(false);
-  const [propertyTypes, setPropertyTypes] = useState([]);
-  const [propertyTypeError, setPropertyTyperror] = useState(false);
-
-  const [utilityBillTypes, setUtilityBillTypes] = useState([]);
-  const [utilityBillTypeLoading, setUtilityBillLoading] = useState(true);
-  const [utilityBillError, setUtilityBillTypeError] = useState(false);
-
-  const [billingCycles, setBillingCycles] = useState([]);
-  const [billingCycleLoading, setBillingCycleLoading] = useState(true);
-  const [billingCycleError, setBillingCycleError] = useState(false);
-
   const [loadingBtn, setLoadingBtn] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalData, setOriginalData] = useState(null);
+  const [formData, setFormData] = useState("");
   const [formError, setFormError] = useState("");
-  const [showMoreInputs, setshowMoreInputs] = useState(false);
+
   const EMPTY_FORM = {
     name: "",
     emailAddress: "",
@@ -72,13 +60,6 @@ const Property = () => {
     latitude: "",
     notes: "",
   };
-  const EMPTY_UTILITY_FORM = {
-    utilityBillId: "",
-    utilityAmount: "",
-    billingCycleId: "",
-    isMetered: "",
-  };
-  const [utilityItems, setUtilityItems] = useState([EMPTY_UTILITY_FORM]);
 
   const {
     data: properties,
@@ -99,6 +80,7 @@ const Property = () => {
     sortBy: "",
     isDescending: false,
   });
+  const tableData = useMemo(() => properties ?? [], [properties]);
 
   useEffect(() => {
     setQuery((prev) => ({
@@ -108,10 +90,6 @@ const Property = () => {
     }));
   }, [search]);
 
-  useUrlSync(query, setQuery);
-
-  const [formData, setFormData] = useState(EMPTY_FORM);
-  const tableData = useMemo(() => properties ?? [], [properties]);
   const fetchPropertyTypes = useCallback(async () => {
     await getData({
       execute,
@@ -156,152 +134,12 @@ const Property = () => {
     handleCloseModal();
   };
 
-  const handleSelect = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleAddNew = () => {
-    setFormData(EMPTY_FORM);
-    setOriginalData(null);
-    setIsEditMode(false);
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
-    setFormError("");
-    setIsEditMode(false);
-    setFormData(EMPTY_FORM);
-    setFormData(EMPTY_UTILITY_FORM);
     setShowModal(false);
-    setshowMoreInputs(false);
-  };
-
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleUtilityChange = (index, field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      utilities: prev.utilities.map((item, i) =>
-        i === index
-          ? {
-              ...item,
-              [field]: value,
-            }
-          : item,
-      ),
-    }));
-  };
-
-  const validateModalForm = () => {
-    const {
-      name,
-      emailAddress,
-      mobileNumber,
-      country,
-      county,
-      floor,
-      area,
-      longitude,
-      latitude,
-      notes,
-      propertyTypeId,
-    } = formData;
-
-    if (
-      !name ||
-      !emailAddress ||
-      !mobileNumber ||
-      !country ||
-      !county ||
-      !floor ||
-      !area
-    ) {
-      return "Please fill in all required fields.";
-    }
-    if (!validateTextInput(name, true)) {
-      return "Property Name cannot be empty";
-    }
-    if (!validateEmail(emailAddress)) {
-      return "Please enter a valid email";
-    }
-    if (propertyTypeId <= 0) {
-      return "Invalid PropertyTypeId";
-    }
-
-    if (originalData != null && isEditMode) {
-      return validateChange(originalData, formData);
-    }
-    return "";
-  };
-
-  const validateChange = (originalData, updatedData) => {
-    const isSame = JSON.stringify(updatedData) === JSON.stringify(originalData);
-    if (isSame) return "No Changes Made";
-    return "";
-  };
-
-  const addPropertyHandler = async (e) => {
-    if (!can(user, "Property.Create")) return;
-    const payload = {
-      ...formData,
-      longitude: formData.longitude ? Number(formData.longitude) : null,
-      latitude: formData.latitude ? Number(formData.latitude) : null,
-    };
-
-    await handleFormSubmit({
-      e,
-      validateForm: validateModalForm,
-      execute,
-      request: () => propertyService.add(payload),
-      setFormError,
-      setLoadingBtn,
-      resetForm: () => {
-        setFormData(EMPTY_FORM);
-
-        setUtilityItems([
-          {
-            utilityBillId: "",
-            utilityAmount: "",
-            isReccurring: true,
-          },
-        ]);
-      },
-      onSuccess: () => refreshTableData(),
-    });
-  };
-
-  const updatePropertyHandler = async (e) => {
-    if (!can(user, "Property.Update")) return;
-    await handleFormSubmit({
-      e,
-      validateForm: validateModalForm,
-      execute,
-      request: () => propertyService.update(formData.id, formData),
-      setFormError,
-      setLoadingBtn,
-      resetForm: () => setFormData(EMPTY_FORM),
-      onSuccess: () => refreshTableData(),
-    });
-  };
-
-  const toggleShowMoreButton = (e) => {
-    e.preventDefault();
-    if (showMoreInputs) {
-      setshowMoreInputs(false);
-      return;
-    } else {
-      setshowMoreInputs(true);
-      return;
-    }
   };
 
   const handleRowClick = (row) => {
@@ -342,35 +180,6 @@ const Property = () => {
       }),
     [activeRow, handleEdit, handleDeleteClick],
   );
-
-  const handleAddItem = () => {
-    setUtilityItems((prev) => [
-      ...prev,
-      {
-        propertyTypeId: "",
-        amount: "",
-        billingCycleId: "",
-        isMetered: "",
-      },
-    ]);
-  };
-
-  const handleRemoveItem = (index) => {
-    setUtilityItems((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleItemChange = (index, field, value) => {
-    setUtilityItems((prev) =>
-      prev.map((item, i) =>
-        i === index
-          ? {
-              ...item,
-              [field]: value,
-            }
-          : item,
-      ),
-    );
-  };
 
   return (
     <>
@@ -419,310 +228,15 @@ const Property = () => {
             loadingBtn={loadingBtn}
           />
         </Can>
-        <Can
-          permissions={isEditMode ? ["Property.Update"] : ["Property.Create"]}
-        >
-          <Modal
-            isOpen={showModal}
-            onClose={handleCloseModal}
-            onSubmit={isEditMode ? updatePropertyHandler : addPropertyHandler}
-            errorMessage={formError}
-            title={isEditMode ? "Update Property" : "Add Property"}
-            loadingBtn={loadingBtn}
-            isEditMode={isEditMode}
-          >
-            <div className="row3">
-              <Input
-                type="text"
-                name="name"
-                placeholder="Enter Property Name"
-                value={formData.name || ""}
-                labelName="Property Name"
-                onChange={handleInputChange}
-              />
 
-              <Input
-                type="email"
-                name="emailAddress"
-                placeholder="Enter Email Address"
-                value={formData.emailAddress || ""}
-                labelName="Email"
-                onChange={handleInputChange}
-              />
-
-              <Input
-                type="tel"
-                name="mobileNumber"
-                placeholder="Enter Mobile Number"
-                value={formData.mobileNumber || ""}
-                labelName="Mobile"
-                onChange={handleInputChange}
-              />
-
-              <Input
-                type="text"
-                name="physicalAddress"
-                placeholder="Enter physical Address"
-                value={formData.physicalAddress || ""}
-                labelName="physical Address"
-                onChange={handleInputChange}
-              />
-
-              <Input
-                type="text"
-                name="country"
-                placeholder="Enter Country"
-                value={formData.country || ""}
-                labelName="Country"
-                onChange={handleInputChange}
-              />
-
-              <Input
-                type="text"
-                name="county"
-                placeholder="Enter County"
-                value={formData.county || ""}
-                labelName="County"
-                onChange={handleInputChange}
-              />
-
-              <Input
-                type="text"
-                name="area"
-                placeholder="Enter Area"
-                value={formData.area || ""}
-                labelName="Area"
-                onChange={handleInputChange}
-              />
-
-              <Select
-                name="floor"
-                labelName="Floor (s)"
-                value={formData.floor}
-                onChange={handleSelect}
-                options={[
-                  { value: "0", label: "Ground Floor" },
-                  { value: "1", label: "1" },
-                  { value: "2", label: "2" },
-                  { value: "3", label: "3" },
-                  { value: "4", label: "4" },
-                  { value: "5", label: "5" },
-                  { value: "6", label: "6" },
-                  { value: "7", label: "7" },
-                  { value: "8", label: "8" },
-                  { value: "9", label: "9" },
-                  { value: "10", label: "10" },
-                  { value: "11", label: "11" },
-                  { value: "12", label: "12" },
-                  { value: "13", label: "13" },
-                  { value: "14", label: "14" },
-                  { value: "15", label: "15" },
-                  { value: "16", label: "16" },
-                  { value: "17", label: "17" },
-                  { value: "18", label: "18" },
-                  { value: "19", label: "19" },
-                  { value: "20", label: "20" },
-                ]}
-              />
-
-              <Select
-                name="propertyTypeId"
-                labelName="property Type"
-                value={formData.propertyTypeId}
-                onChange={handleSelect}
-                options={
-                  error
-                    ? [
-                        {
-                          value: 0,
-                          label: "Error Fetching property Types",
-                          disabled: true,
-                        },
-                      ]
-                    : loading
-                      ? [
-                          {
-                            value: 0,
-                            label: "Loading property Types...",
-                            disabled: true,
-                          },
-                        ]
-                      : propertyTypes.map((p) => ({
-                          value: p.id,
-                          label: p.item,
-                        }))
-                }
-              />
-            </div>
-            <button className="showMoreBtn" onClick={toggleShowMoreButton}>
-              Show more{" "}
-              {showMoreInputs ? (
-                <MdArrowCircleUp className="downIcon" />
-              ) : (
-                <MdArrowCircleDown className="topIcon" />
-              )}
-            </button>
-
-            {showMoreInputs && (
-              <>
-                <div className="row3">
-                  <Input
-                    type="text"
-                    name="longitude"
-                    placeholder="Enter Longitude"
-                    value={formData.longitude || ""}
-                    labelName="Longitude"
-                    onChange={handleInputChange}
-                  />
-
-                  <Input
-                    type="text"
-                    name="latitude"
-                    placeholder="Enter latitude"
-                    value={formData.latitude || ""}
-                    labelName="Latitude"
-                    onChange={handleInputChange}
-                  />
-                  <Textarea
-                    type="text"
-                    name="notes"
-                    placeholder="Enter description"
-                    value={formData.notes || ""}
-                    labelName="Notes"
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                {!isEditMode && (
-                  <>
-                    <div className="row3">
-                      <p className="subHeaderTitle">Utility Bills</p>
-                    </div>
-
-                    <div className="items" style={{ marginTop: "10px" }}>
-                      {Array.isArray(utilityItems) &&
-                      utilityItems.length > 0 ? (
-                        utilityItems.map((item, index) => (
-                          <div key={index} className="row3">
-                            {/* ===== UTILITY ===== */}
-                            <Select
-                              name="utilityBillId"
-                              labelName="Utility"
-                              value={item?.utilityBillId ?? ""}
-                              onChange={(e) =>
-                                handleItemChange(
-                                  index,
-                                  "utilityBillId",
-                                  e.target.value,
-                                )
-                              }
-                              options={utilityBillTypes.map((p) => ({
-                                value: p.id,
-                                label: p.item,
-                              }))}
-                            />
-
-                            {/* ===== AMOUNT ===== */}
-                            <Input
-                              type="number"
-                              labelName="Amount"
-                              name="utilityAmount"
-                              placeholder="Enter Amount"
-                              value={item?.utilityAmount ?? ""}
-                              onChange={(name, value) =>
-                                handleItemChange(index, name, value)
-                              }
-                            />
-                            <Select
-                              name="billingCycleId"
-                              labelName="billingCycle"
-                              value={item?.billingCycleId ?? ""}
-                              onChange={(e) =>
-                                handleItemChange(
-                                  index,
-                                  "billingCycleId",
-                                  e.target.value,
-                                )
-                              }
-                              options={
-                                billingCycleLoading
-                                  ? [
-                                      {
-                                        value: "",
-                                        label: "Loading billing cycles...",
-                                      },
-                                    ]
-                                  : billingCycleError
-                                    ? [
-                                        {
-                                          value: "",
-                                          label: "Error loading billing cycles",
-                                        },
-                                      ]
-                                    : !billingCycles ||
-                                        billingCycles.length === 0
-                                      ? [
-                                          {
-                                            value: "",
-                                            label: "No billing cycles found",
-                                          },
-                                        ]
-                                      : billingCycles.map((p) => ({
-                                          value: p.id,
-                                          label: p.item,
-                                        }))
-                              }
-                            />
-                            <CheckBox
-                              name="isMetered"
-                              labelName="Is Metered"
-                              checked={item?.isMetered ?? false}
-                              onChange={(name, value) =>
-                                handleItemChange(index, name, value)
-                              }
-                            />
-
-                            {/* ===== DELETE ===== */}
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveItem(index)}
-                              className="delete-btn"
-                              disabled={utilityItems.length === 1}
-                            >
-                              <RiDeleteBin6Line />
-                            </button>
-                          </div>
-                        ))
-                      ) : (
-                        <div
-                          className="row3"
-                          style={{
-                            justifyContent: "center",
-                            opacity: 0.6,
-                          }}
-                        >
-                          No utility items added
-                        </div>
-                      )}
-                    </div>
-
-                    {/* ===== ADD ITEM ===== */}
-                    <div className="row3">
-                      <button
-                        type="button"
-                        onClick={handleAddItem}
-                        className="add-btn"
-                      >
-                        <FaPlusCircle className="plusIcon" />
-                        Add Item
-                      </button>
-                    </div>
-                  </>
-                )}
-              </>
-            )}
-          </Modal>
-        </Can>
+        <AddOrEditModal
+          show={showModal}
+          isEdit={isEditMode}
+          originalData={originalData}
+          modalData={formData}
+          onSuccess={refreshTableData}
+          closeModal={handleCloseModal}
+        />
       </div>
     </>
   );

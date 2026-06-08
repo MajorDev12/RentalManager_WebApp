@@ -5,7 +5,7 @@
 }
 
 .inputContainer label {
-  font-size: var(--normalFontSize);
+  font-size: var(--littleFontSize);
   color: var(--textColor);
   font-weight: 600;
   padding-left: 10px;
@@ -27,7 +27,7 @@
   font-family: var(--fontFamily);
   color: var(--textColor);
 
-  font-size: var(--smallFontSize);
+  font-size: var(--littleFontSize);
   font-weight: 500;
 
   padding: 10px 12px;
@@ -44,12 +44,11 @@
 }
 
 .Input {
-  height: 32px;
+  height: 28px;
 }
 
 .Textarea {
-  max-height: 35px;
-  padding: 10px 12px;
+  max-height: 30px;
   margin: 0px;
   resize: vertical;
 }
@@ -63,8 +62,9 @@
 
 .Input::placeholder,
 .Textarea::placeholder {
+  font-family: var(--fontFamily);
   color: var(--lightTextColor);
-  font-size: var(--smallFontSize);
+  font-size: var(--littleFontSize);
 }
 
 .eyeIcon {

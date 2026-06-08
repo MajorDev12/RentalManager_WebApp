@@ -6,7 +6,7 @@
 }
 
 .selectLabel {
-  font-size: var(--normalFontSize);
+  font-size: var(--littleFontSize);
   color: var(--textColor);
   font-weight: 600;
   margin-bottom: 6px;

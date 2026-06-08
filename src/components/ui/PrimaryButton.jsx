@@ -1,6 +1,7 @@
 import React from "react";
 import "../../css/button.css";
 import Spinner from "./Spinner";
+import { FiPlus } from "react-icons/fi";
 
 const PrimaryButton = ({
   name,

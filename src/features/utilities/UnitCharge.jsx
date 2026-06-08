@@ -6,6 +6,7 @@ import Table from "../../components/ui/Table";
 import { getColumns } from "./UnitChargeColumn";
 import CheckBox from "../../components/ui/CheckBox";
 import Modal from "../../components/ui/Modal";
+import AddOrEditModal from "./components/AddOrEditModal";
 import DeleteModal from "../../components/ui/DeleteModal";
 import Input from "../../components/ui/Input";
 import Select from "../../components/ui/Select";
@@ -16,7 +17,6 @@ import { validateTextInput } from "../../helpers/validateTextInput";
 import { getData } from "../../helpers/getData";
 import { handleDelete } from "../../helpers/deleteData";
 import { handleFormSubmit } from "../../helpers/handleFormSubmit";
-import { propertyService } from "../properties/propertyService";
 import { utilityService } from "./utilityService";
 import { useApiRequest } from "../../hooks/useApiRequest";
 
@@ -35,24 +35,8 @@ const UnitCharge = () => {
   const { user } = useAuthContext();
   const [activeRow, setActiveRow] = useState(null);
 
-  const [utilityDropdown, setUtilityDropdown] = useState([]);
-  const [utilityLoading, setUtilityLoading] = useState(true);
-  const [utilityError, setUtilityError] = useState(false);
-
-  const [propertyLookups, setPropertyLookups] = useState([]);
-  const [propertiesLoading, setPropertyLoading] = useState(true);
-  const [propertiesError, setPropertyError] = useState(false);
-
-  const [billingCycleLookups, setBillingCycleLookups] = useState([]);
-  const [billingCycleLoading, setBillingCycleLoading] = useState(true);
-  const [billingCycleError, setBillingCycleError] = useState(false);
-
-  const [unitLookups, setUnitLookups] = useState([]);
-  const [unitLoading, setUnitLoading] = useState(true);
-  const [unitError, setUnitError] = useState(false);
-
   const [showModal, setShowModal] = useState(false);
-  const [hasLoadedLookups, setHasLoadedLookups] = useState(false);
+  const [showMoreInputs, setshowMoreInputs] = useState(false);
   const [loadingBtn, setLoadingBtn] = useState(false);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -63,7 +47,6 @@ const UnitCharge = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [select, setSelect] = useState("");
 
-  const [showMoreInputs, setshowMoreInputs] = useState(false);
   const EMPTY_FORM = {
     propertyId: "",
     utilityId: "",
@@ -95,112 +78,6 @@ const UnitCharge = () => {
   });
   const tableData = useMemo(() => utilities ?? [], [utilities]);
 
-  useEffect(() => {
-    setQuery((prev) => ({
-      ...prev,
-      searchTerm: search,
-      pageNumber: 1,
-    }));
-  }, [search]);
-
-  // useUrlSync(query, setQuery);
-
-  useEffect(() => {
-    if (!showModal || hasLoadedLookups) return;
-
-    const load = async () => {
-      await Promise.all([
-        fetchProperties(),
-        fetchUtilities(),
-        fetchBillingCycle(),
-      ]);
-      setHasLoadedLookups(true);
-    };
-
-    load();
-  }, [showModal]);
-
-  useEffect(() => {
-    if (!formData.propertyId) {
-      setUnitLookups([]);
-      setUnitError(false);
-      return;
-    }
-
-    const loadUnits = async () => {
-      setUnitError(false);
-      setUnitLoading(true);
-
-      await getData({
-        execute,
-        request: () => unitService.getByPropertyId(formData.propertyId),
-        setData: setUnitLookups,
-        setLoading: setUnitLoading,
-        setError: setUnitError,
-      });
-    };
-
-    loadUnits();
-  }, [formData.propertyId]);
-
-  const fetchUtilities = async () => {
-    if (!can(user, "UtilityBill.Read")) return;
-    await getData({
-      execute,
-      request: () => systemCodeItemService.getByCodeName("UTILITYBILL"),
-      setData: setUtilityDropdown,
-      setLoading: setUtilityLoading,
-      setError: setUtilityError,
-    });
-  };
-
-  const fetchProperties = async () => {
-    if (!can(user, "Property.Read")) return;
-    await getData({
-      execute,
-      request: () => propertyService.getLookups(),
-      setData: setPropertyLookups,
-      setLoading: setPropertyLoading,
-      setError: setPropertyError,
-    });
-  };
-
-  const fetchBillingCycle = async () => {
-    await getData({
-      execute,
-      request: () => systemCodeItemService.getByCodeName("BILLINGCYCLE"),
-      setData: setBillingCycleLookups,
-      setLoading: setBillingCycleLoading,
-      setError: setBillingCycleError,
-    });
-  };
-
-  const fetchUnitsByProperty = async (propertyId) => {
-    await getData({
-      execute,
-      request: () => unitService.getByPropertyId(propertyId),
-      setData: setUnitLookups,
-      setLoading: setUnitLoading,
-      setError: setUnitError,
-    });
-  };
-
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleSelect = (e) => {
-    const { name, value } = e.target;
-    setSelect(value);
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleCloseModal = () => {
     setFormError("");
     setIsEditMode(false);
@@ -213,68 +90,6 @@ const UnitCharge = () => {
     refetch();
     setPage(1);
     handleCloseModal();
-  };
-
-  const validateModalForm = () => {
-    const { utilityId, amount, propertyId, unitId, billingCycleId, IsMetered } =
-      formData;
-
-    if (!utilityId || !amount || !propertyId || !billingCycleId) {
-      return "Please fill in all required fields.";
-    }
-
-    if (isNaN(Number(amount))) {
-      return "Please enter a valid Amount";
-    }
-
-    if (originalData != null && isEditMode) {
-      return validateChange(originalData, formData);
-    }
-
-    return "";
-  };
-
-  const validateChange = (originalData, updatedData) => {
-    const isSame = JSON.stringify(updatedData) === JSON.stringify(originalData);
-    if (isSame) return "No Changes Made";
-    return "";
-  };
-
-  const addUtilityHandler = async (e) => {
-    if (!can(user, "UtilityBill.Create")) return;
-    const payload = {
-      ...formData,
-      unitId: formData.unitId ? Number(formData.unitId) : null,
-    };
-    await handleFormSubmit({
-      e,
-      validateForm: validateModalForm,
-      execute,
-      request: () => utilityService.add(payload),
-      setFormError,
-      setLoadingBtn,
-      resetForm: () => setFormData(EMPTY_FORM),
-      onSuccess: () => refreshTableData(),
-    });
-  };
-
-  const updateUtilityHandler = async (e) => {
-    if (!can(user, "UtilityBill.Update")) return;
-
-    const payload = {
-      ...formData,
-      unitId: formData.unitId ? Number(formData.unitId) : null,
-    };
-    await handleFormSubmit({
-      e,
-      validateForm: validateModalForm,
-      execute,
-      request: () => utilityService.update(selectedId, payload),
-      setFormError,
-      setLoadingBtn,
-      resetForm: () => setFormData(EMPTY_FORM),
-      onSuccess: () => refreshTableData(),
-    });
   };
 
   const deleteUtilityHandler = async (e) => {
@@ -329,17 +144,6 @@ const UnitCharge = () => {
     [activeRow],
   );
 
-  const toggleShowMoreButton = (e) => {
-    e.preventDefault();
-    if (showMoreInputs) {
-      setshowMoreInputs(false);
-      return;
-    } else {
-      setshowMoreInputs(true);
-      return;
-    }
-  };
-
   return (
     <>
       <BreadCrumb />
@@ -380,136 +184,14 @@ const UnitCharge = () => {
           />
         </Can>
 
-        <Can
-          permissions={
-            isEditMode ? ["UtilityBill.Update"] : ["UtilityBill.Create"]
-          }
-        >
-          <Modal
-            isOpen={showModal}
-            onClose={handleCloseModal}
-            onSubmit={isEditMode ? updateUtilityHandler : addUtilityHandler}
-            errorMessage={formError}
-            title={isEditMode ? "Update Charge" : "Add Charge"}
-            loadingBtn={loadingBtn}
-            isEditMode={isEditMode}
-          >
-            <div className="row2">
-              <Select
-                name="propertyId"
-                labelName="Property Name"
-                value={formData.propertyId || ""}
-                onChange={handleSelect}
-                options={
-                  propertiesLoading
-                    ? [{ value: "", label: "Loading properties..." }]
-                    : propertiesError
-                      ? [{ value: "", label: "Error loading properties" }]
-                      : !propertyLookups || propertyLookups.length === 0
-                        ? [{ value: "", label: "No properties found" }]
-                        : propertyLookups.map((p) => ({
-                            value: p.id,
-                            label: p.name,
-                          }))
-                }
-              />
-              <Select
-                name="utilityId"
-                labelName="Utility Name"
-                value={formData.utilityId || ""}
-                onChange={handleSelect}
-                options={
-                  utilityLoading
-                    ? [{ value: "", label: "Loading Utilities..." }]
-                    : utilityError
-                      ? [{ value: "", label: "Error loading Utilities" }]
-                      : !utilityDropdown || utilityDropdown.length === 0
-                        ? [{ value: "", label: "No Utilities found" }]
-                        : utilityDropdown.map((p) => ({
-                            value: p.id,
-                            label: p.item,
-                          }))
-                }
-              />
-              <Input
-                type="number"
-                name="amount"
-                placeholder="Enter Charge Amount"
-                value={formData.amount || ""}
-                labelName="Amount"
-                onChange={handleInputChange}
-              />
-              <Select
-                name="billingCycleId"
-                labelName="Billing Cycle"
-                value={formData.billingCycleId || ""}
-                onChange={handleSelect}
-                options={
-                  billingCycleLoading
-                    ? [{ value: "", label: "Loading billingCycle..." }]
-                    : billingCycleError
-                      ? [{ value: "", label: "Error loading billingCycle" }]
-                      : !billingCycleLookups || billingCycleLookups.length === 0
-                        ? [{ value: "", label: "No billingCycle found" }]
-                        : billingCycleLookups.map((p) => ({
-                            value: p.id,
-                            label: p.item,
-                          }))
-                }
-              />
-            </div>
-            <div className="row3">
-              <button className="showMoreBtn" onClick={toggleShowMoreButton}>
-                Show more{" "}
-                {showMoreInputs ? (
-                  <MdArrowCircleUp className="downIcon" />
-                ) : (
-                  <MdArrowCircleDown className="topIcon" />
-                )}
-              </button>
-            </div>
-
-            {showMoreInputs && (
-              <>
-                <div className="row2">
-                  <Select
-                    name="unitId"
-                    labelName="Unit Name"
-                    value={formData.unitId || ""}
-                    onChange={handleSelect}
-                    disabled={!formData.propertyId}
-                    options={
-                      !formData.propertyId
-                        ? [{ value: "", label: "Select property first" }]
-                        : unitLoading
-                          ? [{ value: "", label: "Loading units..." }]
-                          : unitError
-                            ? [{ value: "", label: "Error loading units" }]
-                            : !unitLookups || unitLookups.length === 0
-                              ? [{ value: "", label: "No units found" }]
-                              : unitLookups.map((p) => ({
-                                  value: p.id,
-                                  label: p.name,
-                                }))
-                    }
-                    text={
-                      formData.propertyId
-                        ? "select unit"
-                        : "choose property first"
-                    }
-                  />
-
-                  <CheckBox
-                    name="IsMetered"
-                    labelName="IsMetered"
-                    onChange={handleInputChange}
-                    checked={formData.IsMetered}
-                  />
-                </div>
-              </>
-            )}
-          </Modal>
-        </Can>
+        <AddOrEditModal
+          show={showModal}
+          isEdit={isEditMode}
+          originalData={originalData}
+          modalData={formData}
+          onSuccess={refreshTableData}
+          closeModal={handleCloseModal}
+        />
       </div>
     </>
   );

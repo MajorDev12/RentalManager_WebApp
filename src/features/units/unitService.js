@@ -25,8 +25,12 @@ export const unitService = {
     return apiClient.post(`Units`, data);
   },
 
-  update(id, data) {
+  put(id, data) {
     return apiClient.put(`Units/${id}`, data);
+  },
+
+  patch(id, data) {
+    return apiClient.patch(`Units/${id}`, data);
   },
 
   archive(id) {

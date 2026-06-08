@@ -67,8 +67,8 @@ export const sidebarConfig = [
       },
 
       {
-        label: "Vacants",
-        route: "/Vacants",
+        label: "Maintenance",
+        route: "/Maintenance",
         permission: "Unit.Read",
       },
     ],

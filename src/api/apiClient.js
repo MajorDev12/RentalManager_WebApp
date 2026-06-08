@@ -85,6 +85,12 @@ export default {
       body: JSON.stringify(body),
     }),
 
+  put: (url, body) =>
+    request(url, {
+      method: "PUT",
+      body: JSON.stringify(body),
+    }),
+
   delete: (url) =>
     request(url, {
       method: "DELETE",
