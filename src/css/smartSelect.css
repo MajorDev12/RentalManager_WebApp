@@ -1,0 +1,165 @@
+.smartSelectContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.smartSelectLabel {
+  font-size: var(--littleFontSize);
+  color: var(--textColor);
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding-left: 10px;
+}
+
+.required {
+  color: var(--red);
+  margin-left: 4px;
+}
+
+/* =========================
+   BOX
+========================= */
+.smartSelectBox {
+  width: 100%;
+  min-width: 0;
+
+  height: 32px;
+
+  padding: 0 14px;
+
+  border-radius: 10px;
+  border: 1px solid var(--borderColor);
+
+  background: var(--backgroundColor);
+  color: var(--textColor);
+
+  font-size: var(--smallFontSize);
+  font-family: var(--fontFamily);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.smartSelectBox.disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.smartSelectBox:focus,
+.smartSelectBox:focus-within {
+  border-color: var(--highlightColor);
+  background-color: var(--containerColor);
+  box-shadow: 0 0 0 3px rgba(34, 119, 204, 0.12);
+}
+
+.smartSelected {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.smartIcon {
+  font-size: 18px;
+}
+
+.placeholder {
+  color: var(--lightTextColor);
+}
+
+.arrow {
+  font-size: 12px;
+  color: var(--lightTextColor);
+}
+
+/* =========================
+   DROPDOWN (PORTAL)
+========================= */
+.smartDropdown {
+  background: var(--backgroundColor);
+  border: 1px solid var(--borderColor);
+  border-radius: 10px;
+
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+
+  z-index: 9999;
+
+  overflow: hidden;
+}
+
+/* =========================
+   SEARCH
+========================= */
+.smartSearch {
+  width: 100%;
+  padding: 8px 12px;
+
+  border: none;
+  border-bottom: 1px solid var(--borderColor);
+
+  outline: none;
+
+  font-size: var(--smallFontSize);
+  font-family: var(--fontFamily);
+
+  background: var(--backgroundColor);
+  color: var(--textColor);
+}
+
+/* =========================
+   OPTIONS
+========================= */
+.smartOptions {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.smartGroupHeader {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--lightTextColor);
+  background: var(--containerColor);
+  position: sticky;
+  top: 0;
+}
+
+.smartOption {
+  padding: 10px 14px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  cursor: pointer;
+
+  font-size: var(--smallFontSize);
+  font-family: var(--fontFamily);
+
+  color: var(--textColor);
+
+  transition: background 0.15s ease;
+}
+
+.smartOption:hover {
+  background: var(--containerColor);
+}
+
+.smartOption.active {
+  background: rgba(34, 119, 204, 0.08);
+}
+
+.noResults {
+  padding: 10px 14px;
+  color: var(--lightTextColor);
+}

@@ -90,16 +90,6 @@ const Property = () => {
     }));
   }, [search]);
 
-  const fetchPropertyTypes = useCallback(async () => {
-    await getData({
-      execute,
-      request: () => systemCodeItemService.getByCodeName("PROPERTYTYPE"),
-      setData: setPropertyTypes,
-      setLoading: setLoadingTypes,
-      setError: setPropertyTyperror,
-    });
-  }, [execute]);
-
   const fetchUtilityTypes = useCallback(async () => {
     await getData({
       execute,
@@ -109,24 +99,6 @@ const Property = () => {
       setError: setUtilityBillTypeError,
     });
   }, [execute]);
-
-  const fetchBillingCycles = useCallback(async () => {
-    await getData({
-      execute,
-      request: () => systemCodeItemService.getByCodeName("BILLINGCYCLE"),
-      setData: setBillingCycles,
-      setLoading: setBillingCycleLoading,
-      setError: setBillingCycleError,
-    });
-  }, [execute]);
-
-  useEffect(() => {
-    if (showModal) {
-      fetchPropertyTypes();
-      fetchUtilityTypes();
-      fetchBillingCycles();
-    }
-  }, [showModal, fetchPropertyTypes, fetchUtilityTypes, fetchBillingCycles]);
 
   const refreshTableData = () => {
     refetch();

@@ -7,6 +7,7 @@ import { handleDelete } from "../../../helpers/deleteData";
 import { validateTextInput } from "../../../helpers/validateTextInput";
 import { validateEmail } from "../../../helpers/validateEmail";
 import { useApiRequest } from "../../../hooks/useApiRequest";
+import { useSystemConfig } from "../../../hooks/useSystemConfig";
 import { propertyService } from "../propertyService";
 import { systemCodeItemService } from "../../systemCodeItems/systemCodeItemService";
 
@@ -15,6 +16,7 @@ import { MdArrowCircleDown, MdArrowCircleUp } from "react-icons/md";
 import { FaPlusCircle } from "react-icons/fa";
 
 import Input from "../../../components/ui/Input";
+import SmartSelect from "../../../components/ui/SmartSelect";
 import Can from "../../../auth/Can";
 import Textarea from "../../../components/ui/Textarea";
 import Select from "../../../components/ui/Select";
@@ -32,18 +34,11 @@ const AddOrEditModal = ({
   if (!show) return null;
   const { execute, apiLoading } = useApiRequest();
   const { user } = useAuthContext();
-
-  const [loadingTypes, setLoadingTypes] = useState(false);
-  const [propertyTypes, setPropertyTypes] = useState([]);
-  const [propertyTypeError, setPropertyTyperror] = useState(false);
+  const { getOptions, ready } = useSystemConfig(execute);
 
   const [utilityBillTypes, setUtilityBillTypes] = useState([]);
   const [utilityBillTypeLoading, setUtilityBillLoading] = useState(true);
   const [utilityBillError, setUtilityBillTypeError] = useState(false);
-
-  const [billingCycles, setBillingCycles] = useState([]);
-  const [billingCycleLoading, setBillingCycleLoading] = useState(true);
-  const [billingCycleError, setBillingCycleError] = useState(false);
 
   const EMPTY_UTILITY_FORM = {
     utilityBillId: "",
@@ -60,15 +55,15 @@ const AddOrEditModal = ({
   const [showMoreInputs, setshowMoreInputs] = useState(false);
 
   // FETCH DATA
-  const fetchPropertyTypes = async () => {
-    await getData({
-      execute,
-      request: () => systemCodeItemService.getByCodeName("PROPERTYTYPE"),
-      setData: setPropertyTypes,
-      setLoading: setLoadingTypes,
-      setError: setPropertyTyperror,
-    });
-  };
+  // const fetchPropertyTypes = async () => {
+  //   await getData({
+  //     execute,
+  //     request: () => systemCodeItemService.getByCodeName("PROPERTYTYPE"),
+  //     setData: setPropertyTypes,
+  //     setLoading: setLoadingTypes,
+  //     setError: setPropertyTyperror,
+  //   });
+  // };
 
   const fetchUtilityTypes = async () => {
     await getData({
@@ -92,11 +87,13 @@ const AddOrEditModal = ({
 
   useEffect(() => {
     if (show) {
-      fetchPropertyTypes();
-      fetchUtilityTypes();
-      fetchBillingCycles();
+      // fetchUtilityTypes();
     }
   }, [show]);
+
+  const propertyTypes = getOptions("PROPERTYTYPE");
+
+  console.log("propertyTypes", propertyTypes);
 
   // HELPER FUNCTIONS
   const handleSelect = (e) => {
@@ -353,33 +350,27 @@ const AddOrEditModal = ({
             ]}
           />
 
-          <Select
+          {/* <Select
             name="propertyTypeId"
             labelName="property Type"
             value={formData.propertyTypeId}
             onChange={handleSelect}
             options={
-              propertyTypeError
-                ? [
-                    {
-                      value: 0,
-                      label: "Error Fetching property Types",
-                      disabled: true,
-                    },
-                  ]
-                : loadingTypes
-                  ? [
-                      {
-                        value: 0,
-                        label: "Loading property Types...",
-                        disabled: true,
-                      },
-                    ]
-                  : propertyTypes.map((p) => ({
-                      value: p.id,
-                      label: p.item,
-                    }))
+              !ready
+                ? [{ value: "", label: "Loading..." }]
+                : propertyTypes.map((p) => ({
+                    value: p.id,
+                    label: p.label,
+                  }))
             }
+          /> */}
+
+          <SmartSelect
+            name="propertyTypeId"
+            labelName="Property Type"
+            value={formData.propertyTypeId}
+            onChange={handleSelect}
+            options={propertyTypes}
           />
         </div>
         <button className="showMoreBtn" onClick={toggleShowMoreButton}>
@@ -460,43 +451,16 @@ const AddOrEditModal = ({
                             handleItemChange(index, name, value)
                           }
                         />
+
                         <Select
                           name="billingCycleId"
-                          labelName="billingCycle"
-                          value={item?.billingCycleId ?? ""}
-                          onChange={(e) =>
-                            handleItemChange(
-                              index,
-                              "billingCycleId",
-                              e.target.value,
-                            )
-                          }
+                          labelName="Billing Cycle"
+                          value={formData.billingCycleId}
+                          onChange={handleSelect}
                           options={
-                            billingCycleLoading
-                              ? [
-                                  {
-                                    value: "",
-                                    label: "Loading billing cycles...",
-                                  },
-                                ]
-                              : billingCycleError
-                                ? [
-                                    {
-                                      value: "",
-                                      label: "Error loading billing cycles",
-                                    },
-                                  ]
-                                : !billingCycles || billingCycles.length === 0
-                                  ? [
-                                      {
-                                        value: "",
-                                        label: "No billing cycles found",
-                                      },
-                                    ]
-                                  : billingCycles.map((p) => ({
-                                      value: p.id,
-                                      label: p.item,
-                                    }))
+                            !ready
+                              ? [{ value: "", label: "Loading..." }]
+                              : getOptions("BILLINGCYCLE")
                           }
                         />
                         <CheckBox

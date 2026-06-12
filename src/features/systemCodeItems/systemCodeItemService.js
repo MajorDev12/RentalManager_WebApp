@@ -48,5 +48,4 @@ export const systemCodeItemService = {
   archive(id) {
     return apiClient.delete(`SystemCodeItem/${id}`);
   },
-
 };
