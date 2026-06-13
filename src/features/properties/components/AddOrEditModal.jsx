@@ -36,10 +36,6 @@ const AddOrEditModal = ({
   const { user } = useAuthContext();
   const { getOptions, ready } = useSystemConfig(execute);
 
-  const [utilityBillTypes, setUtilityBillTypes] = useState([]);
-  const [utilityBillTypeLoading, setUtilityBillLoading] = useState(true);
-  const [utilityBillError, setUtilityBillTypeError] = useState(false);
-
   const EMPTY_UTILITY_FORM = {
     utilityBillId: "",
     utilityAmount: "",
@@ -55,15 +51,6 @@ const AddOrEditModal = ({
   const [showMoreInputs, setshowMoreInputs] = useState(false);
 
   // FETCH DATA
-  // const fetchPropertyTypes = async () => {
-  //   await getData({
-  //     execute,
-  //     request: () => systemCodeItemService.getByCodeName("PROPERTYTYPE"),
-  //     setData: setPropertyTypes,
-  //     setLoading: setLoadingTypes,
-  //     setError: setPropertyTyperror,
-  //   });
-  // };
 
   const fetchUtilityTypes = async () => {
     await getData({
@@ -75,25 +62,68 @@ const AddOrEditModal = ({
     });
   };
 
-  const fetchBillingCycles = async () => {
-    await getData({
-      execute,
-      request: () => systemCodeItemService.getByCodeName("BILLINGCYCLE"),
-      setData: setBillingCycles,
-      setLoading: setBillingCycleLoading,
-      setError: setBillingCycleError,
-    });
-  };
-
-  useEffect(() => {
-    if (show) {
-      // fetchUtilityTypes();
-    }
-  }, [show]);
-
   const propertyTypes = getOptions("PROPERTYTYPE");
+  const utilityBillTypes = getOptions("UTILITYBILL");
+  const billingCycleTypes = getOptions("BILLINGCYCLE");
+  const propertyTypeOptions = useMemo(
+    () =>
+      propertyTypes.map((x) => ({
+        value: x.value,
+        label: x.label,
+        icon: x.iconKey,
+        color: x.color,
+        groupKey: x.groupKey,
+      })),
+    [propertyTypes],
+  );
 
-  console.log("propertyTypes", propertyTypes);
+  const utilityBillOptions = useMemo(
+    () =>
+      utilityBillTypes.map((x) => ({
+        value: x.value,
+        label: x.label,
+        icon: x.iconKey,
+        color: x.color,
+        groupKey: x.groupKey,
+      })),
+    [utilityBillTypes],
+  );
+
+  const billingCycleOptions = useMemo(
+    () =>
+      billingCycleTypes.map((x) => ({
+        value: x.value,
+        label: x.label,
+        icon: x.iconKey,
+        color: x.color,
+        groupKey: x.groupKey,
+      })),
+    [billingCycleTypes],
+  );
+
+  const floors = [
+    { value: "0", label: "Ground Floor" },
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "4", label: "4" },
+    { value: "5", label: "5" },
+    { value: "6", label: "6" },
+    { value: "7", label: "7" },
+    { value: "8", label: "8" },
+    { value: "9", label: "9" },
+    { value: "10", label: "10" },
+    { value: "11", label: "11" },
+    { value: "12", label: "12" },
+    { value: "13", label: "13" },
+    { value: "14", label: "14" },
+    { value: "15", label: "15" },
+    { value: "16", label: "16" },
+    { value: "17", label: "17" },
+    { value: "18", label: "18" },
+    { value: "19", label: "19" },
+    { value: "20", label: "20" },
+  ];
 
   // HELPER FUNCTIONS
   const handleSelect = (e) => {
@@ -320,57 +350,20 @@ const AddOrEditModal = ({
             onChange={handleInputChange}
           />
 
-          <Select
+          <SmartSelect
             name="floor"
-            labelName="Floor (s)"
+            labelName="Floor"
             value={formData.floor}
             onChange={handleSelect}
-            options={[
-              { value: "0", label: "Ground Floor" },
-              { value: "1", label: "1" },
-              { value: "2", label: "2" },
-              { value: "3", label: "3" },
-              { value: "4", label: "4" },
-              { value: "5", label: "5" },
-              { value: "6", label: "6" },
-              { value: "7", label: "7" },
-              { value: "8", label: "8" },
-              { value: "9", label: "9" },
-              { value: "10", label: "10" },
-              { value: "11", label: "11" },
-              { value: "12", label: "12" },
-              { value: "13", label: "13" },
-              { value: "14", label: "14" },
-              { value: "15", label: "15" },
-              { value: "16", label: "16" },
-              { value: "17", label: "17" },
-              { value: "18", label: "18" },
-              { value: "19", label: "19" },
-              { value: "20", label: "20" },
-            ]}
+            options={floors}
           />
-
-          {/* <Select
-            name="propertyTypeId"
-            labelName="property Type"
-            value={formData.propertyTypeId}
-            onChange={handleSelect}
-            options={
-              !ready
-                ? [{ value: "", label: "Loading..." }]
-                : propertyTypes.map((p) => ({
-                    value: p.id,
-                    label: p.label,
-                  }))
-            }
-          /> */}
 
           <SmartSelect
             name="propertyTypeId"
             labelName="Property Type"
             value={formData.propertyTypeId}
             onChange={handleSelect}
-            options={propertyTypes}
+            options={propertyTypeOptions}
           />
         </div>
         <button className="showMoreBtn" onClick={toggleShowMoreButton}>
@@ -423,7 +416,7 @@ const AddOrEditModal = ({
                     utilityItems.map((item, index) => (
                       <div key={index} className="row3">
                         {/* ===== UTILITY ===== */}
-                        <Select
+                        <SmartSelect
                           name="utilityBillId"
                           labelName="Utility"
                           value={item?.utilityBillId ?? ""}
@@ -434,10 +427,7 @@ const AddOrEditModal = ({
                               e.target.value,
                             )
                           }
-                          options={utilityBillTypes.map((p) => ({
-                            value: p.id,
-                            label: p.item,
-                          }))}
+                          options={utilityBillOptions}
                         />
 
                         {/* ===== AMOUNT ===== */}
@@ -452,16 +442,12 @@ const AddOrEditModal = ({
                           }
                         />
 
-                        <Select
+                        <SmartSelect
                           name="billingCycleId"
                           labelName="Billing Cycle"
                           value={formData.billingCycleId}
                           onChange={handleSelect}
-                          options={
-                            !ready
-                              ? [{ value: "", label: "Loading..." }]
-                              : getOptions("BILLINGCYCLE")
-                          }
+                          options={billingCycleOptions}
                         />
                         <CheckBox
                           name="isMetered"

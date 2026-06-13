@@ -73,7 +73,6 @@ export async function loadSystemConfig() {
 
     // 2. fetch from API
     const response = await systemCodeItemService.getAll();
-    console.log("System config loaded from API:", response);
 
     memoryCache = normalize(response.data);
 
@@ -124,7 +123,7 @@ export function getSystemItemOptions(code) {
 
   return memoryCache[code].map((x) => ({
     label: x.displayName,
-    value: x.item,
+    value: x.id,
     icon: x.iconKey,
     color: x.color,
   }));
