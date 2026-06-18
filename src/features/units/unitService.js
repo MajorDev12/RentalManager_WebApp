@@ -17,6 +17,10 @@ export const unitService = {
     return apiClient.get(`Units/By-Property/${propertyId}`);
   },
 
+  getUtilities(unitId) {
+    return apiClient.get(`Units/${unitId}/Utilities`);
+  },
+
   getVacants() {
     return apiClient.get(`Units/Vacants`);
   },

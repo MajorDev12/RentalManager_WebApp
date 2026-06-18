@@ -50,7 +50,6 @@ const UnitCharge = () => {
   const EMPTY_FORM = {
     propertyId: "",
     utilityId: "",
-    billingCycleId: "",
     unitId: "",
     amount: "",
     IsMetered: false,
@@ -114,7 +113,6 @@ const UnitCharge = () => {
       propertyId: item.propertyId?.toString() || "",
       utilityId: item.utilityId?.toString() || "",
       unitId: item.unitId?.toString() || "",
-      billingCycleId: item.billingCycleId?.toString() || "",
       amount: item.amount || "",
       isReccurring: item.isReccurring || false,
     });

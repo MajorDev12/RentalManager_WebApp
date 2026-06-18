@@ -1,7 +1,14 @@
 import { FiPlus } from "react-icons/fi";
+import Icon from "../../../components/ui/Icon";
 const UtilityCard = ({ utilities, showModal }) => {
   return (
     <div className="card sectionCard">
+      {utilities == null ||
+        (utilities.length === 0 && (
+          <div className="emptyState">
+            <p>No utilities found.</p>
+          </div>
+        ))}
       <div className="sectionHeader">
         <h3>Utilities</h3>
         <button className="addBtn" onClick={showModal}>
@@ -9,16 +16,17 @@ const UtilityCard = ({ utilities, showModal }) => {
         </button>
       </div>
       <div className="utilityGrid">
-        {utilities.map((util, i) => (
+        {utilities?.map((util, i) => (
           <div key={i} className="utilityItem">
             <div
               className={`utilIcon icon${util.color.charAt(0).toUpperCase() + util.color.slice(1)}`}
             >
-              {util.icon}
+              {/* {util.icon} */}
+              <Icon name={util.icon} color={util.color} size="24" />
             </div>
             <div>
-              <p className="utilName">{util.name}</p>
-              <p className="utilMeta">{util.provider}</p>
+              <p className="utilName">{util.displayName}</p>
+              <p className="utilMeta">{util.amount.toLocaleString()} /Ksh</p>
             </div>
           </div>
         ))}

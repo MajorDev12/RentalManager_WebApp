@@ -10,6 +10,7 @@ import { useApiRequest } from "../../../hooks/useApiRequest";
 import { propertyService } from "../../properties/propertyService";
 import { systemCodeItemService } from "../../systemCodeItems/systemCodeItemService";
 import { unitService } from "../../units/unitService";
+import { utilityService } from "../utilityService";
 
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdArrowCircleDown, MdArrowCircleUp } from "react-icons/md";
@@ -42,11 +43,6 @@ const AddOrEditModal = ({
   const [unitLookupsLoading, setUnitLookupsLoading] = useState(false);
   const [unitLookupsError, setUnitLookupsError] = useState(false);
 
-  const [billingCycleLookups, setBillingCycleLookups] = useState([]);
-  const [billingCycleLookupLoading, setBillingCycleLookupLoading] =
-    useState(false);
-  const [billingCycleLookupError, setBillingCycleLookupError] = useState(false);
-
   const [utilityDropdown, setUtilityDropdown] = useState([]);
   const [utilityLoading, setUtilityLoading] = useState(true);
   const [utilityError, setUtilityError] = useState(false);
@@ -65,7 +61,6 @@ const AddOrEditModal = ({
 
     fetchProperties();
     fetchUtilities();
-    fetchBillingCycle();
   }, [showModal]);
 
   useEffect(() => {
@@ -112,16 +107,6 @@ const AddOrEditModal = ({
     });
   };
 
-  const fetchBillingCycle = async () => {
-    await getData({
-      execute,
-      request: () => systemCodeItemService.getByCodeName("BILLINGCYCLE"),
-      setData: setBillingCycleLookups,
-      setLoading: setBillingCycleLookupLoading,
-      setError: setBillingCycleLookupError,
-    });
-  };
-
   const fetchUnitsByProperty = async (propertyId) => {
     await getData({
       execute,
@@ -161,10 +146,9 @@ const AddOrEditModal = ({
 
   //  DATA VALIDATION
   const validateModalForm = () => {
-    const { utilityId, amount, propertyId, unitId, billingCycleId, IsMetered } =
-      formData;
+    const { utilityId, amount, propertyId, unitId, isMetered } = formData;
 
-    if (!utilityId || !amount || !propertyId || !billingCycleId) {
+    if (!utilityId || !amount || !propertyId) {
       return "Please fill in all required fields.";
     }
 
@@ -188,40 +172,49 @@ const AddOrEditModal = ({
   // ADD AND EDIT FUNCTIONS
   const addUtilityHandler = async (e) => {
     if (!can(user, "Unit.Create")) return;
+    // e.preventDefault();
+
     const payload = {
       PropertyId: formData.propertyId ? Number(formData.propertyId) : null,
-      Name: formData.name ? String(formData.name) : null,
-      UnitTypeId: formData.unitTypeId ? Number(formData.unitTypeId) : null,
-      Amount: formData.rentAmount ? Number(formData.rentAmount) : null,
+      UtilityId: formData.utilityId ? Number(formData.utilityId) : null,
+      Amount: formData.amount ? Number(formData.amount) : null,
+      IsMetered:
+        formData.isMetered !== undefined ? Boolean(formData.isMetered) : null,
       Notes: formData.notes ? String(formData.notes) : null,
+      UnitId: formData.unitId ? Number(formData.unitId) : null,
     };
+    // console.log("Form Data:", formData);
+    // console.log("Form Data:", payload);
+    // return;
 
     await handleFormSubmit({
       e,
       validateForm: validateModalForm,
       execute,
-      request: () => unitService.add(payload),
+      request: () => utilityService.add(payload),
       setFormError,
       setLoadingBtn,
       resetForm: () => setFormData(modalData),
-      onSuccess: () => handleCloseModal(),
+      onSuccess: () => onSuccess(),
     });
   };
 
   const updateUtilityHandler = async (e) => {
-    if (!can(user, "Unit.Update")) return;
+    if (!can(user, "UtilityBill.Update")) return;
     const payload = {
       PropertyId: formData.propertyId ? Number(formData.propertyId) : null,
-      Name: formData.name ? String(formData.latitude) : null,
+      UtilityId: formData.utilityId ? Number(formData.utilityId) : null,
       Amount: formData.amount ? Number(formData.amount) : null,
-      UnitTypeId: formData.unitTypeId ? Number(formData.unitTypeId) : null,
+      IsMetered:
+        formData.isMetered !== undefined ? Boolean(formData.isMetered) : null,
       Notes: formData.notes ? String(formData.notes) : null,
+      UnitId: formData.unitId ? Number(formData.unitId) : null,
     };
     await handleFormSubmit({
       e,
       validateForm: validateModalForm,
       execute,
-      request: () => unitService.update(selectedId, payload),
+      request: () => utilityService.update(selectedId, payload),
       setFormError,
       setLoadingBtn,
       resetForm: () => setFormData(EMPTY_FORM),
@@ -285,26 +278,15 @@ const AddOrEditModal = ({
             labelName="Amount"
             onChange={handleInputChange}
           />
-          <Select
-            name="billingCycleId"
-            labelName="Billing Cycle"
-            value={formData.billingCycleId || ""}
-            onChange={handleSelect}
-            options={
-              billingCycleLookupLoading
-                ? [{ value: "", label: "Loading billingCycle..." }]
-                : billingCycleLookupError
-                  ? [{ value: "", label: "Error loading billingCycle" }]
-                  : !billingCycleLookups || billingCycleLookups.length === 0
-                    ? [{ value: "", label: "No billingCycle found" }]
-                    : billingCycleLookups.map((p) => ({
-                        value: p.id,
-                        label: p.item,
-                      }))
-            }
+
+          <CheckBox
+            name="IsMetered"
+            labelName="IsMetered"
+            onChange={handleInputChange}
+            checked={formData.IsMetered}
           />
         </div>
-        <div className="row3">
+        <div className="row1">
           <button className="showMoreBtn" onClick={toggleShowMoreButton}>
             Show more{" "}
             {showMoreInputs ? (
@@ -317,7 +299,7 @@ const AddOrEditModal = ({
 
         {showMoreInputs && (
           <>
-            <div className="row2">
+            <div className="row1">
               <Select
                 name="unitId"
                 labelName="Unit Name"
@@ -341,13 +323,6 @@ const AddOrEditModal = ({
                 text={
                   formData.propertyId ? "select unit" : "choose property first"
                 }
-              />
-
-              <CheckBox
-                name="IsMetered"
-                labelName="IsMetered"
-                onChange={handleInputChange}
-                checked={formData.IsMetered}
               />
             </div>
           </>

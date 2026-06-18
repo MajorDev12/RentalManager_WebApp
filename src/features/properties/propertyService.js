@@ -13,6 +13,14 @@ export const propertyService = {
     return apiClient.get("properties", query);
   },
 
+  getUnitTypes(propertyId) {
+    return apiClient.get(`properties/${propertyId}/unitTypes`);
+  },
+
+  getUtilities(propertyId) {
+    return apiClient.get(`properties/${propertyId}/utilities`);
+  },
+
   getById(id) {
     return apiClient.get(`properties/${id}`);
   },

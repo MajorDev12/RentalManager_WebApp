@@ -39,7 +39,6 @@ const AddOrEditModal = ({
   const EMPTY_UTILITY_FORM = {
     utilityBillId: "",
     utilityAmount: "",
-    billingCycleId: "",
     isMetered: "",
   };
   const [utilityItems, setUtilityItems] = useState([EMPTY_UTILITY_FORM]);
@@ -64,7 +63,6 @@ const AddOrEditModal = ({
 
   const propertyTypes = getOptions("PROPERTYTYPE");
   const utilityBillTypes = getOptions("UTILITYBILL");
-  const billingCycleTypes = getOptions("BILLINGCYCLE");
   const propertyTypeOptions = useMemo(
     () =>
       propertyTypes.map((x) => ({
@@ -87,18 +85,6 @@ const AddOrEditModal = ({
         groupKey: x.groupKey,
       })),
     [utilityBillTypes],
-  );
-
-  const billingCycleOptions = useMemo(
-    () =>
-      billingCycleTypes.map((x) => ({
-        value: x.value,
-        label: x.label,
-        icon: x.iconKey,
-        color: x.color,
-        groupKey: x.groupKey,
-      })),
-    [billingCycleTypes],
   );
 
   const floors = [
@@ -147,7 +133,6 @@ const AddOrEditModal = ({
       {
         propertyTypeId: "",
         amount: "",
-        billingCycleId: "",
         isMetered: "",
       },
     ]);
@@ -257,7 +242,7 @@ const AddOrEditModal = ({
           },
         ]);
       },
-      onSuccess: () => refreshTableData(),
+      onSuccess: () => onSuccess(),
     });
   };
 
@@ -442,13 +427,6 @@ const AddOrEditModal = ({
                           }
                         />
 
-                        <SmartSelect
-                          name="billingCycleId"
-                          labelName="Billing Cycle"
-                          value={formData.billingCycleId}
-                          onChange={handleSelect}
-                          options={billingCycleOptions}
-                        />
                         <CheckBox
                           name="isMetered"
                           labelName="Is Metered"

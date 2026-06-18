@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import Select from "react-select";
+import Icon from "./Icon";
 
 const FONT_SIZE = "var(--smallFontSize)";
 
@@ -71,14 +72,7 @@ const SmartSelect = ({
   // OPTION RENDER (icons + text)
   const formatOptionLabel = (option) => (
     <div className="smart-option">
-      {option.icon && (
-        <span
-          className="material-icons smart-icon"
-          style={{ color: option.color }}
-        >
-          {option.icon}
-        </span>
-      )}
+      {option.icon && <Icon name={option.icon} color={option.color} />}
       <span>{option.label}</span>
     </div>
   );
@@ -128,6 +122,7 @@ const customStyles = {
     boxShadow: state.isFocused ? "0 0 0 3px rgba(34,119,204,0.12)" : "none",
 
     fontSize: FONT_SIZE,
+    overflow: "hidden",
 
     "&:hover": {
       borderColor: "var(--highlightColor)",
@@ -141,6 +136,8 @@ const customStyles = {
     padding: "0 10px",
     display: "flex",
     alignItems: "center",
+    flexWrap: "nowrap",
+    overflow: "hidden",
   }),
 
   input: (base) => ({
@@ -154,6 +151,10 @@ const customStyles = {
     ...base,
     fontSize: FONT_SIZE,
     color: "var(--textColor)",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "100%",
   }),
 
   placeholder: (base) => ({

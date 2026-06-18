@@ -7,6 +7,7 @@ import { handleDelete } from "../../../helpers/deleteData";
 import { validateTextInput } from "../../../helpers/validateTextInput";
 import { validateEmail } from "../../../helpers/validateEmail";
 import { useApiRequest } from "../../../hooks/useApiRequest";
+import { useSystemConfig } from "../../../hooks/useSystemConfig";
 import { propertyService } from "../../properties/propertyService";
 import { systemCodeItemService } from "../../systemCodeItems/systemCodeItemService";
 import { unitService } from "../unitService";
@@ -19,6 +20,7 @@ import Input from "../../../components/ui/Input";
 import Can from "../../../auth/Can";
 import Textarea from "../../../components/ui/Textarea";
 import Select from "../../../components/ui/Select";
+import SmartSelect from "../../../components/ui/SmartSelect";
 import CheckBox from "../../../components/ui/CheckBox";
 import Modal from "../../../components/ui/Modal";
 
@@ -33,22 +35,11 @@ const AddOrEditModal = ({
   if (!show) return null;
   const { execute, apiLoading } = useApiRequest();
   const { user } = useAuthContext();
+  const { getOptions, ready } = useSystemConfig(execute);
 
   const [propertyLookups, setPropertyLookups] = useState([]);
   const [propertyLookupsLoading, setPropertyLookupsLoading] = useState(false);
   const [propertyLookupsError, setPropertyLookupsError] = useState(false);
-
-  const [rentalTypes, setRentalTypes] = useState([]);
-  const [rentalTypesLoading, setRentalTypesLoading] = useState(false);
-  const [rentalTypesError, setRentalTypesError] = useState(false);
-
-  const [billingCycles, setBillingCycles] = useState([]);
-  const [billingCyclesLoading, setBillingCyclesLoading] = useState(false);
-  const [billingCyclesError, setBillingCyclesError] = useState(false);
-
-  const [unitTypes, setUnitTypes] = useState([]);
-  const [unitTypesLoading, setUnitTypesLoading] = useState(false);
-  const [unitTypesError, setUnitTypesError] = useState(false);
 
   const [loadingBtn, setLoadingBtn] = useState(false);
   const [formError, setFormError] = useState("");
@@ -61,31 +52,55 @@ const AddOrEditModal = ({
   useEffect(() => {
     if (showModal) {
       fetchProperties();
-      fetchUnitTypes();
-      fetchBillingCycles();
-      fetchRentalTypes();
     }
   }, [showModal]);
 
-  const fetchBillingCycles = async () => {
-    await getData({
-      execute,
-      request: () => systemCodeItemService.getByCodeName("BILLINGCYCLE"),
-      setData: setBillingCycles,
-      setLoading: setBillingCyclesLoading,
-      setError: setBillingCyclesError,
-    });
-  };
+  const unitTypes = getOptions("UNITTYPE");
+  const rentalTypes = getOptions("RENTALTYPE");
+  const billingCycleTypes = getOptions("BILLINGCYCLE");
+  const propertyOptions = useMemo(
+    () =>
+      propertyLookups.map((x) => ({
+        value: x.id,
+        label: x.name,
+      })),
+    [propertyLookups],
+  );
+  const unitTypeOptions = useMemo(
+    () =>
+      unitTypes.map((x) => ({
+        value: x.value,
+        label: x.label,
+        icon: x.icon,
+        color: x.color,
+        groupBy: x.groupBy,
+      })),
+    [unitTypes],
+  );
 
-  const fetchRentalTypes = async () => {
-    await getData({
-      execute,
-      request: () => systemCodeItemService.getByCodeName("RENTALTYPE"),
-      setData: setRentalTypes,
-      setLoading: setRentalTypesLoading,
-      setError: setRentalTypesError,
-    });
-  };
+  const rentalTypeOptions = useMemo(
+    () =>
+      rentalTypes.map((x) => ({
+        value: x.value,
+        label: x.label,
+        icon: x.iconKey,
+        color: x.color,
+        groupKey: x.groupKey,
+      })),
+    [rentalTypes],
+  );
+
+  const billingCycleOptions = useMemo(
+    () =>
+      billingCycleTypes.map((x) => ({
+        value: x.value,
+        label: x.label,
+        icon: x.iconKey,
+        color: x.color,
+        groupKey: x.groupKey,
+      })),
+    [billingCycleTypes],
+  );
 
   const fetchProperties = async () => {
     await getData({
@@ -94,16 +109,6 @@ const AddOrEditModal = ({
       setData: setPropertyLookups,
       setLoading: setPropertyLookupsLoading,
       setError: setPropertyLookupsError,
-    });
-  };
-
-  const fetchUnitTypes = async () => {
-    await getData({
-      execute,
-      request: () => systemCodeItemService.getByCodeName("UNITTYPE"),
-      setData: setUnitTypes,
-      setLoading: setUnitTypesLoading,
-      setError: setUnitTypesError,
     });
   };
 
@@ -255,27 +260,12 @@ const AddOrEditModal = ({
         isEditMode={isEdit}
       >
         <div className="row3">
-          <Select
+          <SmartSelect
             name="propertyId"
             labelName="Property Name"
             value={formData.propertyId || ""}
             onChange={handleSelect}
-            options={
-              propertyLookups
-                ? propertyLookups && propertyLookups.length > 0
-                  ? propertyLookups.map((p) => ({
-                      value: p.id,
-                      label: p.name,
-                    }))
-                  : [
-                      {
-                        value: "",
-                        label: "No Available Properties",
-                        disabled: true,
-                      },
-                    ]
-                : []
-            }
+            options={propertyOptions}
           />
           <Input
             type="text"
@@ -286,109 +276,32 @@ const AddOrEditModal = ({
             onChange={handleInputChange}
           />
 
-          <Select
+          <SmartSelect
             name="unitTypeId"
             labelName="Unit Type"
             value={formData.unitTypeId || ""}
             onChange={handleSelect}
-            options={
-              unitTypesLoading
-                ? [
-                    {
-                      value: "",
-                      label: "Loading UnitTypes...",
-                    },
-                  ]
-                : unitTypesError
-                  ? [
-                      {
-                        value: "",
-                        label: "Error loading UnitTypes",
-                      },
-                    ]
-                  : !unitTypes || unitTypes.length === 0
-                    ? [
-                        {
-                          value: "",
-                          label: "No UnitTypes Found",
-                        },
-                      ]
-                    : unitTypes.map((p) => ({
-                        value: p.id,
-                        label: p.item,
-                      }))
-            }
+            options={unitTypeOptions}
+            groupBy="groupKey"
           />
 
-          <Select
+          <SmartSelect
             name="rentalTypeId"
             labelName="Rental Type"
             value={formData.rentalTypeId || ""}
             onChange={handleSelect}
-            options={
-              rentalTypesLoading
-                ? [
-                    {
-                      value: "",
-                      label: "Loading Rental Types...",
-                    },
-                  ]
-                : rentalTypesError
-                  ? [
-                      {
-                        value: "",
-                        label: "Error loading Rental Types",
-                      },
-                    ]
-                  : !rentalTypes || rentalTypes.length === 0
-                    ? [
-                        {
-                          value: "",
-                          label: "No Rental Types Found",
-                        },
-                      ]
-                    : rentalTypes.map((p) => ({
-                        value: p.id,
-                        label: p.item,
-                      }))
-            }
+            options={rentalTypeOptions}
           />
 
-          <Select
+          <SmartSelect
             name="billingCycleId"
             labelName="Billing Cycles"
             value={formData.billingCycleId || ""}
             onChange={handleSelect}
-            options={
-              billingCyclesLoading
-                ? [
-                    {
-                      value: "",
-                      label: "Loading Billing Cycles...",
-                    },
-                  ]
-                : billingCyclesError
-                  ? [
-                      {
-                        value: "",
-                        label: "Error loading Billing Cycles",
-                      },
-                    ]
-                  : !billingCycles || billingCycles.length === 0
-                    ? [
-                        {
-                          value: "",
-                          label: "No Billing Cycles Found",
-                        },
-                      ]
-                    : billingCycles.map((p) => ({
-                        value: p.id,
-                        label: p.item,
-                      }))
-            }
+            options={billingCycleOptions}
           />
 
-          <Select
+          <SmartSelect
             name="floor"
             labelName="Floor (s)"
             value={formData.floor}

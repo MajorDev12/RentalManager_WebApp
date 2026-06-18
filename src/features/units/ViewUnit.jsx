@@ -4,6 +4,7 @@ import { useApiRequest } from "../../hooks/useApiRequest";
 
 import { getData } from "../../helpers/getData";
 import { unitService } from "./unitService";
+import { utilityService } from "../utilities/utilityService";
 import BreadCrumb from "../../components/ui/BreadCrumb";
 import UnitGallery from "./components/UnitGallery";
 import UtilityCard from "../utilities/components/UtilityCard";
@@ -147,6 +148,10 @@ const ViewUnit = () => {
   const [unitDataLoading, setUnitDataLoading] = useState(true);
   const [unitDataError, setUnitDataError] = useState([]);
 
+  const [utilityData, setUtilityData] = useState([]);
+  const [utilityDataLoading, setUtilityDataLoading] = useState(true);
+  const [utilityDataError, setUtilityDataError] = useState([]);
+
   const [showUnitModal, setShowUnitModal] = useState(false);
   const [showUtilityModal, setShowUtilityModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -174,6 +179,7 @@ const ViewUnit = () => {
   // FETCH DATA
   useEffect(() => {
     fetchUnit();
+    fetchUtility();
   }, [id]);
 
   const fetchUnit = async () => {
@@ -183,6 +189,16 @@ const ViewUnit = () => {
       setData: setUnitData,
       setLoading: setUnitDataLoading,
       setError: setUnitDataError,
+    });
+  };
+
+  const fetchUtility = async () => {
+    await getData({
+      execute,
+      request: () => unitService.getUtilities(id),
+      setData: setUtilityData,
+      setLoading: setUtilityDataLoading,
+      setError: setUtilityDataError,
     });
   };
 
@@ -347,7 +363,7 @@ const ViewUnit = () => {
               <FiZap />
             </div>
             <div>
-              <h3>{unit.utilities.length}</h3>
+              <h3>{utilityData.length}</h3>
               <p>Utilities</p>
             </div>
           </div>
@@ -381,7 +397,7 @@ const ViewUnit = () => {
             </div>
             {/* UTILITIES */}
             <UtilityCard
-              utilities={unit.utilities}
+              utilities={utilityData}
               showModal={handleUtilityModal}
             />
             {/* FEATURES */}

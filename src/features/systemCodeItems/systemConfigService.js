@@ -125,6 +125,7 @@ export function getSystemItemOptions(code) {
     label: x.displayName,
     value: x.id,
     icon: x.iconKey,
+    groupBy: x.groupKey,
     color: x.color,
   }));
 }

@@ -3,8 +3,11 @@ import { useParams } from "react-router-dom";
 import BreadCrumb from "../../components/ui/BreadCrumb";
 import AddOrEditModal from "./components/AddOrEditModal";
 import AddUnitModal from "../units/components/AddOrEditModal";
+import AddUtilityModal from "../utilities/components/AddOrEditModal";
 import PropertyDetailsCard from "./components/propertyDetailsCard";
 import DetailCard from "../../components/ui/DetailCard";
+import UnitTypeCard from "../unitTypes/components/UnitTypeCard";
+import UtilityCard from "../utilities/components/UtilityCard";
 import PropertyImage from "../../assets/property.jpg";
 import { getData } from "../../helpers/getData";
 import { propertyService } from "./propertyService";
@@ -53,6 +56,7 @@ const ViewProperty = () => {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddUnitModal, setShowAddUnitModal] = useState(false);
+  const [showAddUtilityModal, setShowAddUtilityModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
   const unitModalData = {
@@ -60,6 +64,15 @@ const ViewProperty = () => {
     name: "",
     unitTypeId: "",
     rentAmount: "",
+    notes: "",
+  };
+
+  const utilityModalData = {
+    propertyId: id,
+    utilityId: "",
+    amount: "",
+    isMetered: false,
+    unitId: "",
     notes: "",
   };
   const paymentInformation = [
@@ -101,19 +114,21 @@ const ViewProperty = () => {
       setError: setUnitError,
     });
   };
+
   const fetchUnitTypes = async () => {
     await getData({
       execute,
-      request: () => unitTypeService.byProperty(id),
+      request: () => propertyService.getUnitTypes(id),
       setData: setUnitTypes,
       setLoading: setUnitTypeLoading,
       setError: setUnitTypesError,
     });
   };
+
   const fetchUtilities = async () => {
     await getData({
       execute,
-      request: () => utilityService.getByPropertyId(id),
+      request: () => propertyService.getUtilities(id),
       setData: setUtilityBills,
       setLoading: setUtilityLoading,
       setError: setUtilityError,
@@ -184,7 +199,14 @@ const ViewProperty = () => {
   const handleCloseModal = () => {
     setShowEditModal(false);
     setShowAddUnitModal(false);
+    setShowAddUtilityModal(false);
   };
+
+  const handleUtilityModal = () => {
+    setShowAddUtilityModal(true);
+  };
+
+  setShowAddUtilityModal;
 
   return (
     <div id="viewProperty">
@@ -201,6 +223,13 @@ const ViewProperty = () => {
       <AddUnitModal
         show={showAddUnitModal}
         modalData={unitModalData}
+        onSuccess={handleCloseModal}
+        closeModal={handleCloseModal}
+      />
+
+      <AddUtilityModal
+        show={showAddUtilityModal}
+        modalData={utilityModalData}
         onSuccess={handleCloseModal}
         closeModal={handleCloseModal}
       />
@@ -338,41 +367,16 @@ const ViewProperty = () => {
               details={paymentInformation}
             />
             {/* UNIT TYPES */}
-            <div className="card sectionCard">
-              <div className="sectionHeader">
-                <h3>Unit types</h3>
-              </div>
-              {unitTypeLoading ? (
-                <p className="vpMuted">Loading…</p>
-              ) : unitTypeList?.length ? (
-                <div className="tagWrap">
-                  {unitTypeList.map((type, i) => (
-                    <span key={i} className="vpTag">
-                      <FiGrid /> {type.name}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p className="vpMuted">No unit types added yet.</p>
-              )}
+            <UnitTypeCard
+              unitTypeList={unitTypeList}
+              unitTypeLoading={unitTypeLoading}
+              unitTypeError={unitTypesError}
+            />
 
-              <div className="sectionHeader" style={{ marginTop: "18px" }}>
-                <h3>Utility bills</h3>
-              </div>
-              {utilityLoading ? (
-                <p className="vpMuted">Loading…</p>
-              ) : utilityList?.length ? (
-                <div className="tagWrap">
-                  {utilityList.map((bill, i) => (
-                    <span key={i} className="vpTag">
-                      {utilityIcons[bill.name] || <FiZap />} {bill.name}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p className="vpMuted">No utility bills added yet.</p>
-              )}
-            </div>
+            <UtilityCard
+              utilities={utilityBills}
+              showModal={handleUtilityModal}
+            />
           </div>
         </div>
       </div>

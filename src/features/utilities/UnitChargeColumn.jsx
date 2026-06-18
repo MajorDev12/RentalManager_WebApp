@@ -167,27 +167,6 @@ export const getColumns = ({ activeRow, setActiveRow, onEdit, onDelete }) => [
   },
 
   {
-    header: "Billing Cycle",
-    accessorKey: "billingCycleName",
-    enableSorting: true,
-
-    cell: ({ row }) => {
-      const billingCycle = row.original.billingCycleName?.toLowerCase();
-
-      return (
-        <div
-          style={{
-            ...badgeBaseStyle,
-            ...(badgeStyles[billingCycle] || badgeStyles.default),
-          }}
-        >
-          {row.original.billingCycleName}
-        </div>
-      );
-    },
-  },
-
-  {
     header: "Amount",
     accessorKey: "amount",
     enableSorting: true,

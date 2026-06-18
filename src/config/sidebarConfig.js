@@ -93,8 +93,14 @@ export const sidebarConfig = [
       },
 
       {
-        label: "Assign Unit",
-        route: "/AssignUnit",
+        label: "Bookings",
+        route: "/Bookings",
+        permission: "Tenant.Assign",
+      },
+
+      {
+        label: "Leases",
+        route: "/Leases",
         permission: "Tenant.Assign",
       },
     ],
